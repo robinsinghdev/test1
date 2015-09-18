@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=medium-dpi" />
+
+        <link rel="stylesheet"  href="libs/jQM-flat/jquery.mobile.flatui.css">
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+        <title>App Name</title>
+		
+		<script type="text/javascript" charset="utf-8">
+
+		// Wait for Cordova to load
+		//
+		document.addEventListener("deviceready", onDeviceReady, false);
+
+		// Populate the database 
+		//
+		function populateDB(tx) {
+			tx.executeSql('DROP TABLE IF EXISTS DEMO');
+			tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
+			tx.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
+			tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
+		}
+
+		// Query the database
+		//
+		function queryDB(tx) {
+			tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
+		}
+
+		// Query the success callback
+		//
+		function querySuccess(tx, results) {
+			var len = results.rows.length;
+			console.log("DEMO table: " + len + " rows found.");
+			alert("DEMO table: " + len + " rows found.");
+			for (var i=0; i<len; i++){
+				console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+			}
+		}
+
+		// Transaction error callback
+		//
+		function errorCB(err) {
+			console.log("Error processing SQL: "+err.code);
+		}
+
+		// Transaction success callback
+		//
+		function successCB() {
+			var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+			db.transaction(queryDB, errorCB);
+		}
+
+		// Cordova is ready
+		//
+		function onDeviceReady() {
+			var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+			db.transaction(populateDB, errorCB, successCB);
+		}
+
+		</script>
+
+    </head>
+    <body>
+        <div id="app">
+			
+			<div  id="login-page" data-role="page">
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
+                    <h1>Log-in Form</h1>
+                </div>
+                <div data-role="content" >
+					<div id="logoContainer" class="centerText">
+                            <img src="img/logo.jpg" id="logo"  />
+                    </div>
+                    <form  id="search-form" action="">
+                        <label for="username">Username</label>
+                        <input type="email" name="username" id="username" data-mini="true" placeholder="Username"/>
+                        <label for="password">Password </label>
+                        <input type="password" name="password" id="password" data-mini="true" placeholder="Password"/>
+
+                        <div data-role="fieldcontain">
+							<fieldset data-role="controlgroup" data-mini="true">
+								<input type="checkbox" name="checkbox-1a"    id="checkbox-1a" class="custom" checked="checked" />
+								<label for="checkbox-1a">Remember Me</label>
+							</fieldset>
+                        </div>
+						<!--
+                        <button type="button" data-theme="f" data-mini="false" class="ui-btn-hidden" "home-page" 
+							aria-disabled="false">Log-in</button>
+						-->
+						<a data-theme="a" href="#home-page" data-role="button">Log-in</a>			
+                    </form>
+                </div>
+            </div>
+			
+			<div id="home-page" data-role="page">
+				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
+                    <h1>Homepage</h1>
+					<a href="#login-page"  data-role="button" data-icon="arrow-l" data-inline="true" >Logout</a>
+                </div>
+                <div data-role="content" >
+                    <div id="menu">
+                        <a data-icon="flat-heart" data-theme="d" href="#dialog" data-role="button">Start Tracker</a>
+						<a data-icon="flat-time" data-theme="f" href="#view-all-tracking-page"  data-role="button">View All Tracking</a>
+                        <fieldset class="ui-grid-a">
+                            <div class="ui-block-a"> <a data-icon="flat-checkround" data-theme="e" href="#tips-page"  data-role="button">Tips</a></div>
+                            <div class="ui-block-b"><a data-icon="ms-question" data-theme="g" href="#about-page"  data-role="button" >About</a></div>
+                        </fieldset>
+                    </div>
+					
+					<div id="deviceready" class="blink">
+						<p class="event listening">Connecting to Device</p>
+						<p class="event received">Device is Ready</p>
+						
+					</div>
+					
+                </div>
+				<div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" data-icon="flat-location" data-theme="b">Home</a></li>
+                            <li><a id="list-button" href="#view-all-tracking-page" data-icon="flat-menu">View All</a></li>
+                            <li><a id="search-button" href="#" data-icon="ms-search">Search</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- /page  -->
+			
+			<div id="view-all-tracking-page" data-role="page">
+				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
+					<a href="#home-page"  data-role="button" data-icon="arrow-l" data-inline="true" >Back</a>
+                    <h1>List Page</h1>
+                </div>
+                <div data-role="content" >
+                    
+                </div>
+				<div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" data-icon="flat-location" >Home</a></li>
+                            <li><a id="list-button" href="#list-page" data-icon="flat-menu" data-theme="b">View All</a></li>
+                            <li><a id="search-button" href="#" data-icon="ms-search">Search</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- /page  -->
+			
+			<div  id="about-page" data-role="page">
+                <div data-role="header" data-id="header1" data-position="fixed" class="ui-header">
+                    <a href="#" data-rel="back" data-role="button" data-icon="arrow-l" data-inline="true" >Back</a>
+                    <h1>About App</h1>
+                </div>
+                <div data-role="content"  class="big-text">
+                    <h2>About App</h2>
+                    <p>...</p>
+                </div>
+				<div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" data-icon="flat-location" >Home</a></li>
+                            <li><a id="list-button" href="#list-page" data-icon="flat-menu" >View All</a></li>
+                            <li><a id="search-button" href="#" data-icon="ms-search">Search</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+			
+			<div  id="tips-page" data-role="page">
+                <div data-role="header" data-id="header1" data-position="fixed" class="ui-header">
+                    <a href="#" data-rel="back" data-role="button" data-icon="arrow-l" data-inline="true" >Back</a>
+                    <h1>About App</h1>
+                </div>
+                <div data-role="content"  class="big-text">
+                    <h2>Tips</h2>
+					<h2>How it works</h2>
+                    <p>...</p>
+                </div>
+				<div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" data-icon="flat-location" >Home</a></li>
+                            <li><a id="list-button" href="#list-page" data-icon="flat-menu">View All</a></li>
+                            <li><a id="search-button" href="#" data-icon="ms-search">Search</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+			
+			<!-- Dialog only page -->
+			<div data-role="dialog" id="dialog">
+			  <div data-role="header">
+				<h1>Dialog Only Page</h1>
+			  </div>
+			  <div data-role="content">
+				<p>I can only be served as a dialog, and I don't need a data-rel="dialog" attribute on a link</p>
+			  </div>
+			</div>
+			
+            <div id="home1-page" data-role="page">
+                <div data-role="content" >
+                    <div id="logoContainer" class="centerText">
+                            <img src="img/logo.jpg" id="logo"  />
+                    </div>
+                    <div id="menu">
+                        <a data-icon="flat-heart" data-theme="d" href="#second-page" data-role="button">Second Page</a>
+                        <a data-icon="flat-time" data-theme="f" href="#due-page"  data-role="button">Fake Btn</a>
+                        <fieldset class="ui-grid-a">
+                            <div class="ui-block-a"> <a data-icon="flat-checkround" data-theme="e" href="#tips-page"  data-role="button">Fake Btn</a></div>
+                            <div class="ui-block-b"><a data-icon="ms-question" data-theme="g" href="#about-page"  data-role="button" >About</a></div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div><!-- /page  -->
+
+            <div  id="second-page" data-role="page">
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
+                    <a href="#home-page"  data-role="button" data-icon="arrow-l" data-inline="true" >Back</a>
+                    <h1>Sample Form</h1>
+                </div>
+                <div data-role="content" >
+                    <form  id="search-form" action="">
+                        <label for="address">Address</label>
+                        <input type="text" name="address" id="address" data-mini="true" placeholder="123 cedar ave"/>
+                        <label for="dentist">Person <span class="small-text">(optional)</span></label>
+                        <input type="text" name="dentist" id="dentist" data-mini="true" placeholder="Dr Smith"/>
+
+                        <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup" data-mini="true">
+                            <legend>Availability</legend>
+                            <input type="checkbox" name="checkbox-1a"    id="checkbox-1a" class="custom" checked="checked" />
+                            <label for="checkbox-1a">Morning</label>
+
+                            <input type="checkbox" name="checkbox-2a"   id="checkbox-2a" class="custom" checked="checked"/>
+                            <label for="checkbox-2a">Afternoon</label>
+
+                            <input type="checkbox" name="checkbox-3a"   id="checkbox-3a" class="custom" checked="checked" />
+                            <label for="checkbox-3a">Evening</label>
+
+                            <input type="checkbox" name="checkbox-4a"  id="checkbox-4a" class="custom" />
+                            <label for="checkbox-4a">Weekends</label>
+                        </fieldset>
+                        </div>
+
+                        <div data-role="fieldcontain">
+                            <label for="select-choice-a">Type</label>
+                            <select name="select-choice" id="select-choice-a" data-native-menu="false" data-mini="true" data-theme="b">
+                                <option value="val1">Option 1</option>
+                                <option value="val2">Option 2</option>
+                                <option value="val3">Option 3</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" data-theme="f" data-mini="false" class="ui-btn-hidden" aria-disabled="false">Search</button>
+                    </form>
+                </div>
+                <div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#second-page" data-icon="flat-location" data-theme="b">Map</a></li>
+                            <li><a id="list-button" href="#list-page" data-icon="flat-menu">List</a></li>
+                            <li><a id="search-button" href="#search-page" data-icon="ms-search">Search</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="libs/fastclick.min.js"></script>
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="libs/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="libs/jQueryMobile/jquery.mobile-1.3.2.min.js"></script>
+
+        <script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript" src="js/timer.jquery.js"></script>
+		
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
+</html>
