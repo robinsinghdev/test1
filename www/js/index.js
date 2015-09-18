@@ -112,6 +112,11 @@ function querySuccessData(tx, results) {
         }
         // for an insert statement, this property will return the ID of the last inserted row
         console.log("Last inserted row ID = " + results.insertId);
+        var len = results.rows.length;
+        for (var i=0; i<len; i++){
+	    console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+	    alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+	}
     }
 
     // Transaction error callback
