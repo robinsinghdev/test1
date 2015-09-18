@@ -66,8 +66,24 @@ var app = {
 			
 function AddValueToDB() {
    alert('Databases are nowwww supported in this browser.');
-   db.transaction(populateDB, errorCB, successCB);
+   var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+   db.transaction(queryDBData, errorCB);
 } 
+
+function queryDBData(tx) {
+    tx.executeSql('SELECT * FROM DEMO', [], querySuccessData, errorCB);
+}
+
+function querySuccessData(tx, results) {
+    var len = results.rows.length;
+    console.log("DEMO table: " + len + " rows found.");
+    for (var i=0; i<len; i++){
+        console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+        alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+    }
+}
+
+
 
 // Populate the database 
     //
