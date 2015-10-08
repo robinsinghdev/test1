@@ -111,8 +111,11 @@ function handleLogin() {
 		   type:'POST',
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
 		   success:function(data){
+			
 			alert(data);
-			 console.log(data);
+			console.log(data);
+			var responseJson = $.parseJSON(data);
+			  alert(responseJson["status"]);
 		   },
 		   error:function(w,t,f){
 			 console.log(w+' '+t+' '+f);
