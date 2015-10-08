@@ -15,31 +15,36 @@
         <div id="app">
 			
 			<div  id="login-page" data-role="page">
-                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
+                <!--
+				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
                     <h1>Log-in Form</h1>
                 </div>
-                <div data-role="content" >
-					<div id="logoContainer" class="centerText">
-                            <img src="img/logo.jpg" id="logo"  />
-                    </div>
-                    <form  id="search-form" action="">
-                        <label for="username">Username</label>
-                        <input type="email" name="username" id="username" data-mini="true" placeholder="Username"/>
-                        <label for="password">Password </label>
-                        <input type="password" name="password" id="password" data-mini="true" placeholder="Password"/>
+				-->
+                <div data-role="content">
+					<div  class="login-box">
+						<div id="logoContainer" class="centerText">
+								<img src="img/kgr_logo_white.png" id="logo"  />
+						</div>
+						<form  id="loginForm" action="">
+							<label for="username">Username</label>
+							<input type="email" name="username" id="username" data-mini="true" placeholder="Username"/>
+							<label for="password">Password </label>
+							<input type="password" name="password" id="password" data-mini="true" placeholder="Password"/>
 
-                        <div data-role="fieldcontain">
-							<fieldset data-role="controlgroup" data-mini="true">
-								<input type="checkbox" name="checkbox-1a"    id="checkbox-1a" class="custom" checked="checked" />
-								<label for="checkbox-1a">Remember Me</label>
-							</fieldset>
-                        </div>
-						<!--
-                        <button type="button" data-theme="f" data-mini="false" class="ui-btn-hidden" "home-page" 
-							aria-disabled="false">Log-in</button>
-						-->
-						<a data-theme="a" href="#home-page" data-role="button">Log-in</a>			
-                    </form>
+							<div data-role="fieldcontain">
+								<fieldset data-role="controlgroup" data-mini="true">
+									<input type="checkbox" name="checkbox-1a"    id="checkbox-1a" class="custom" checked="checked" />
+									<label for="checkbox-1a">Remember Me</label>
+								</fieldset>
+							</div>
+							<!--
+							<button type="button" data-theme="f" data-mini="false" class="ui-btn-hidden" "home-page" 
+								aria-disabled="false">Log-in</button>
+							-->
+							<!-- <a data-theme="a" href="#home-page" data-role="button">Log-in</a>	-->	
+							<input data-theme="a" type="submit" value="Login" id="submitButton">
+						</form>
+					</div>	
                 </div>
             </div>
 			
@@ -165,7 +170,7 @@
             <div id="home1-page" data-role="page">
                 <div data-role="content" >
                     <div id="logoContainer" class="centerText">
-                            <img src="img/logo.jpg" id="logo"  />
+                        <img src="img/kgr_logo_white.png" id="logo"  />
                     </div>
                     <div id="menu">
                         <a data-icon="flat-heart" data-theme="d" href="#second-page" data-role="button">Second Page</a>

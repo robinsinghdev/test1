@@ -45,16 +45,84 @@ var app = {
 
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
+		/*
 		alert('fdgdf');
 		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
 		db.transaction(initializeDB, errorCB, successCB);
 		alert('successCB');
+		*/
+		
+		$("#loginForm").on("submit",handleLogin);
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
 		
     }
 };
+/*
+function init() {
+	document.addEventListener("deviceready", deviceReady, true);
+	delete init;
+}
+*/
+function checkPreAuth() {
+	var form = $("#loginForm");
+	if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
+		$("#username", form).val(window.localStorage["username"]);
+		$("#password", form).val(window.localStorage["password"]);
+		handleLogin();
+	}
+}
+
+function handleLogin() {
+	alert('handle login called');
+	console.log('handle login called');
+	var form = $("#loginForm");
+	//disable the button so we can't resubmit while we wait
+	$("#submitButton",form).attr("disabled","disabled");
+	var u = $("#username", form).val();
+	var p = $("#password", form).val();
+	u='support@dynaread.com';
+	p='marbleF16XS';
+	console.log("click");
+	alert(u+p);
+	console.log(u+p);
+	if(u != '' && p!= '') {
+		
+		/*
+		$.post("https://dev.bpmetrics.com/grn/users/ajax.php?action=userLogin&check=1", {email:u,password:p}, function(res) {
+		//$.post("https://dev.bpmetrics.com/grn/m_app/test.php?action=userLogin&check=1", {email:u,password:p}, function(res) {
+		alert(res);
+		console.log(res);
+		if(res == true) {
+			//store
+			window.localStorage["username"] = u;
+			window.localStorage["password"] = p;
+			//$.mobile.changePage("some.html");
+		} else {
+			navigator.notification.alert("Your login failed", function() {});
+		}
+		$("#submitButton").removeAttr("disabled");
+		},"json");
+		*/
+		
+		$.ajax({
+		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
+		   type:'POST',
+		   data:{action:'userLogin',email:u,password:p,check:'1'},
+		   success:function(data){
+			 console.log(data);
+		   },
+		   error:function(w,t,f){
+			 console.log(w+' '+t+' '+f);
+		   }
+		});
+	} else {
+		navigator.notification.alert("You must enter a username and password", function() {});
+		$("#submitButton").removeAttr("disabled");
+	}
+	return false;
+}
 
 function getTodayDate(){
 	var today = new Date();

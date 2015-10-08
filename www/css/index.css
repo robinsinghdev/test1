@@ -114,3 +114,18 @@ margin: .8em 30% .8em;
 .ui-icon-ms-search {
     background: url("../img/search-icon.png") 50% 50% no-repeat;
 }
+
+
+.login-box {
+	
+	/*
+		padding: 10px 60px 60px;
+	  background: url("../img/lockscreen.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+	  color: #FFFFFF;
+	  border-radius: 7px 7px 7px 7px;
+	  margin: 50px auto;
+	  
+	  position: relative;
+	  min-height: 300px;
+  */
+}
