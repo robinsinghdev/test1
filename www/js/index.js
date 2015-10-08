@@ -126,20 +126,74 @@ function handleLogin() {
 		*/
 		
 		$.ajax({
-			   url:'http://dev.bpmetrics.com/grn/users/ajax.php',
+		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
+		   type:'POST',
+		   dataType: 'json',
+		   data:{action:'userLogin',email:u,password:p,check:'1'},
+		   crossDomain: true,
+		   success:function(data){
+			/*
+			{"status":"success","login_request":"\/grn\/","grn_user":{"ID":"1","grn_companies_id":"1","full_name"
+:"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"1","email":"support
+@dynaread.com","lastActive":1444306008}}
+			*/
+			alert(data);
+			console.log(data);
+			var responseJson = $.parseJSON(data);
+			 var jsonString = JSON.stringify(responseJson);
+			 console.log(jsonString);
+			  alert(jsonString);
+			  
+			window.localStorage["username"] = responseJson["ID"];
+			window.localStorage["password"] = responseJson["grn_companies_id"];
+			
+			window.localStorage["ID"] = responseJson["grn_companies_id"];
+			window.localStorage["grn_companies_id"] = responseJson["grn_companies_id"];
+			window.localStorage["full_name"] = responseJson["full_name"];
+			window.localStorage["nickname"] = responseJson["nickname"];
+			window.localStorage["grn_roles_id"] = responseJson["grn_roles_id"];
+			window.localStorage["permissions"] = responseJson["permissions"];
+			
+			window.localStorage["email"] = responseJson["email"];
+			window.localStorage["lastActive"] = responseJson["lastActive"];
+		   },
+		   error:function(w,t,f){
+			 console.log(w+' '+t+' '+f);
+			 //alert(w+' '+t+' '+f);
+			
+			 //var responseJson = $.parseJSON(data);
+			 var jsonString = JSON.stringify(w);
+			 console.log(JSON.stringify(w));
+			 console.log(JSON.stringify(t));
+			 console.log(JSON.stringify(f));
+		   }
+		});
+			
+		$("#submitButton").removeAttr("disabled");
+	} else {
+		navigator.notification.alert("You must enter a username and password", function() {});
+		$("#submitButton").removeAttr("disabled");
+	}
+	return false;
+}
+
+function checkSession(){
+	$.ajax({
+			   url:'https://dev.bpmetrics.com/grn/m_app/test.php',
 			   //url:'https://dev.bpmetrics.com/grn/m_app/test.php',
 			   type:'POST',
 			   dataType: 'json',
-			   data:{action:'userLogin',email:u,password:p,check:'1'},
+			   data:{action:'getSalesOrders'},
 			   crossDomain: true,
 			   success:function(data){
 				
-				//alert(data);
+				alert(data);
 				console.log(data);
 				var responseJson = $.parseJSON(data);
 				 var jsonString = JSON.stringify(responseJson);
 				 console.log(jsonString);
-				  //alert(responseJson["status"]);
+				 alert(jsonString);
+				  alert(responseJson["status"]);
 			   },
 			   error:function(w,t,f){
 				 console.log(w+' '+t+' '+f);
@@ -152,12 +206,6 @@ function handleLogin() {
 				 console.log(JSON.stringify(f));
 			   }
 			});
-		$("#submitButton").removeAttr("disabled");
-	} else {
-		navigator.notification.alert("You must enter a username and password", function() {});
-		$("#submitButton").removeAttr("disabled");
-	}
-	return false;
 }
 
 function getTodayDate(){
