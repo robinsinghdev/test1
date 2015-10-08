@@ -20,7 +20,6 @@
 var app = {
     SOME_CONSTANTS : false,  // some constant
 
-
     // Application Constructor
     initialize: function() {
         console.log("console log init");
@@ -51,6 +50,8 @@ var app = {
 		db.transaction(initializeDB, errorCB, successCB);
 		alert('successCB');
 		*/
+        $.support.cors = true;
+        $.mobile.allowCrossDomainPages = true;
 		
 		$("#loginForm").on("submit",handleLogin);
     },
@@ -87,7 +88,7 @@ function handleLogin() {
 	console.log("click");
 	alert(u+p);
 	console.log(u+p);
-	if(u != '' && p!= '') {
+	//if(u != '' && p!= '') {
 		
 		/*
 		$.post("https://dev.bpmetrics.com/grn/users/ajax.php?action=userLogin&check=1", {email:u,password:p}, function(res) {
@@ -105,7 +106,7 @@ function handleLogin() {
 		$("#submitButton").removeAttr("disabled");
 		},"json");
 		*/
-		alert(u+p);
+		
 		/*
 		$.ajax({
 		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
@@ -127,10 +128,12 @@ function handleLogin() {
 		
 		$.ajax({
 		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
-		   type:'POST',
-		   dataType: 'json',
+		   cache : false,
+		   type : 'POST',//While GET working
+		   async: false,
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
-		   crossDomain: true,
+		   dataType: 'json',
+		   contentType: "application/json; charset=utf-8",		   
 		   success:function(data){
 			/*
 			{"status":"success","login_request":"\/grn\/","grn_user":{"ID":"1","grn_companies_id":"1","full_name"
@@ -170,21 +173,23 @@ function handleLogin() {
 		});
 			
 		$("#submitButton").removeAttr("disabled");
+	/*
 	} else {
 		navigator.notification.alert("You must enter a username and password", function() {});
 		$("#submitButton").removeAttr("disabled");
 	}
+	*/
 	return false;
 }
 
 function checkSession(){
 	$.ajax({
-			   url:'https://dev.bpmetrics.com/grn/m_app/test.php',
-			   //url:'https://dev.bpmetrics.com/grn/m_app/test.php',
-			   type:'POST',
-			   dataType: 'json',
-			   data:{action:'getSalesOrders'},
-			   crossDomain: true,
+				cache : false,
+				type : 'POST',//While GET working
+				async: false,
+				data:{action:'userLogin',email:u,password:p,check:'1'},
+				dataType: 'json',
+				contentType: "application/json; charset=utf-8",	
 			   success:function(data){
 				
 				alert(data);
