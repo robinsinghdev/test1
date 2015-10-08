@@ -105,18 +105,21 @@ function handleLogin() {
 		$("#submitButton").removeAttr("disabled");
 		},"json");
 		*/
-		
+		alert(u+p);
 		$.ajax({
 		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
 		   type:'POST',
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
 		   success:function(data){
+			alert(data);
 			 console.log(data);
 		   },
 		   error:function(w,t,f){
 			 console.log(w+' '+t+' '+f);
+			 alert(w+' '+t+' '+f);
 		   }
 		});
+		$("#submitButton").removeAttr("disabled");
 	} else {
 		navigator.notification.alert("You must enter a username and password", function() {});
 		$("#submitButton").removeAttr("disabled");
