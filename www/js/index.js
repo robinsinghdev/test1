@@ -106,6 +106,7 @@ function handleLogin() {
 		},"json");
 		*/
 		alert(u+p);
+		/*
 		$.ajax({
 		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
 		   type:'POST',
@@ -122,6 +123,35 @@ function handleLogin() {
 			 alert(w+' '+t+' '+f);
 		   }
 		});
+		*/
+		
+		$.ajax({
+			   url:'http://dev.bpmetrics.com/grn/users/ajax.php',
+			   //url:'https://dev.bpmetrics.com/grn/m_app/test.php',
+			   type:'POST',
+			   dataType: 'json',
+			   data:{action:'userLogin',email:u,password:p,check:'1'},
+			   crossDomain: true,
+			   success:function(data){
+				
+				//alert(data);
+				console.log(data);
+				var responseJson = $.parseJSON(data);
+				 var jsonString = JSON.stringify(responseJson);
+				 console.log(jsonString);
+				  //alert(responseJson["status"]);
+			   },
+			   error:function(w,t,f){
+				 console.log(w+' '+t+' '+f);
+				 //alert(w+' '+t+' '+f);
+				
+				 //var responseJson = $.parseJSON(data);
+				 var jsonString = JSON.stringify(w);
+				 console.log(JSON.stringify(w));
+				 console.log(JSON.stringify(t));
+				 console.log(JSON.stringify(f));
+			   }
+			});
 		$("#submitButton").removeAttr("disabled");
 	} else {
 		navigator.notification.alert("You must enter a username and password", function() {});
