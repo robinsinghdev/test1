@@ -126,7 +126,7 @@ function handleLogin() {
 		*/
 		
 		$.ajax({
-		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
+		   url:'http://dev.bpmetrics.com/grn/users/ajax.php',
 		   //cache : false,
 		   type : 'POST',//While GET working
 		   //async: false,
@@ -184,6 +184,7 @@ function handleLogin() {
 function checkSession(){
 	alert('checkSession called');
 	$.ajax({
+		url:'http://dev.bpmetrics.com/grn/m_app/test.php',
 				cache : false,
 				type : 'POST',//While GET working
 				async: false,
