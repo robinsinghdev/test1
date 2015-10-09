@@ -25,6 +25,8 @@ var app = {
         console.log("console log init");
         this.bindEvents();
         this.initFastClick();
+        $.support.cors = true;
+        $.mobile.allowCrossDomainPages = true;
     },
     // Bind Event Listeners
     //
@@ -37,8 +39,7 @@ var app = {
         window.addEventListener('load', function() {
             FastClick.attach(document.body);
         }, false);
-        $.support.cors = true;
-        $.mobile.allowCrossDomainPages = true;
+        
     },
     // Phonegap is now ready...
     onDeviceReady: function() {
@@ -125,7 +126,7 @@ function handleLogin() {
 		});
 		*/
 		
-		$.ajax({
+		/*$.ajax({
 		   url:'http://dev.bpmetrics.com/grn/users/ajax.php',
 		   //cache : false,
 		   type : 'POST',//While GET working
@@ -169,7 +170,16 @@ function handleLogin() {
 //			 console.log(JSON.stringify(t));
 //			 console.log(JSON.stringify(f));
 		   }
-		});
+		});*/
+	
+	
+		$.post("http://dev.bpmetrics.com/grn/users/ajax.php", {action:'userLogin',email:u,password:p,check:'1'},
+			   function(data){
+			     alert(data.status); // John
+			     
+			     var jsonString = JSON.stringify(data);
+					alert(jsonString);
+		}, "json");
 			
 		$("#submitButton").removeAttr("disabled");
 	/*
