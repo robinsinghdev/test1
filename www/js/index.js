@@ -132,7 +132,7 @@ function handleLogin() {
 		   //async: false,
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
 		   dataType: 'json',
-		   contentType: "application/json; charset=utf-8",		   
+		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data){
 			/*
 			{"status":"success","login_request":"\/grn\/","grn_user":{"ID":"1","grn_companies_id":"1","full_name"
@@ -182,6 +182,7 @@ function handleLogin() {
 }
 
 function checkSession(){
+	alert('checkSession called');
 	$.ajax({
 				cache : false,
 				type : 'POST',//While GET working
