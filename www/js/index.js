@@ -133,18 +133,14 @@ function handleLogin() {
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
 		   dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
-		   success:function(data){
-			/*
-			{"status":"success","login_request":"\/grn\/","grn_user":{"ID":"1","grn_companies_id":"1","full_name"
-:"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"1","email":"support
-@dynaread.com","lastActive":1444306008}}
-			*/
+		   success:function(data,t,f){
+			alert(data+' '+t+' '+f);
 			alert(data);
 			console.log(data);
 			var responseJson = $.parseJSON(data);
-			 var jsonString = JSON.stringify(responseJson);
-			 console.log(jsonString);
-			  alert(jsonString);
+			var jsonString = JSON.stringify(responseJson);
+			console.log(jsonString);
+			alert(jsonString);
 			  
 			window.localStorage["username"] = responseJson["ID"];
 			window.localStorage["password"] = responseJson["grn_companies_id"];
@@ -160,6 +156,7 @@ function handleLogin() {
 			window.localStorage["lastActive"] = responseJson["lastActive"];
 		   },
 		   error:function(w,t,f){
+			   alert(w+' '+t+' '+f);
 			 console.log(w+' '+t+' '+f);
 			 //alert(w+' '+t+' '+f);
 			
@@ -190,27 +187,32 @@ function checkSession(){
 				data:{action:'userLogin',email:u,password:p,check:'1'},
 				dataType: 'json',
 				contentType: "application/json; charset=utf-8",	
-			   success:function(data){
+				success:function(data){
 				
-				alert(data);
-				console.log(data);
-				var responseJson = $.parseJSON(data);
-				 var jsonString = JSON.stringify(responseJson);
-				 console.log(jsonString);
-				 alert(jsonString);
-				  alert(responseJson["status"]);
-			   },
-			   error:function(w,t,f){
-				 console.log(w+' '+t+' '+f);
-				 //alert(w+' '+t+' '+f);
+				   alert(data);
+				   console.log(data);
+				   var responseJson = $.parseJSON(data);
+				   var jsonString = JSON.stringify(responseJson);
+				   console.log(jsonString);
+				   alert(jsonString);
+				   alert(responseJson["status"]);
+				},
+				error:function(w,t,f){
+				   alert(w+' '+t+' '+f);
+				   console.log(w+' '+t+' '+f);
+				   //alert(w+' '+t+' '+f);
 				
-				 //var responseJson = $.parseJSON(data);
-				 var jsonString = JSON.stringify(w);
-				 console.log(JSON.stringify(w));
-				 console.log(JSON.stringify(t));
-				 console.log(JSON.stringify(f));
-			   }
-			});
+				   //var responseJson = $.parseJSON(data);
+				   var jsonString = JSON.stringify(w);
+				   alert(JSON.stringify(w));
+				   alert(JSON.stringify(t));
+				   alert(JSON.stringify(f));
+				   
+//				   console.log(JSON.stringify(w));
+//				   console.log(JSON.stringify(t));
+//				   console.log(JSON.stringify(f));
+				}
+		});
 }
 
 function getTodayDate(){
