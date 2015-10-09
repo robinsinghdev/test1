@@ -37,6 +37,8 @@ var app = {
         window.addEventListener('load', function() {
             FastClick.attach(document.body);
         }, false);
+        $.support.cors = true;
+        $.mobile.allowCrossDomainPages = true;
     },
     // Phonegap is now ready...
     onDeviceReady: function() {
@@ -50,9 +52,6 @@ var app = {
 		db.transaction(initializeDB, errorCB, successCB);
 		alert('successCB');
 		*/
-        $.support.cors = true;
-        $.mobile.allowCrossDomainPages = true;
-		
 		$("#loginForm").on("submit",handleLogin);
     },
 	// Update DOM on a Received Event
@@ -76,15 +75,15 @@ function checkPreAuth() {
 }
 
 function handleLogin() {
-	alert('handle login called');
+	//alert('handle login called');
 	console.log('handle login called');
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
 	$("#submitButton",form).attr("disabled","disabled");
-	var u = $("#username", form).val();
-	var p = $("#password", form).val();
-	u='support@dynaread.com';
-	p='marbleF16XS';
+	//var u = $("#username", form).val();
+	//var p = $("#password", form).val();
+	var u='support@dynaread.com';
+	var p='marbleF16XS';
 	console.log("click");
 	alert(u+p);
 	console.log(u+p);
@@ -128,9 +127,9 @@ function handleLogin() {
 		
 		$.ajax({
 		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
-		   cache : false,
+		   //cache : false,
 		   type : 'POST',//While GET working
-		   async: false,
+		   //async: false,
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
 		   dataType: 'json',
 		   contentType: "application/json; charset=utf-8",		   
