@@ -174,12 +174,15 @@ function handleLogin() {
 	
 	
 		$.post("http://dev.bpmetrics.com/grn/users/ajax.php", {action:'userLogin',email:u,password:p,check:'1'},
-			   function(data){
-			     alert(data.status); // John
+			   function(data,t,f){
+			alert(data);
+			alert(t);
+			alert(f);
+			     alert(data.status);
 			     
 			     var jsonString = JSON.stringify(data);
 					alert(jsonString);
-		}, "json");
+		});
 			
 		$("#submitButton").removeAttr("disabled");
 	/*
