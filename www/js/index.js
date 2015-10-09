@@ -57,6 +57,27 @@ var app = {
 		db.transaction(initializeDB, errorCB, successCB);
 		alert('successCB');
 		*/
+        
+        
+        /*
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://api.github.com/legacy/repos/search/javascript', true);
+         // Response handlers.
+         xhr.onload = function () {
+            var repos = JSON.parse(xhr.response), i, reposHTML = "";
+            for (i = 0; i < repos.repositories.length; i++) {
+              reposHTML += "<p><a href='https://github.com/" + repos.repositories[i].username + "/" + repos.repositories[i].name + "'>" + repos.repositories[i].name + "</a><br>" + repos.repositories[i].description + "</p>";
+            }
+            document.getElementById("allRepos").innerHTML = reposHTML;
+         };
+
+         xhr.onerror = function () {
+            alert('error making the request.');
+         };
+
+       xhr.send();
+       */
+        
 		$("#loginForm").on("submit",handleLogin);
     },
 	// Update DOM on a Received Event
@@ -64,12 +85,33 @@ var app = {
 		
     }
 };
+
+
+}
+
+    function checkConnection() {
+        var networkState = navigator.connection.type;
+
+        var states = {};
+        states[Connection.UNKNOWN]  = 'Unknown connection';
+        states[Connection.ETHERNET] = 'Ethernet connection';
+        states[Connection.WIFI]     = 'WiFi connection';
+        states[Connection.CELL_2G]  = 'Cell 2G connection';
+        states[Connection.CELL_3G]  = 'Cell 3G connection';
+        states[Connection.CELL_4G]  = 'Cell 4G connection';
+        states[Connection.CELL]     = 'Cell generic connection';
+        states[Connection.NONE]     = 'No network connection';
+
+        alert('Connection type: ' + states[networkState]);
+    }
+
 /*
 function init() {
 	document.addEventListener("deviceready", deviceReady, true);
 	delete init;
 }
 */
+    
 function checkPreAuth() {
 	var form = $("#loginForm");
 	if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
@@ -80,6 +122,7 @@ function checkPreAuth() {
 }
 
 function handleLogin() {
+	checkConnection();	
 	//alert('handle login called');
 	console.log('handle login called');
 	var form = $("#loginForm");
@@ -135,8 +178,9 @@ function handleLogin() {
 		   url:'http://dev.bpmetrics.com/grn/users/ajax.php',
 		   //cache : false,
 		   //async: false,
-		   data:{action:'userLogin',email:u,password:p,check:'1'},
-		   dataType: 'json',
+		   data: 'password=marbleF16XS&amp;email=support%40dynaread.com&amp;check=0&amp;action=userLogin',
+		   //data:{action:'userLogin',email:u,password:p,check:'1'},
+		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
 			alert(data+' '+t+' '+f);
