@@ -9,8 +9,7 @@
     </author>
     
     <content src="index.html" />
-    <gap:plugin name="cordova-plugin-whitelist" source="npm" />
-    <gap:plugin name="org.apache.cordova.network-information" version="0.2.12" />
+    <plugin name="cordova-plugin-whitelist" version="1" />
     
     <access origin="*" />
     <allow-intent href="http://*/*" />
