@@ -17,6 +17,12 @@
  * under the License.
  */
 
+$( document ).on( "mobileinit", function() {
+    // Make your jQuery Mobile framework configuration changes here!
+	 $.support.cors = true;
+     $.mobile.allowCrossDomainPages = true;
+});
+
 var app = {
     SOME_CONSTANTS : false,  // some constant
 
@@ -25,8 +31,6 @@ var app = {
         console.log("console log init");
         this.bindEvents();
         this.initFastClick();
-        $.support.cors = true;
-        $.mobile.allowCrossDomainPages = true;
     },
     // Bind Event Listeners
     //
@@ -126,10 +130,10 @@ function handleLogin() {
 		});
 		*/
 		
-		/*$.ajax({
+		$.ajax({
+			type : 'POST',
 		   url:'http://dev.bpmetrics.com/grn/users/ajax.php',
 		   //cache : false,
-		   type : 'POST',//While GET working
 		   //async: false,
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
 		   dataType: 'json',
@@ -170,19 +174,8 @@ function handleLogin() {
 //			 console.log(JSON.stringify(t));
 //			 console.log(JSON.stringify(f));
 		   }
-		});*/
-	
-	
-		$.post("http://dev.bpmetrics.com/grn/users/ajax.php", {action:'userLogin',email:u,password:p,check:'1'},
-			   function(data,t,f){
-			alert(data);
-			alert(t);
-			alert(f);
-			     alert(data.status);
-			     
-			     var jsonString = JSON.stringify(data);
-					alert(jsonString);
 		});
+	
 			
 		$("#submitButton").removeAttr("disabled");
 	/*
