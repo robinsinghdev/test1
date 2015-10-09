@@ -162,9 +162,12 @@ function handleLogin() {
 			
 			 //var responseJson = $.parseJSON(data);
 			 var jsonString = JSON.stringify(w);
-			 console.log(JSON.stringify(w));
-			 console.log(JSON.stringify(t));
-			 console.log(JSON.stringify(f));
+			 alert(JSON.stringify(w));
+			   alert(JSON.stringify(t));
+			   alert(JSON.stringify(f));
+//			 console.log(JSON.stringify(w));
+//			 console.log(JSON.stringify(t));
+//			 console.log(JSON.stringify(f));
 		   }
 		});
 			
@@ -204,9 +207,7 @@ function checkSession(){
 				
 				   //var responseJson = $.parseJSON(data);
 				   var jsonString = JSON.stringify(w);
-				   alert(JSON.stringify(w));
-				   alert(JSON.stringify(t));
-				   alert(JSON.stringify(f));
+				   
 				   
 //				   console.log(JSON.stringify(w));
 //				   console.log(JSON.stringify(t));
