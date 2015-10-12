@@ -89,7 +89,6 @@ var app = {
 
 
 function checkConnection() {
-	alert('checkConnection');
     var networkState = navigator.connection.type;
 
     var states = {};
@@ -121,9 +120,6 @@ function checkPreAuth() {
 }
 
 function handleLogin() {
-	checkConnection();	
-	//alert('handle login called');
-	console.log('handle login called');
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
 	$("#submitButton",form).attr("disabled","disabled");
@@ -131,9 +127,6 @@ function handleLogin() {
 	//var p = $("#password", form).val();
 	var u='support@dynaread.com';
 	var p='marbleF16XS';
-	console.log("click");
-	alert(u+p);
-	console.log(u+p);
 	//if(u != '' && p!= '') {
 		
 		/*
@@ -182,6 +175,7 @@ function handleLogin() {
 		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
+			    showSpinner();
 				var responseJson = $.parseJSON(data);
 				alert("responseJson..."+responseJson);
 				var jsonString = JSON.stringify(responseJson);
@@ -202,6 +196,7 @@ function handleLogin() {
 				
 				window.localStorage["email"] = responseJson["email"];
 				window.localStorage["lastActive"] = responseJson["lastActive"];
+				hideSpinner();
 		   },
 		   error:function(w,t,f){
 			   alert(w+' '+t+' '+f);
@@ -213,9 +208,10 @@ function handleLogin() {
 			 console.log(JSON.stringify(f));
 		   }
 		});
-	
+		navigator.notification.alert("Hurray you are successfillu logged in", function() {});
 			
 		$("#submitButton").removeAttr("disabled");
+		$.mobile.changePage('#home-page','slide');
 	/*
 	} else {
 		navigator.notification.alert("You must enter a username and password", function() {});
@@ -412,4 +408,12 @@ function successCB() {
 function successCBData() {
 	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
 	db.transaction(queryDBData, errorCB);
+}
+
+function showSpinner(){
+    $.mobile.loading("show");
+}
+
+function hideSpinner(){
+    $.mobile.loading("hide");
 }
