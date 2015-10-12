@@ -2,7 +2,7 @@
 <widget id="com.example.tracker" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" 
 xmlns:gap   = "http://phonegap.com/ns/1.0"
 xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>TimeTracker</name>
+    <name>BP</name>
     <description>
         A sample application that track time.
     </description>
