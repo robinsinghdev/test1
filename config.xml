@@ -23,6 +23,7 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <icon src="res/AndroidApp_launcher_icon.png"/>
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
