@@ -120,6 +120,7 @@ function checkPreAuth() {
 }
 
 function handleLogin() {
+		alert('handleLogin');
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
 	$("#submitButton",form).attr("disabled","disabled");
@@ -175,6 +176,7 @@ function handleLogin() {
 		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
+			   alert(data+' '+t+' '+f);
 			    showSpinner();
 				var responseJson = $.parseJSON(data);
 				alert("responseJson..."+responseJson);
@@ -196,7 +198,7 @@ function handleLogin() {
 				
 				window.localStorage["email"] = responseJson["email"];
 				window.localStorage["lastActive"] = responseJson["lastActive"];
-				hideSpinner();
+				//hideSpinner();
 		   },
 		   error:function(w,t,f){
 			   alert(w+' '+t+' '+f);
