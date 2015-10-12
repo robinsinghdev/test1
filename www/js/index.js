@@ -182,40 +182,35 @@ function handleLogin() {
 		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
-			alert(data+' '+t+' '+f);
-			alert(data);
-			console.log(data);
-			var responseJson = $.parseJSON(data);
-			var jsonString = JSON.stringify(responseJson);
-			console.log(jsonString);
-			alert(jsonString);
-			  
-			window.localStorage["username"] = responseJson["ID"];
-			window.localStorage["password"] = responseJson["grn_companies_id"];
-			
-			window.localStorage["ID"] = responseJson["grn_companies_id"];
-			window.localStorage["grn_companies_id"] = responseJson["grn_companies_id"];
-			window.localStorage["full_name"] = responseJson["full_name"];
-			window.localStorage["nickname"] = responseJson["nickname"];
-			window.localStorage["grn_roles_id"] = responseJson["grn_roles_id"];
-			window.localStorage["permissions"] = responseJson["permissions"];
-			
-			window.localStorage["email"] = responseJson["email"];
-			window.localStorage["lastActive"] = responseJson["lastActive"];
+				var responseJson = $.parseJSON(data);
+				alert("responseJson..."+responseJson);
+				var jsonString = JSON.stringify(responseJson);
+				console.log(jsonString);
+				alert("jsonString..."+jsonString);
+				  
+				window.localStorage["username"] = responseJson["ID"];
+				window.localStorage["password"] = responseJson["grn_companies_id"];
+				
+				alert("alert("jsonString..."+jsonString);..."+alert("jsonString..."+jsonString));
+				
+				window.localStorage["ID"] = responseJson["grn_companies_id"];
+				window.localStorage["grn_companies_id"] = responseJson["grn_companies_id"];
+				window.localStorage["full_name"] = responseJson["full_name"];
+				window.localStorage["nickname"] = responseJson["nickname"];
+				window.localStorage["grn_roles_id"] = responseJson["grn_roles_id"];
+				window.localStorage["permissions"] = responseJson["permissions"];
+				
+				window.localStorage["email"] = responseJson["email"];
+				window.localStorage["lastActive"] = responseJson["lastActive"];
 		   },
 		   error:function(w,t,f){
 			   alert(w+' '+t+' '+f);
 			 console.log(w+' '+t+' '+f);
-			 //alert(w+' '+t+' '+f);
 			
-			 //var responseJson = $.parseJSON(data);
-			 var jsonString = JSON.stringify(w);
 			 alert(JSON.stringify(w));
-			   alert(JSON.stringify(t));
-			   alert(JSON.stringify(f));
-//			 console.log(JSON.stringify(w));
-//			 console.log(JSON.stringify(t));
-//			 console.log(JSON.stringify(f));
+			 console.log(JSON.stringify(w));
+			 console.log(JSON.stringify(t));
+			 console.log(JSON.stringify(f));
 		   }
 		});
 	
