@@ -118,62 +118,22 @@ function handleLogin() {
 	var p='marbleF16XS';
 	if(u != '' && p!= '') {
 		
-		/*
-		$.post("https://dev.bpmetrics.com/grn/users/ajax.php?action=userLogin&check=1", {email:u,password:p}, function(res) {
-		//$.post("https://dev.bpmetrics.com/grn/m_app/test.php?action=userLogin&check=1", {email:u,password:p}, function(res) {
-		alert(res);
-		console.log(res);
-		if(res == true) {
-			//store
-			window.localStorage["username"] = u;
-			window.localStorage["password"] = p;
-			//$.mobile.changePage("some.html");
-		} else {
-			navigator.notification.alert("Your login failed", function() {});
-		}
-		$("#submitButton").removeAttr("disabled");
-		},"json");
-		*/
-		
-		/*
-		$.ajax({
-		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
-		   type:'POST',
-		   data:{action:'userLogin',email:u,password:p,check:'1'},
-		   success:function(data){
-			
-			alert(data);
-			console.log(data);
-			var responseJson = $.parseJSON(data);
-			  alert(responseJson["status"]);
-		   },
-		   error:function(w,t,f){
-			 console.log(w+' '+t+' '+f);
-			 alert(w+' '+t+' '+f);
-		   }
-		});
-		*/
-		
 		$.ajax({
 			type : 'POST',
 		   url:'https://dev.bpmetrics.com/grn/m_app/',
 		   //cache : false,
 		   //async: false,
-		   //data: 'password=marbleF16XS&amp;email=support%40dynaread.com&amp;check=0&amp;action=userLogin',
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
 		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
-			alert(data+' '+t+' '+f);
+			//alert(data+' '+t+' '+f);
 			alert("now data showing phase");
-			//var responseJson = data;
-			//var responseJson = $.parseJSON(data);
 			var responseJson=jQuery.parseJSON(data);
 			//var jsonString = JSON.stringify(data);
 			//alert(jsonString);
-			alert(data+"..-------."+responseJson+"....-----..."+responseJson.status);
-			//if(data.status == "success" ){
-				var grnUser=data.grn_user;
+			if(responseJson.status == "success" ){
+				var grnUser=responseJson.grn_user;
 				alert(grnUser.ID+"........"+grnUser["ID"]);
 				
 				window.localStorage["username"] = u;
@@ -194,9 +154,11 @@ function handleLogin() {
 				alert(jsonString);
 				//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
 				$.mobile.changePage('#home-page','slide');
-			//}else{
-				//navigator.notification.alert("Invalid Credentials, please try again", function() {});
-			//}
+			}else{
+				navigator.notification.alert("Invalid Credentials, please try again", function() {});
+			}
+			
+			alert(data.status+"....-----..."+responseJson.status);
 			
 		   },
 		   error:function(data,t,f){
