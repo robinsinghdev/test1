@@ -178,11 +178,14 @@ function handleLogin() {
 		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
-			alert(data+' '+t+' '+f);
+			//alert(data+' '+t+' '+f);
 			var responseJson = $.parseJSON(data);
 			var jsonString = JSON.stringify(responseJson);
 			alert(jsonString);
-			  
+			alert(responseJson["ID"]);  
+			window.localStorage.setItem("username", responseJson["ID"]);
+
+			/*
 			window.localStorage["username"] = responseJson["ID"];
 			window.localStorage["password"] = responseJson["grn_companies_id"];
 			
@@ -195,7 +198,7 @@ function handleLogin() {
 			
 			window.localStorage["email"] = responseJson["email"];
 			window.localStorage["lastActive"] = responseJson["lastActive"];
-			
+			*/
 			alert(window.localStorage.getItem("username"));
 		   },
 		   error:function(w,t,f){
