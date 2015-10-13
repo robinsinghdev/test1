@@ -53,6 +53,7 @@ var app = {
         window.addEventListener('load', function() {
             FastClick.attach(document.body);
         }, false);
+        
     },
     // Phonegap is now ready...
     onDeviceReady: function() {
@@ -63,7 +64,6 @@ var app = {
 		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
 		db.transaction(initializeDB, errorCB, successCB);
 		*/
-        //checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
     },
 	// Update DOM on a Received Event
@@ -97,27 +97,25 @@ function init() {
 */
     
 function checkPreAuth() {
-	alert('checkPreAuth starts: ');
 	var form = $("#loginForm");
 	if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
 		$("#username", form).val(window.localStorage["username"]);
 		$("#password", form).val(window.localStorage["password"]);
 		handleLogin();
 	}
-	alert('checkPreAuth ends: ');
 }
 
 function handleLogin() {
-	//checkConnection();
+	checkConnection();	
 	//alert('handle login called');
 	console.log('handle login called');
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
 	$("#submitButton",form).attr("disabled","disabled");
-	var u = $("#username", form).val();
-	var p = $("#password", form).val();
-	u='support@dynaread.com';
-	p='marbleF16XS';
+	//var u = $("#username", form).val();
+	//var p = $("#password", form).val();
+	var u='support@dynaread.com';
+	var p='marbleF16XS';
 	if(u != '' && p!= '') {
 		
 		$.ajax({
@@ -128,8 +126,8 @@ function handleLogin() {
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
 			var responseJson = $.parseJSON(data);
-			var jsonString = JSON.stringify(responseJson);
-			alert(jsonString);
+			//var jsonString = JSON.stringify(responseJson);
+			//alert(jsonString);
 			if(responseJson.status == "success" ){
 				var grnUser=responseJson.grn_user;
 				
@@ -155,19 +153,19 @@ function handleLogin() {
 			
 		   },
 		   error:function(data,t,f){
+			   navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
 			 var responseJson = $.parseJSON(data);
 			 //alert(w+' '+t+' '+f);
 			 console.log(data+' '+t+' '+f);
 			 alert(JSON.stringify(data));
 			 alert(responseJson.status);
-			 if(data.status==404){
+			 //if(responseJson.status==404){
 				 
-			 }
-			 navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			 //}
 		   }
 		});
 			
-		$("#submitButton").removeAttr("disabled");
+		//$("#submitButton").removeAttr("disabled");
 	
 	} else {
 		navigator.notification.alert("You must enter a username and password", function() {});
