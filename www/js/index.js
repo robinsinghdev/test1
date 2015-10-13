@@ -97,12 +97,14 @@ function init() {
 */
     
 function checkPreAuth() {
+	alert('checkPreAuth starts: ');
 	var form = $("#loginForm");
 	if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
 		$("#username", form).val(window.localStorage["username"]);
 		$("#password", form).val(window.localStorage["password"]);
 		handleLogin();
 	}
+	alert('checkPreAuth ends: ');
 }
 
 function handleLogin() {
@@ -126,8 +128,8 @@ function handleLogin() {
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
 			var responseJson = $.parseJSON(data);
-			//var jsonString = JSON.stringify(responseJson);
-			//alert(jsonString);
+			var jsonString = JSON.stringify(responseJson);
+			alert(jsonString);
 			if(responseJson.status == "success" ){
 				var grnUser=responseJson.grn_user;
 				
