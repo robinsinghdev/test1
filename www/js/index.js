@@ -182,27 +182,29 @@ function handleLogin() {
 			var responseJson = $.parseJSON(data);
 			var jsonString = JSON.stringify(responseJson);
 			alert(jsonString);
-			alert(responseJson.status);
-			var grnUser=responseJson.grn_user;
-			alert(grnUser.ID);
+			if(responseJson.status == "success" ){
+				var grnUser=responseJson.grn_user;
+				alert(grnUser.ID+"........"+grnUser["ID"]);
+				
+				window.localStorage["username"] = u;
+				window.localStorage["password"] = p;
+				
+				window.localStorage["ID"] = grnUser["ID"];
+				window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
+				window.localStorage["full_name"] = grnUser["full_name"];
+				window.localStorage["nickname"] = grnUser["nickname"];
+				window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
+				window.localStorage["permissions"] = grnUser["permissions"];
+				
+				window.localStorage["email"] = grnUser["email"];
+				window.localStorage["lastActive"] = grnUser["lastActive"];
+				
+				alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
+				navigator.notification.alert("sample notification", function() {});
+			}else{
+				
+			}
 			
-			window.localStorage.setItem("status", responseJson.status);
-
-			/*
-			window.localStorage["username"] = responseJson["ID"];
-			window.localStorage["password"] = responseJson["grn_companies_id"];
-			
-			window.localStorage["ID"] = responseJson["grn_companies_id"];
-			window.localStorage["grn_companies_id"] = responseJson["grn_companies_id"];
-			window.localStorage["full_name"] = responseJson["full_name"];
-			window.localStorage["nickname"] = responseJson["nickname"];
-			window.localStorage["grn_roles_id"] = responseJson["grn_roles_id"];
-			window.localStorage["permissions"] = responseJson["permissions"];
-			
-			window.localStorage["email"] = responseJson["email"];
-			window.localStorage["lastActive"] = responseJson["lastActive"];
-			*/
-			alert(window.localStorage.getItem("status"));
 		   },
 		   error:function(w,t,f){
 			 alert(w+' '+t+' '+f);
