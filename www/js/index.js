@@ -114,8 +114,8 @@ function handleLogin() {
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
 	$("#submitButton",form).attr("disabled","disabled");
-	//var u = $("#username", form).val();
-	//var p = $("#password", form).val();
+	var u = $("#username", form).val();
+	var p = $("#password", form).val();
 	var u='support@dynaread.com';
 	var p='marbleF16XS';
 	if(u != '' && p!= '') {
