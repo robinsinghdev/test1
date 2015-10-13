@@ -64,6 +64,7 @@ var app = {
 		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
 		db.transaction(initializeDB, errorCB, successCB);
 		*/
+        checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
     },
 	// Update DOM on a Received Event
@@ -106,16 +107,16 @@ function checkPreAuth() {
 }
 
 function handleLogin() {
-	checkConnection();	
+	//checkConnection();	
 	//alert('handle login called');
 	console.log('handle login called');
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
 	$("#submitButton",form).attr("disabled","disabled");
-	//var u = $("#username", form).val();
-	//var p = $("#password", form).val();
-	var u='support@dynaread.com';
-	var p='marbleF16XS';
+	var u = $("#username", form).val();
+	var p = $("#password", form).val();
+	u='support@dynaread.com';
+	p='marbleF16XS';
 	if(u != '' && p!= '') {
 		
 		$.ajax({
@@ -134,7 +135,7 @@ function handleLogin() {
 			//alert(jsonString);
 			if(responseJson.status == "success" ){
 				var grnUser=responseJson.grn_user;
-				alert(grnUser.ID+"........"+grnUser["ID"]);
+				//alert(grnUser.ID+"........"+grnUser["ID"]);
 				
 				window.localStorage["username"] = u;
 				window.localStorage["password"] = p;
@@ -149,9 +150,7 @@ function handleLogin() {
 				window.localStorage["email"] = grnUser["email"];
 				window.localStorage["lastActive"] = grnUser["lastActive"];
 				
-				alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
-				var jsonString = JSON.stringify(data);
-				alert(jsonString);
+				//alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
 				//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
 				$.mobile.changePage('#home-page','slide');
 			}else{
