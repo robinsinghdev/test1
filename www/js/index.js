@@ -182,8 +182,11 @@ function handleLogin() {
 			var responseJson = $.parseJSON(data);
 			var jsonString = JSON.stringify(responseJson);
 			alert(jsonString);
-			alert(responseJson.ID);
-			window.localStorage.setItem("username", responseJson.ID);
+			alert(responseJson.status);
+			var grnUser=responseJson.grn_user;
+			alert(grnUser.ID);
+			
+			window.localStorage.setItem("status", responseJson.status);
 
 			/*
 			window.localStorage["username"] = responseJson["ID"];
@@ -199,7 +202,7 @@ function handleLogin() {
 			window.localStorage["email"] = responseJson["email"];
 			window.localStorage["lastActive"] = responseJson["lastActive"];
 			*/
-			alert(window.localStorage.getItem("username"));
+			alert(window.localStorage.getItem("status"));
 		   },
 		   error:function(w,t,f){
 			 alert(w+' '+t+' '+f);
