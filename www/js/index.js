@@ -89,7 +89,6 @@ var app = {
 
 
 function checkConnection() {
-	alert('checkConnection');
     var networkState = navigator.connection.type;
 
     var states = {};
@@ -131,9 +130,6 @@ function handleLogin() {
 	//var p = $("#password", form).val();
 	var u='support@dynaread.com';
 	var p='marbleF16XS';
-	console.log("click");
-	alert(u+p);
-	console.log(u+p);
 	//if(u != '' && p!= '') {
 		
 		/*
@@ -183,11 +179,8 @@ function handleLogin() {
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
 			alert(data+' '+t+' '+f);
-			alert(data);
-			console.log(data);
 			var responseJson = $.parseJSON(data);
 			var jsonString = JSON.stringify(responseJson);
-			console.log(jsonString);
 			alert(jsonString);
 			  
 			window.localStorage["username"] = responseJson["ID"];
@@ -202,9 +195,11 @@ function handleLogin() {
 			
 			window.localStorage["email"] = responseJson["email"];
 			window.localStorage["lastActive"] = responseJson["lastActive"];
+			
+			alert(window.localStorage.getItem("username"));
 		   },
 		   error:function(w,t,f){
-			   alert(w+' '+t+' '+f);
+			 alert(w+' '+t+' '+f);
 			 console.log(w+' '+t+' '+f);
 			
 			 alert(JSON.stringify(w));
