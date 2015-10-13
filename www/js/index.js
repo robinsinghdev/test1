@@ -116,8 +116,8 @@ function handleLogin() {
 	$("#submitButton",form).attr("disabled","disabled");
 	var u = $("#username", form).val();
 	var p = $("#password", form).val();
-	var u='support@dynaread.com';
-	var p='marbleF16XS';
+	u='support@dynaread.com';
+	p='marbleF16XS';
 	if(u != '' && p!= '') {
 		
 		$.ajax({
@@ -167,7 +167,7 @@ function handleLogin() {
 		   }
 		});
 			
-		//$("#submitButton").removeAttr("disabled");
+		$("#submitButton").removeAttr("disabled");
 	
 	} else {
 		navigator.notification.alert("You must enter a username and password", function() {});
