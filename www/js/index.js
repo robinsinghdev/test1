@@ -161,16 +161,16 @@ function handleLogin() {
 		   //async: false,
 		   //data: 'password=marbleF16XS&amp;email=support%40dynaread.com&amp;check=0&amp;action=userLogin',
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
-		   dataType: 'json',
+		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
 			alert(data+' '+t+' '+f);
 			//var responseJson = data;
 			//var responseJson = $.parseJSON(data);
-			var jsonString = JSON.stringify(data);
-			alert(jsonString);
+			//var jsonString = JSON.stringify(data);
+			//alert(jsonString);
 			alert(data.status);
-			if(data.status == "success" ){
+			//if(data.status == "success" ){
 				var grnUser=data.grn_user;
 				alert(grnUser.ID+"........"+grnUser["ID"]);
 				
@@ -188,11 +188,13 @@ function handleLogin() {
 				window.localStorage["lastActive"] = grnUser["lastActive"];
 				
 				alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
+				var jsonString = JSON.stringify(data);
+				alert(jsonString);
 				//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
 				$.mobile.changePage('#home-page','slide');
-			}else{
-				navigator.notification.alert("Invalid Credentials, please try again", function() {});
-			}
+			//}else{
+				//navigator.notification.alert("Invalid Credentials, please try again", function() {});
+			//}
 			
 		   },
 		   error:function(data,t,f){
