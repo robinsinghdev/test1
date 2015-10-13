@@ -63,7 +63,7 @@ var app = {
 		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
 		db.transaction(initializeDB, errorCB, successCB);
 		*/
-        checkPreAuth();
+        //checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
     },
 	// Update DOM on a Received Event
