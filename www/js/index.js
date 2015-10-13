@@ -156,7 +156,7 @@ function handleLogin() {
 		
 		$.ajax({
 			type : 'POST',
-		   url:'http://dev.bpmetrics.com/grn/m_app.php',
+		   url:'http://dev.bpmetrics.com/grn/m_app/',
 		   //cache : false,
 		   //async: false,
 		   //data: 'password=marbleF16XS&amp;email=support%40dynaread.com&amp;check=0&amp;action=userLogin',
