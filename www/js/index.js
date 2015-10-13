@@ -182,8 +182,8 @@ function handleLogin() {
 			var responseJson = $.parseJSON(data);
 			var jsonString = JSON.stringify(responseJson);
 			alert(jsonString);
-			alert(responseJson["ID"]);  
-			window.localStorage.setItem("username", responseJson["ID"]);
+			alert(responseJson.ID);
+			window.localStorage.setItem("username", responseJson.ID);
 
 			/*
 			window.localStorage["username"] = responseJson["ID"];
