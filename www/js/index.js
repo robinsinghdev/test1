@@ -21,6 +21,16 @@ $( document ).on( "mobileinit", function() {
     // Make your jQuery Mobile framework configuration changes here!
 	 $.support.cors = true;
      $.mobile.allowCrossDomainPages = true;
+     
+     /*
+     jQuery.mobile.phonegapNavigationEnabled = true;
+     jQuery.mobile.defaultDialogTransition = "pop";
+     jQuery.mobile.defaultPageTransition = "none";
+      
+     jQuery.mobile.loader.prototype.options.text = "loading";
+     jQuery.mobile.loader.prototype.options.textVisible = true;
+     jQuery.mobile.loader.prototype.options.theme = "a";
+     */
 });
 
 var app = {
@@ -48,36 +58,12 @@ var app = {
     // Phonegap is now ready...
     onDeviceReady: function() {
         console.log("device ready, start making you custom calls!");
-
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
 		/*
-		alert('fdgdf');
 		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
 		db.transaction(initializeDB, errorCB, successCB);
-		alert('successCB');
 		*/
-        
-        
-        /*
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://api.github.com/legacy/repos/search/javascript', true);
-         // Response handlers.
-         xhr.onload = function () {
-            var repos = JSON.parse(xhr.response), i, reposHTML = "";
-            for (i = 0; i < repos.repositories.length; i++) {
-              reposHTML += "<p><a href='https://github.com/" + repos.repositories[i].username + "/" + repos.repositories[i].name + "'>" + repos.repositories[i].name + "</a><br>" + repos.repositories[i].description + "</p>";
-            }
-            document.getElementById("allRepos").innerHTML = reposHTML;
-         };
-
-         xhr.onerror = function () {
-            alert('error making the request.');
-         };
-
-       xhr.send();
-       */
-        
 		$("#loginForm").on("submit",handleLogin);
     },
 	// Update DOM on a Received Event
@@ -130,7 +116,7 @@ function handleLogin() {
 	//var p = $("#password", form).val();
 	var u='support@dynaread.com';
 	var p='marbleF16XS';
-	//if(u != '' && p!= '') {
+	if(u != '' && p!= '') {
 		
 		/*
 		$.post("https://dev.bpmetrics.com/grn/users/ajax.php?action=userLogin&check=1", {email:u,password:p}, function(res) {
@@ -170,7 +156,7 @@ function handleLogin() {
 		
 		$.ajax({
 			type : 'POST',
-		   url:'http://dev.bpmetrics.com/grn/users/ajax.php',
+		   url:'http://dev.bpmetrics.com/grn/m_app.php',
 		   //cache : false,
 		   //async: false,
 		   //data: 'password=marbleF16XS&amp;email=support%40dynaread.com&amp;check=0&amp;action=userLogin',
@@ -180,11 +166,11 @@ function handleLogin() {
 		   success:function(data,t,f){
 			//alert(data+' '+t+' '+f);
 			var responseJson = $.parseJSON(data);
-			var jsonString = JSON.stringify(responseJson);
-			alert(jsonString);
+			//var jsonString = JSON.stringify(responseJson);
+			//alert(jsonString);
 			if(responseJson.status == "success" ){
 				var grnUser=responseJson.grn_user;
-				alert(grnUser.ID+"........"+grnUser["ID"]);
+				//alert(grnUser.ID+"........"+grnUser["ID"]);
 				
 				window.localStorage["username"] = u;
 				window.localStorage["password"] = p;
@@ -200,33 +186,32 @@ function handleLogin() {
 				window.localStorage["lastActive"] = grnUser["lastActive"];
 				
 				alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
-				navigator.notification.alert("sample notification", function() {});
+				//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
+				$.mobile.changePage('#home-page','slide');
 			}else{
-				
+				navigator.notification.alert("Invalid Credentials, please try again", function() {});
 			}
 			
 		   },
-		   error:function(w,t,f){
-			 alert(w+' '+t+' '+f);
-			 console.log(w+' '+t+' '+f);
-			
-			 alert(JSON.stringify(w));
-			 alert(JSON.stringify(t));
-			 alert(JSON.stringify(f));
-			 console.log(JSON.stringify(w));
-			 console.log(JSON.stringify(t));
-			 console.log(JSON.stringify(f));
+		   error:function(data,t,f){
+			 var responseJson = $.parseJSON(data);
+			 //alert(w+' '+t+' '+f);
+			 console.log(data+' '+t+' '+f);
+			 alert(JSON.stringify(data));
+			 alert(responseJson.status);
+			 if(responseJson.status==404){
+				 navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			 }
 		   }
 		});
-	
 			
-		$("#submitButton").removeAttr("disabled");
-	/*
+		//$("#submitButton").removeAttr("disabled");
+	
 	} else {
 		navigator.notification.alert("You must enter a username and password", function() {});
 		$("#submitButton").removeAttr("disabled");
 	}
-	*/
+	
 	return false;
 }
 
