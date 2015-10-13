@@ -164,13 +164,13 @@ function handleLogin() {
 		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
-			//alert(data+' '+t+' '+f);
+			alert(data+' '+t+' '+f);
 			var responseJson = $.parseJSON(data);
-			//var jsonString = JSON.stringify(responseJson);
-			//alert(jsonString);
+			var jsonString = JSON.stringify(responseJson);
+			alert(jsonString);
 			if(responseJson.status == "success" ){
 				var grnUser=responseJson.grn_user;
-				//alert(grnUser.ID+"........"+grnUser["ID"]);
+				alert(grnUser.ID+"........"+grnUser["ID"]);
 				
 				window.localStorage["username"] = u;
 				window.localStorage["password"] = p;
@@ -194,8 +194,9 @@ function handleLogin() {
 			
 		   },
 		   error:function(data,t,f){
+			   navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
 			 var responseJson = $.parseJSON(data);
-			 //alert(w+' '+t+' '+f);
+			 alert(w+' '+t+' '+f);
 			 console.log(data+' '+t+' '+f);
 			 alert(JSON.stringify(data));
 			 alert(responseJson.status);
@@ -205,7 +206,7 @@ function handleLogin() {
 		   }
 		});
 			
-		//$("#submitButton").removeAttr("disabled");
+		$("#submitButton").removeAttr("disabled");
 	
 	} else {
 		navigator.notification.alert("You must enter a username and password", function() {});
