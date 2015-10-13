@@ -118,18 +118,59 @@ function handleLogin() {
 	var p='marbleF16XS';
 	if(u != '' && p!= '') {
 		
+		/*
+		$.post("https://dev.bpmetrics.com/grn/users/ajax.php?action=userLogin&check=1", {email:u,password:p}, function(res) {
+		//$.post("https://dev.bpmetrics.com/grn/m_app/test.php?action=userLogin&check=1", {email:u,password:p}, function(res) {
+		alert(res);
+		console.log(res);
+		if(res == true) {
+			//store
+			window.localStorage["username"] = u;
+			window.localStorage["password"] = p;
+			//$.mobile.changePage("some.html");
+		} else {
+			navigator.notification.alert("Your login failed", function() {});
+		}
+		$("#submitButton").removeAttr("disabled");
+		},"json");
+		*/
+		
+		/*
+		$.ajax({
+		   url:'https://dev.bpmetrics.com/grn/users/ajax.php',
+		   type:'POST',
+		   data:{action:'userLogin',email:u,password:p,check:'1'},
+		   success:function(data){
+			
+			alert(data);
+			console.log(data);
+			var responseJson = $.parseJSON(data);
+			  alert(responseJson["status"]);
+		   },
+		   error:function(w,t,f){
+			 console.log(w+' '+t+' '+f);
+			 alert(w+' '+t+' '+f);
+		   }
+		});
+		*/
+		
 		$.ajax({
 			type : 'POST',
 		   url:'http://dev.bpmetrics.com/grn/m_app/',
+		   //cache : false,
+		   //async: false,
+		   //data: 'password=marbleF16XS&amp;email=support%40dynaread.com&amp;check=0&amp;action=userLogin',
 		   data:{action:'userLogin',email:u,password:p,check:'1'},
 		   //dataType: 'json',
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
+			//alert(data+' '+t+' '+f);
 			var responseJson = $.parseJSON(data);
 			//var jsonString = JSON.stringify(responseJson);
 			//alert(jsonString);
 			if(responseJson.status == "success" ){
 				var grnUser=responseJson.grn_user;
+				//alert(grnUser.ID+"........"+grnUser["ID"]);
 				
 				window.localStorage["username"] = u;
 				window.localStorage["password"] = p;
@@ -153,15 +194,14 @@ function handleLogin() {
 			
 		   },
 		   error:function(data,t,f){
-			   navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
 			 var responseJson = $.parseJSON(data);
 			 //alert(w+' '+t+' '+f);
 			 console.log(data+' '+t+' '+f);
 			 alert(JSON.stringify(data));
 			 alert(responseJson.status);
-			 //if(responseJson.status==404){
-				 
-			 //}
+			 if(responseJson.status==404){
+				 navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			 }
 		   }
 		});
 			
