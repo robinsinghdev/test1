@@ -165,9 +165,11 @@ function handleLogin() {
 		   //contentType: "application/json; charset=utf-8",		   
 		   success:function(data,t,f){
 			alert(data+' '+t+' '+f);
-			var responseJson = $.parseJSON(data);
-			var jsonString = JSON.stringify(responseJson);
-			alert(jsonString);
+			var responseJson = data;
+			//var responseJson = $.parseJSON(data);
+			//var jsonString = JSON.stringify(responseJson);
+			//alert(jsonString);
+			alert(responseJson.status);
 			if(responseJson.status == "success" ){
 				var grnUser=responseJson.grn_user;
 				alert(grnUser.ID+"........"+grnUser["ID"]);
