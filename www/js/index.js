@@ -88,7 +88,6 @@ function checkConnection() {
     states[Connection.CELL]     = 'Cell generic connection';
     states[Connection.NONE]     = 'No network connection';
 
-    alert('Connection type: ' + states[networkState]);
     return states[networkState];
 }
 
@@ -122,6 +121,7 @@ function logout() {
 	window.localStorage["email"] = '';
 	window.localStorage["lastActive"] = '';
 	
+	var form = $("#loginForm");
 	$("#username", form).val(window.localStorage["username"]);
 	$.mobile.changePage('#login-page','slide');
 }

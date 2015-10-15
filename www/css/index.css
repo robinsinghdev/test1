@@ -144,7 +144,7 @@ margin: .8em 30% .8em;
 	 background: #8E9E82 none repeat scroll 0 0 !important;	
 	 border: 1px solid #8E9E82 !important;
 }
-a.app-link,.ui-btn-up-a,.ui-btn-hover-a{
+a.app-link,div.ui-btn-up-a,div.ui-btn-hover-a{
     background: #A8BC7B none repeat scroll 0 0 !important;
     border: 1px solid #A8BC7B;
 }
