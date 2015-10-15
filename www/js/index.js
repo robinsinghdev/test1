@@ -89,14 +89,30 @@ function onBackKeyDown() {
          listener itself override the default behaviour. Refer below PhoneGap link.
        */
        //e.preventDefault();
-       navigator.app.exitApp();
+       //navigator.app.exitApp();
+       showExitDialog();
    }
 	else if($.mobile.activePage.is('#view-all-sales-order')){
        $.mobile.changePage('#home-page','slide');
    }
-	
 }
 
+function showExitDialog() {
+    navigator.notification.confirm(
+            ("Do you want to Exit?"), // message
+            alertexit, // callback
+            'BP METRICS', // title
+            'YES,NO' // buttonName
+    );
+}
+
+//Call exit function
+function alertexit(button){
+    if(button=="1" || button==1){
+        //device.exitApp();
+        navigator.app.exitApp();
+    }
+}
 
 function checkConnection() {
     var networkState = navigator.connection.type;
@@ -110,7 +126,6 @@ function checkConnection() {
     states[Connection.CELL_4G]  = 'Cell 4G connection';
     states[Connection.CELL]     = 'Cell generic connection';
     states[Connection.NONE]     = 'No network connection';
-
     return states[networkState];
 }
 
@@ -134,6 +149,7 @@ function logout() {
 	window.localStorage["password"] = '';
 	window.localStorage["user_logged_in"] = 0;
 	
+	window.localStorage["grnUser"] = '';
 	window.localStorage["ID"] = '';
 	window.localStorage["grn_companies_id"] = '';
 	window.localStorage["full_name"] = '';
@@ -188,6 +204,8 @@ function handleLogin() {
 					window.localStorage["password"] = p;
 					window.localStorage["user_logged_in"] = 1;
 					
+					
+					window.localStorage["grnUser"] = grnUser;
 					window.localStorage["ID"] = grnUser["ID"];
 					window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
 					window.localStorage["full_name"] = grnUser["full_name"];
@@ -205,6 +223,7 @@ function handleLogin() {
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
 					
+					window.localStorage["grnUser"] = '';
 					window.localStorage["ID"] = '';
 					window.localStorage["grn_companies_id"] = '';
 					window.localStorage["full_name"] = '';
@@ -250,40 +269,32 @@ function handleLogin() {
 	return false;
 }
 
-function checkSession(){
+function getSalesOrders(){
 	alert('checkSession called');
+	var grnUserObj=window.localStorage.getItem("grnUser");
+	alert(grnUserObj);
 	$.ajax({
-		url:'http://dev.bpmetrics.com/grn/m_app/test.php',
-				cache : false,
-				type : 'POST',//While GET working
-				async: false,
-				data:{action:'userLogin',email:u,password:p,check:'1'},
-				dataType: 'json',
-				contentType: "application/json; charset=utf-8",	
-				success:function(data){
-				
-				   alert(data);
-				   console.log(data);
-				   var responseJson = $.parseJSON(data);
-				   var jsonString = JSON.stringify(responseJson);
-				   console.log(jsonString);
-				   alert(jsonString);
-				   alert(responseJson["status"]);
-				},
-				error:function(w,t,f){
-				   alert(w+' '+t+' '+f);
-				   console.log(w+' '+t+' '+f);
-				   //alert(w+' '+t+' '+f);
-				
-				   //var responseJson = $.parseJSON(data);
-				   var jsonString = JSON.stringify(w);
-				   
-				   
-//				   console.log(JSON.stringify(w));
-//				   console.log(JSON.stringify(t));
-//				   console.log(JSON.stringify(f));
-				}
-		});
+		type : 'POST',
+	   url:'https://dev.bpmetrics.com/grn/m_app/',
+	   //cache : false,
+	   //async: false,
+	   ata:{action:'getSalesOrders',grn_user:grnUserObj},
+	   //dataType: 'json',
+	   //contentType: "application/json; charset=utf-8",		   
+	   success:function(data){
+			   alert(data);
+			   console.log(data);
+			   var responseJson = $.parseJSON(data);
+			   var jsonString = JSON.stringify(responseJson);
+			   console.log(jsonString);
+			   alert(jsonString);
+			   alert(responseJson["status"]);
+			},
+			error:function(w,t,f){
+			   alert(w+' '+t+' '+f);
+			   console.log(w+' '+t+' '+f);
+			}
+	});
 }
 
 function getTodayDate(){
