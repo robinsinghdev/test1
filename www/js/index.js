@@ -58,6 +58,7 @@ var app = {
     // Phonegap is now ready...
     onDeviceReady: function() {
         console.log("device ready, start making you custom calls!");
+        document.addEventListener("backbutton", onBackKeyDown, false);
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
 		/*
@@ -73,6 +74,28 @@ var app = {
     }
 };
 
+function onBackKeyDown() {
+	if($.mobile.activePage.is('#login-page')){
+        /* 
+         Event preventDefault/stopPropagation not required as adding backbutton
+          listener itself override the default behaviour. Refer below PhoneGap link.
+        */
+        //e.preventDefault();
+        navigator.app.exitApp();
+    }
+	else if($.mobile.activePage.is('#home-page')){
+        /* 
+        Event preventDefault/stopPropagation not required as adding backbutton
+         listener itself override the default behaviour. Refer below PhoneGap link.
+       */
+       //e.preventDefault();
+       navigator.app.exitApp();
+   }
+	else if($.mobile.activePage.is('#view-all-sales-order')){
+       $.mobile.changePage('#home-page','slide');
+   }
+	
+}
 
 
 function checkConnection() {
@@ -179,6 +202,22 @@ function handleLogin() {
 					//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
 					$.mobile.changePage('#home-page','slide');
 				}else{
+					window.localStorage["password"] = '';
+					window.localStorage["user_logged_in"] = 0;
+					
+					window.localStorage["ID"] = '';
+					window.localStorage["grn_companies_id"] = '';
+					window.localStorage["full_name"] = '';
+					window.localStorage["nickname"] = '';
+					window.localStorage["grn_roles_id"] = '';
+					window.localStorage["permissions"] = '';
+					
+					window.localStorage["email"] = '';
+					window.localStorage["lastActive"] = '';
+					
+					var form = $("#loginForm");
+					$("#username", form).val(window.localStorage["username"]);
+					$.mobile.changePage('#login-page','slide');
 					navigator.notification.alert("Invalid Credentials, please try again", function() {});
 				}
 				
