@@ -8,61 +8,87 @@
         <link rel="stylesheet"  href="libs/jQM-flat/jquery.mobile.flatui.css">
         <link rel="stylesheet" type="text/css" href="css/index.css" />
 
-        <title>App Name</title>
+        <title>BP Metrics</title>
 
     </head>
 	<body>
         <div id="app">
-			
-			<div  id="login-page" data-role="page">
-                <!--
-				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
-                    <h1>Log-in Form</h1>
-                </div>
-				-->
-                <div data-role="content">
-					<div  class="login-box">
-						<div id="logoContainer" class="centerText">
-								<img src="img/kgr_logo_white.png" id="logo"  />
-						</div>
-						<form  id="loginForm" action="">
-							<label for="username">Username</label>
-							<input type="email" name="username" id="username" data-mini="true" placeholder="Username"/>
-							<label for="password">Password </label>
-							<input type="password" name="password" id="password" data-mini="true" placeholder="Password"/>
-
-							<div data-role="fieldcontain">
-								<fieldset data-role="controlgroup" data-mini="true">
-									<input type="checkbox" name="checkbox-1a"    id="checkbox-1a" class="custom" checked="checked" />
-									<label for="checkbox-1a">Remember Me</label>
-								</fieldset>
-							</div>
-							<!--
-							<button type="button" data-theme="f" data-mini="false" class="ui-btn-hidden" "home-page" 
-								aria-disabled="false">Log-in</button>
-							-->
-							<!-- <a data-theme="a" href="#home-page" data-role="button">Log-in</a>	-->	
-							<input data-theme="a" type="submit" value="Login" id="submitButton">
-							
-							<a data-theme="a" href="#" data-role="button" onclick="checkSession();return false;">checkSession-in</a>
-						</form>
-					</div>	
-                </div>
-            </div>
-			
 			<div id="home-page" data-role="page">
-				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
+				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
                     <h1>Homepage</h1>
-					<a href="#login-page"  data-role="button" data-icon="arrow-l" data-inline="true" >Logout</a>
+					<a href="#"  data-role="button" data-icon="gear" class="ui-btn-right" data-inline="true" >Logout</a>
                 </div>
+                
                 <div data-role="content" >
+                	<div id="menu">
+                		<table class="order-box" style="border: 1px solid #87CEEB" id="sp_order_1" data-role="table" data-mode="" class="ui-responsive table-stroke">
+						     <thead>
+						         <tr>
+						             <th style="background-color: #87CEEB;" class="sp-order " colspan="3" id="sp_order_name_1">
+						                 Jackson #1001
+						                 <a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="1">
+						                      Report
+						                 </a>
+						             </th>
+						         </tr>
+						     </thead>
+						     <tbody>
+						             <tr>
+						                 <td class="order-p-icon">
+						                     <span class="process-icon cm-10">
+						                         <img class="icon-img" src="img/icon_production.png" id="timer_img_1_prog_production" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
+						                     </span>
+						                 </td>
+						                 <td>
+						                     <span id="orderId_1" class="timer col-xs-12">3:6 hrs</span>
+						                 </td>
+						                 <td class="order-t-icon">
+						                     <a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" 
+						                     data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
+						                     &nbsp;<img class="icon-img" src="img/icon-clock.png" ></a>
+						                     
+						                     
+						                     
+						                 </td>
+						             </tr>
+						             <tr>
+						                 <td class="order-p-icon">
+						                     <span class="process-icon cm-10">
+						                         <img class="icon-img" src="img/icon_handover.png" id="timer_img_1_prog_handover" data-order="1" data-timecat="prog_handover" data-action="clock" onclick="logTimer(this);return false;">
+						                     </span>
+						                 </td>
+						                 <td>
+						                     <span id="orderId_1" class="timer col-xs-12">0:0 hrs</span>
+						                 </td>
+						                 <td class="order-t-icon">
+						                     <!-- <a class="timer timer-icon clock" id="timer_1_prog_handover" data-order="1" data-timecat="prog_handover" data-action="clock" onclick="logTimer(this);return false;">&nbsp;</a>
+						                 	  -->
+						                 	 <a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" 
+						                     data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
+						                     &nbsp;<img class="icon-img" src="img/icon-clock.png" ></a>
+						                 </td>
+						             </tr>
+						     </tbody>
+						     <tfoot>
+						         <tr>
+						             <td colspan="3" class="td-danger"><a href="#" class="order-close"><span>CLOSE</span></a>
+						             </td> 
+						         </tr>
+						     </tfoot>
+						 </table>
+                	</div>
+                
+                	
+                	<!-- 
                     <div id="menu">
-                        <a data-icon="flat-heart" data-theme="d" href="#" onClick="AddValueToDB()" data-role="button">Initialise DB</a>
-						<!--
+                        
+						
 						<a data-icon="flat-time" data-theme="f" href="#view-all-tracking-page"  onClick="GetValueToDB()" data-role="button">View All Tracking</a>
 						
 						<a data-icon="flat-heart" data-theme="d" href="#" onClick="GetValueToDB()" data-role="button">GetValueToDB </a>
-						-->
+						
+						
+						<a data-icon="flat-heart" data-theme="d" href="#" onClick="AddValueToDB()" data-role="button">Initialise DB</a>
 						<hr/>
                         <fieldset class="ui-grid-a">
                             <div class="ui-block-a"> <a data-icon="flat-checkround" data-theme="e" href="#tips-page"  data-role="button">Tips</a></div>
@@ -84,24 +110,62 @@
 							</div>
                         </fieldset>
 					</div>
+					 -->
 					
                 </div>
-				<div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false">
+				<div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false" class="app-footer-section">
                     <div id="navbar" data-role="navbar">
                         <ul>
-                            <li><a id="map-button" href="#home-page" data-icon="flat-location" data-theme="b">Home</a></li>
-                            <li><a id="list-button" href="#view-all-tracking-page"  onClick="GetValueToDB()" data-icon="flat-menu">View All</a></li>
-                            <li><a id="search-button" href="#" data-icon="ms-search">Search</a></li>
+                            <li><a id="map-button" href="#home-page" data-icon="flat-location" data-theme="b" class="app-link active">Home</a></li>
+                            <li><a id="list-button" href="#view-all-tracking-page"  onClick="GetValueToDB()" data-icon="flat-menu" class="app-link">View All</a></li>
+                            <li><a id="search-button" href="#" data-icon="ms-search" class="app-link">Search</a></li>
                         </ul>
                     </div>
                 </div>
             </div><!-- /page  -->
+            
+            
+			<div  id="login-page" data-role="page">
+                <!--
+				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
+                    <h1>Log-in Form</h1>
+                </div>
+				-->
+                <div data-role="content">
+					<div  class="login-box">
+						<div id="logoContainer" class="centerText">
+								<img src="img/kgr_logo_white.png" id="logo"  />
+						</div>
+						<form  id="loginForm" action="">
+							<label for="username">Username</label>
+							<input type="email" name="username" id="username" data-mini="true" placeholder="Username"/>
+							<label for="password">Password </label>
+							<input type="password" name="password" id="password" data-mini="true" placeholder="Password"/>
+							<input data-theme="a" type="submit" value="Login" id="submitButton">
+							
+							<!--
+							<div data-role="fieldcontain">
+								<fieldset data-role="controlgroup" data-mini="true">
+									<input type="checkbox" name="checkbox-1a"    id="checkbox-1a" class="custom" checked="checked" />
+									<label for="checkbox-1a">Remember Me</label>
+								</fieldset>
+							</div>
+							<button type="button" data-theme="f" data-mini="false" class="ui-btn-hidden" "home-page" 
+								aria-disabled="false">Log-in</button>
+							<a data-theme="a" href="#home-page" data-role="button">Log-in</a>	
+							<a data-theme="a" href="#" data-role="button" onclick="checkSession();return false;">checkSession-in</a>
+							-->
+						</form>
+					</div>	
+                </div>
+            </div>
 			
 			<div id="view-all-tracking-page" data-role="page">
-				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
-					<a href="#home-page"  data-role="button" data-icon="arrow-l" data-inline="true" >Back</a>
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
                     <h1>List Page</h1>
+					<a href="#"  data-role="button" data-icon="gear" class="ui-btn-right" data-inline="true" >Logout</a>
                 </div>
+                
                 <div data-role="content" >
                     <ul data-role="listview" data-theme="g" id="trackerList">
 						<li><a href="#">Acura</a></li>
@@ -119,9 +183,9 @@
             </div><!-- /page  -->
 			
 			<div  id="about-page" data-role="page">
-                <div data-role="header" data-id="header1" data-position="fixed" class="ui-header">
-                    <a href="#" data-rel="back" data-role="button" data-icon="arrow-l" data-inline="true" >Back</a>
-                    <h1>About App</h1>
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
+                    <h1>About Page</h1>
+					<a href="#"  data-role="button" data-icon="gear" class="ui-btn-right" data-inline="true" >Logout</a>
                 </div>
                 <div data-role="content"  class="big-text">
                     <h2>About App</h2>
@@ -139,9 +203,9 @@
             </div>
 			
 			<div  id="tips-page" data-role="page">
-                <div data-role="header" data-id="header1" data-position="fixed" class="ui-header">
-                    <a href="#" data-rel="back" data-role="button" data-icon="arrow-l" data-inline="true" >Back</a>
-                    <h1>About App</h1>
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
+                    <h1>About Page</h1>
+					<a href="#"  data-role="button" data-icon="gear" class="ui-btn-right" data-inline="true" >Logout</a>
                 </div>
                 <div data-role="content"  class="big-text">
                     <h2>Tips</h2>

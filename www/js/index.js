@@ -89,7 +89,9 @@ function checkConnection() {
     states[Connection.NONE]     = 'No network connection';
 
     alert('Connection type: ' + states[networkState]);
+    return states[networkState];
 }
+
 /*
 function init() {
 	document.addEventListener("deviceready", deviceReady, true);
@@ -117,65 +119,75 @@ function handleLogin() {
 	var p = $("#password", form).val();
 	u='support@dynaread.com';
 	p='marbleF16XS';
+	
 	if(u != '' && p!= '') {
-		
-		$.ajax({
-			type : 'POST',
-		   url:'https://dev.bpmetrics.com/grn/m_app/',
-		   //cache : false,
-		   //async: false,
-		   data:{action:'userLogin',email:u,password:p,check:'1'},
-		   //dataType: 'json',
-		   //contentType: "application/json; charset=utf-8",		   
-		   success:function(data,t,f){
-			//alert(data+' '+t+' '+f);
-			alert("now data showing phase");
-			var responseJson=jQuery.parseJSON(data);
-			//var jsonString = JSON.stringify(data);
-			//alert(jsonString);
-			if(responseJson.status == "success" ){
-				var grnUser=responseJson.grn_user;
-				//alert(grnUser.ID+"........"+grnUser["ID"]);
+		var connectionType=checkConnection();
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+		}
+		else if(connectionType=="WiFi connection"){
+			$.ajax({
+				type : 'POST',
+			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   //cache : false,
+			   //async: false,
+			   data:{action:'userLogin',email:u,password:p,check:'1'},
+			   //dataType: 'json',
+			   //contentType: "application/json; charset=utf-8",		   
+			   success:function(data,t,f){
+				//alert(data+' '+t+' '+f);
+				alert("now data showing phase");
+				var responseJson=jQuery.parseJSON(data);
+				//var jsonString = JSON.stringify(data);
+				//alert(jsonString);
+				if(responseJson.status == "success" ){
+					var grnUser=responseJson.grn_user;
+					//alert(grnUser.ID+"........"+grnUser["ID"]);
+					
+					window.localStorage["username"] = u;
+					window.localStorage["password"] = p;
+					window.localStorage["user_logged_in"] = 1;
+					
+					window.localStorage["ID"] = grnUser["ID"];
+					window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
+					window.localStorage["full_name"] = grnUser["full_name"];
+					window.localStorage["nickname"] = grnUser["nickname"];
+					window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
+					window.localStorage["permissions"] = grnUser["permissions"];
+					
+					window.localStorage["email"] = grnUser["email"];
+					window.localStorage["lastActive"] = grnUser["lastActive"];
+					
+					//alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
+					//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
+					$.mobile.changePage('#home-page','slide');
+				}else{
+					navigator.notification.alert("Invalid Credentials, please try again", function() {});
+				}
 				
-				window.localStorage["username"] = u;
-				window.localStorage["password"] = p;
+				alert(data.status+"....-----..."+responseJson.status);
 				
-				window.localStorage["ID"] = grnUser["ID"];
-				window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
-				window.localStorage["full_name"] = grnUser["full_name"];
-				window.localStorage["nickname"] = grnUser["nickname"];
-				window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
-				window.localStorage["permissions"] = grnUser["permissions"];
-				
-				window.localStorage["email"] = grnUser["email"];
-				window.localStorage["lastActive"] = grnUser["lastActive"];
-				
-				//alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
-				//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
-				$.mobile.changePage('#home-page','slide');
-			}else{
-				navigator.notification.alert("Invalid Credentials, please try again", function() {});
-			}
-			
-			alert(data.status+"....-----..."+responseJson.status);
-			
-		   },
-		   error:function(data,t,f){
-			   navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
-			 var responseJson = $.parseJSON(data);
-			 alert(w+' '+t+' '+f);
-			 console.log(data+' '+t+' '+f);
-			 alert(JSON.stringify(data));
-			 alert(responseJson.status);
-			 if(responseJson.status==404){
-				 navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
-			 }
-		   }
-		});
-			
+			   },
+			   error:function(data,t,f){
+				   navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+				 var responseJson = $.parseJSON(data);
+				 alert(w+' '+t+' '+f);
+				 console.log(data+' '+t+' '+f);
+				 alert(JSON.stringify(data));
+				 alert(responseJson.status);
+				 if(responseJson.status==404){
+					 navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+				 }
+			   }
+			});
+		}
+		else{
+			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+		}
 		$("#submitButton").removeAttr("disabled");
 	
-	} else {
+	} 
+	else {
 		navigator.notification.alert("You must enter a username and password", function() {});
 		$("#submitButton").removeAttr("disabled");
 	}
