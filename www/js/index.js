@@ -22,7 +22,6 @@ $( document ).on( "mobileinit", function() {
 	 $.support.cors = true;
      $.mobile.allowCrossDomainPages = true;
      
-     /*
      jQuery.mobile.phonegapNavigationEnabled = true;
      jQuery.mobile.defaultDialogTransition = "pop";
      jQuery.mobile.defaultPageTransition = "none";
@@ -30,7 +29,6 @@ $( document ).on( "mobileinit", function() {
      jQuery.mobile.loader.prototype.options.text = "loading";
      jQuery.mobile.loader.prototype.options.textVisible = true;
      jQuery.mobile.loader.prototype.options.theme = "a";
-     */
 });
 
 var app = {
@@ -53,7 +51,6 @@ var app = {
         window.addEventListener('load', function() {
             FastClick.attach(document.body);
         }, false);
-        
     },
     // Phonegap is now ready...
     onDeviceReady: function() {
@@ -239,6 +236,7 @@ function handleLogin() {
 				$('#userFullName').html(window.localStorage.getItem("full_name"));
 			   },
 			   error:function(data,t,f){
+				   hideModal();
 				   navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
 				 var responseJson = $.parseJSON(data);
 				 alert(w+' '+t+' '+f);
@@ -264,29 +262,50 @@ function handleLogin() {
 }
 
 function getSalesOrders(){
-	alert('checkSession called');
 	var grnUserObj=window.localStorage.getItem("grnUser");
-	alert(grnUserObj);
-	$.ajax({
-		type : 'POST',
-	   url:'https://dev.bpmetrics.com/grn/m_app/',
-	   //cache : false,
-	   //async: false,
-	   data:{action:'getSalesOrders',grn_user:grnUserObj},
-	   //dataType: 'json',
-	   //contentType: "application/json; charset=utf-8",		   
-	   success:function(data){
-			   alert(data);
-			   console.log(data);
-			   var responseJson = $.parseJSON(data);
-			   alert(responseJson.status);
-			   alert(JSON.stringify(responseJson));
-			},
-			error:function(w,t,f){
-			   alert(w+' '+t+' '+f);
-			   console.log(w+' '+t+' '+f);
-			}
-	});
+	
+	if(grnUserObj != '') {
+		
+		var connectionType=checkConnection();
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+		}
+		else if(connectionType=="WiFi connection"){
+			showModal();
+			alert(grnUserObj);
+			$.ajax({
+				type : 'POST',
+			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   //cache : false,
+			   //async: false,
+			   data:{action:'getSalesOrders',grn_user:grnUserObj},
+			   //dataType: 'json',
+			   //contentType: "application/json; charset=utf-8",		   
+			   success:function(data){
+				   		hideModal();
+				   		console.log(data);
+				   		var responseJson = $.parseJSON(data);
+				   		alert(JSON.stringify(responseJson));
+					   
+				   		jQuery.each(responseJson.salse_orders, function(index,value) {
+				        	var jsonObj=value;
+				        	var id=jsonObj["id"];
+				        	alert(id);
+				   		});
+					},
+					error:function(data,t,f){
+						hideModal();
+						navigator.notification.alert("Please check your connection or try again after sometime.", function() {});	
+						alert(data+' '+t+' '+f);
+						console.log(data+' '+t+' '+f);
+					}
+			});
+		}
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
 }
 
 function getTodayDate(){
