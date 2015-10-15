@@ -101,15 +101,33 @@ function init() {
     
 function checkPreAuth() {
 	var form = $("#loginForm");
-	if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined) {
+	if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined && window.localStorage.getItem("user_logged_in")==1) {
 		$("#username", form).val(window.localStorage["username"]);
 		$("#password", form).val(window.localStorage["password"]);
 		handleLogin();
 	}
 }
 
+function logout() {
+	window.localStorage["password"] = '';
+	window.localStorage["user_logged_in"] = 0;
+	
+	window.localStorage["ID"] = '';
+	window.localStorage["grn_companies_id"] = '';
+	window.localStorage["full_name"] = '';
+	window.localStorage["nickname"] = '';
+	window.localStorage["grn_roles_id"] = '';
+	window.localStorage["permissions"] = '';
+	
+	window.localStorage["email"] = '';
+	window.localStorage["lastActive"] = '';
+	
+	$("#username", form).val(window.localStorage["username"]);
+	$.mobile.changePage('#login-page','slide');
+}
+
 function handleLogin() {
-	//checkConnection();	
+	//checkConnection();
 	//alert('handle login called');
 	console.log('handle login called');
 	var form = $("#loginForm");
@@ -136,13 +154,12 @@ function handleLogin() {
 			   //contentType: "application/json; charset=utf-8",		   
 			   success:function(data,t,f){
 				//alert(data+' '+t+' '+f);
-				alert("now data showing phase");
+				alert("Logging In...");
 				var responseJson=jQuery.parseJSON(data);
 				//var jsonString = JSON.stringify(data);
 				//alert(jsonString);
 				if(responseJson.status == "success" ){
 					var grnUser=responseJson.grn_user;
-					//alert(grnUser.ID+"........"+grnUser["ID"]);
 					
 					window.localStorage["username"] = u;
 					window.localStorage["password"] = p;
@@ -165,8 +182,7 @@ function handleLogin() {
 					navigator.notification.alert("Invalid Credentials, please try again", function() {});
 				}
 				
-				alert(data.status+"....-----..."+responseJson.status);
-				
+				$('#userFullName').html(window.localStorage.getItem("full_name"));
 			   },
 			   error:function(data,t,f){
 				   navigator.notification.alert("Please check your connection or try again after sometime.", function() {});

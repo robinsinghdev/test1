@@ -15,11 +15,10 @@
         <div id="app">
         
         	<div  id="login-page" data-role="page">
-                <!--
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
                     <h1>Log-in Form</h1>
                 </div>
-				-->
+				
                 <div data-role="content">
 					<div  class="login-box">
 						<div id="logoContainer" class="centerText">
@@ -30,35 +29,71 @@
 							<input type="email" name="username" id="username" data-mini="true" placeholder="Username"/>
 							<label for="password">Password </label>
 							<input type="password" name="password" id="password" data-mini="true" placeholder="Password"/>
-							<input data-theme="a" type="submit" value="Login" id="submitButton">
-							
-							<!--
-							<div data-role="fieldcontain">
-								<fieldset data-role="controlgroup" data-mini="true">
-									<input type="checkbox" name="checkbox-1a"    id="checkbox-1a" class="custom" checked="checked" />
-									<label for="checkbox-1a">Remember Me</label>
-								</fieldset>
-							</div>
-							<button type="button" data-theme="f" data-mini="false" class="ui-btn-hidden" "home-page" 
-								aria-disabled="false">Log-in</button>
-							<a data-theme="a" href="#home-page" data-role="button">Log-in</a>	
-							<a data-theme="a" href="#" data-role="button" onclick="checkSession();return false;">checkSession-in</a>
-							-->
+							<input data-theme="a" type="submit" value="Login" id="submitButton" class="app-link">
 						</form>
 					</div>	
                 </div>
             </div>
         
-        
-        
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
                     <h1>Homepage</h1>
-					<a href="#"  data-role="button" data-icon="gear" class="ui-btn-right" data-inline="true" >Logout</a>
+					<a href="#"  data-role="button" onclick="logout();" class="ui-btn-right" data-inline="true" >Logout</a>
                 </div>
                 
                 <div data-role="content" >
                 	<div id="menu">
+                		<p>Welcome,<span id="userFullName"></span></p>
+                		<p>You can see your sales order and track your time</p>
+						<p>Timer : New Feature (Coming Soon...)</p>
+                	</div>
+                	
+                	<!-- 
+                    <div id="menu">
+						<a data-icon="flat-time" data-theme="f" href="#view-all-sales-order"  onClick="GetValueToDB()" data-role="button">View All Tracking</a>
+						<a data-icon="flat-heart" data-theme="d" href="#" onClick="GetValueToDB()" data-role="button">GetValueToDB </a>
+						<a data-icon="flat-heart" data-theme="d" href="#" onClick="AddValueToDB()" data-role="button">Initialise DB</a>
+						<hr/>
+                        <fieldset class="ui-grid-a">
+                            <div class="ui-block-a"> <a data-icon="flat-checkround" data-theme="e" href="#tips-page"  data-role="button">Tips</a></div>
+                            <div class="ui-block-b"><a data-icon="ms-question" data-theme="g" href="#about-page"  data-role="button" >About</a></div>
+                        </fieldset>
+                    </div>
+					<div id="menu2">
+						<fieldset class="ui-grid-a">
+							<div id="timeTrackerDiv1"  class="timer-div ui-block-a" data-theme="f">
+								<input type="text" value="" id="timeTrackerDiv" name="timeTrackerDiv" class="ui-input-text ui-body-c ui-block-a" data-timer="" />
+							</div>
+							<div class="ui-block-b" id="startTimerDiv">
+								<a data-theme="f" href="#" onClick="startTracker()" data-role="button" >Start</a>
+							</div>
+                            <div class="ui-block-b" id="endTimerDiv"> 
+								<a data-theme="e" href="#" data-role="button" onClick="stopTracker()">Stop</a>
+							</div>
+                        </fieldset>
+					</div>
+					 -->
+					
+                </div>
+                <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false" class="app-footer-section" class="footer-div">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" data-icon="flat-location" data-theme="b" class="app-link active">Home</a></li>
+                            <li><a id="list-button" href="#view-all-sales-order" data-icon="flat-menu" class="app-link">Sales Order</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- /page  -->
+			
+			
+			<div id="view-all-sales-order" data-role="page">
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
+                    <h1>Sales Order</h1>
+					<a href="#"  data-role="button" class="ui-btn-right" data-inline="true" onclick="logout();" >Logout</a>
+                </div>
+                
+                <div data-role="content" >
+                    <div id="menu">
                 		<table class="order-box" style="border: 1px solid #87CEEB" id="sp_order_1" data-role="table" data-mode="" class="ui-responsive table-stroke">
 						     <thead>
 						         <tr>
@@ -115,76 +150,19 @@
 						     </tfoot>
 						 </table>
                 	</div>
-                
-                	
-                	<!-- 
-                    <div id="menu">
-                        
-						
-						<a data-icon="flat-time" data-theme="f" href="#view-all-tracking-page"  onClick="GetValueToDB()" data-role="button">View All Tracking</a>
-						
-						<a data-icon="flat-heart" data-theme="d" href="#" onClick="GetValueToDB()" data-role="button">GetValueToDB </a>
-						
-						
-						<a data-icon="flat-heart" data-theme="d" href="#" onClick="AddValueToDB()" data-role="button">Initialise DB</a>
-						<hr/>
-                        <fieldset class="ui-grid-a">
-                            <div class="ui-block-a"> <a data-icon="flat-checkround" data-theme="e" href="#tips-page"  data-role="button">Tips</a></div>
-                            <div class="ui-block-b"><a data-icon="ms-question" data-theme="g" href="#about-page"  data-role="button" >About</a></div>
-                        </fieldset>
-                    </div>
-					
-					<div id="menu2">
-						<fieldset class="ui-grid-a">
-							<div id="timeTrackerDiv1"  class="timer-div ui-block-a" data-theme="f">
-							
-								<input type="text" value="" id="timeTrackerDiv" name="timeTrackerDiv" class="ui-input-text ui-body-c ui-block-a" data-timer="" />
-							</div>
-							<div class="ui-block-b" id="startTimerDiv">
-								<a data-theme="f" href="#" onClick="startTracker()" data-role="button" >Start</a>
-							</div>
-                            <div class="ui-block-b" id="endTimerDiv"> 
-								<a data-theme="e" href="#" data-role="button" onClick="stopTracker()">Stop</a>
-							</div>
-                        </fieldset>
-					</div>
-					 -->
-					
                 </div>
-				<div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false" class="app-footer-section">
+                
+                <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false" class="app-footer-section" class="footer-div">
                     <div id="navbar" data-role="navbar">
                         <ul>
-                            <li><a id="map-button" href="#home-page" data-icon="flat-location" data-theme="b" class="app-link active">Home</a></li>
-                            <li><a id="list-button" href="#view-all-tracking-page"  onClick="GetValueToDB()" data-icon="flat-menu" class="app-link">View All</a></li>
-                            <li><a id="search-button" href="#" data-icon="ms-search" class="app-link">Search</a></li>
+                            <li><a id="map-button" href="#home-page" data-icon="flat-location" data-theme="b" class="app-link">Home</a></li>
+                            <li><a id="list-button" href="#view-all-sales-order" data-icon="flat-menu" class="app-link active">Sales Order</a></li>
                         </ul>
                     </div>
                 </div>
             </div><!-- /page  -->
-			
-			
-			<div id="view-all-tracking-page" data-role="page">
-                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
-                    <h1>List Page</h1>
-					<a href="#"  data-role="button" data-icon="gear" class="ui-btn-right" data-inline="true" >Logout</a>
-                </div>
-                
-                <div data-role="content" >
-                    <ul data-role="listview" data-theme="g" id="trackerList">
-						<li><a href="#">Acura</a></li>
-					</ul>
-                </div>
-				<div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false">
-                    <div id="navbar" data-role="navbar">
-                        <ul>
-                            <li><a id="map-button" href="#home-page" data-icon="flat-location" >Home</a></li>
-                            <li><a id="list-button" href="#list-page" data-icon="flat-menu" data-theme="b">View All</a></li>
-                            <li><a id="search-button" href="#" data-icon="ms-search">Search</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div><!-- /page  -->
-			
+            
+			<!-- 
 			<div  id="about-page" data-role="page">
                 <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
                     <h1>About Page</h1>
@@ -198,8 +176,8 @@
                     <div id="navbar" data-role="navbar">
                         <ul>
                             <li><a id="map-button" href="#home-page" data-icon="flat-location" >Home</a></li>
-                            <li><a id="list-button" href="#list-page" data-icon="flat-menu" >View All</a></li>
-                            <li><a id="search-button" href="#" data-icon="ms-search">Search</a></li>
+                            <li><a id="list-button" href="#view-all-sales-order" data-icon="flat-menu" class="app-link">Sales Order</a></li>
+
                         </ul>
                     </div>
                 </div>
@@ -225,6 +203,7 @@
                     </div>
                 </div>
             </div>
+			 -->
 			
 			<!-- Dialog only page -->
 			<div data-role="dialog" id="dialog">
@@ -293,12 +272,11 @@
                         <button type="submit" data-theme="f" data-mini="false" class="ui-btn-hidden" aria-disabled="false">Search</button>
                     </form>
                 </div>
-                <div id="footer" data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false">
+                <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="false" class="app-footer-section" class="footer-div">
                     <div id="navbar" data-role="navbar">
                         <ul>
-                            <li><a id="map-button" href="#second-page" data-icon="flat-location" data-theme="b">Map</a></li>
-                            <li><a id="list-button" href="#list-page" data-icon="flat-menu">List</a></li>
-                            <li><a id="search-button" href="#search-page" data-icon="ms-search">Search</a></li>
+                            <li><a id="map-button" href="#home-page" data-icon="flat-location" data-theme="b" class="app-link active">Home</a></li>
+                            <li><a id="list-button" href="#view-all-sales-order" data-icon="flat-menu" class="app-link">Sales Order</a></li>
                         </ul>
                     </div>
                 </div>
