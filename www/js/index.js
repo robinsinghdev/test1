@@ -76,12 +76,7 @@ var app = {
 
 function onBackKeyDown() {
 	if($.mobile.activePage.is('#login-page')){
-        /* 
-         Event preventDefault/stopPropagation not required as adding backbutton
-          listener itself override the default behaviour. Refer below PhoneGap link.
-        */
-        //e.preventDefault();
-        navigator.app.exitApp();
+        showExitDialog();
     }
 	else if($.mobile.activePage.is('#home-page')){
         /* 
@@ -152,7 +147,6 @@ function logout() {
 	window.localStorage["grnUser"] = '';
 	window.localStorage["ID"] = '';
 	window.localStorage["grn_companies_id"] = '';
-	window.localStorage["full_name"] = '';
 	window.localStorage["nickname"] = '';
 	window.localStorage["grn_roles_id"] = '';
 	window.localStorage["permissions"] = '';
@@ -178,11 +172,13 @@ function handleLogin() {
 	p='marbleF16XS';
 	
 	if(u != '' && p!= '') {
+		
 		var connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
 		}
 		else if(connectionType=="WiFi connection"){
+			showModal();
 			$.ajax({
 				type : 'POST',
 			   url:'https://dev.bpmetrics.com/grn/m_app/',
@@ -226,7 +222,6 @@ function handleLogin() {
 					window.localStorage["grnUser"] = '';
 					window.localStorage["ID"] = '';
 					window.localStorage["grn_companies_id"] = '';
-					window.localStorage["full_name"] = '';
 					window.localStorage["nickname"] = '';
 					window.localStorage["grn_roles_id"] = '';
 					window.localStorage["permissions"] = '';
@@ -237,6 +232,7 @@ function handleLogin() {
 					var form = $("#loginForm");
 					$("#username", form).val(window.localStorage["username"]);
 					$.mobile.changePage('#login-page','slide');
+					hideModal();
 					navigator.notification.alert("Invalid Credentials, please try again", function() {});
 				}
 				
@@ -259,36 +255,31 @@ function handleLogin() {
 			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
 		}
 		$("#submitButton").removeAttr("disabled");
-	
-	} 
-	else {
+	}
+	else{
 		navigator.notification.alert("You must enter a username and password", function() {});
 		$("#submitButton").removeAttr("disabled");
 	}
-	
 	return false;
 }
 
 function getSalesOrders(){
 	alert('checkSession called');
-	var grnUserObj=window.localStorage.getItem("grnUser");
+	var grnUserObj=JSON.stringify(window.localStorage.getItem("grnUser"));
 	alert(grnUserObj);
 	$.ajax({
 		type : 'POST',
 	   url:'https://dev.bpmetrics.com/grn/m_app/',
 	   //cache : false,
 	   //async: false,
-	   ata:{action:'getSalesOrders',grn_user:grnUserObj},
+	   data:{action:'getSalesOrders',grn_user:grnUserObj},
 	   //dataType: 'json',
 	   //contentType: "application/json; charset=utf-8",		   
 	   success:function(data){
 			   alert(data);
 			   console.log(data);
 			   var responseJson = $.parseJSON(data);
-			   var jsonString = JSON.stringify(responseJson);
-			   console.log(jsonString);
-			   alert(jsonString);
-			   alert(responseJson["status"]);
+			   alert(responseJson.status);
 			},
 			error:function(w,t,f){
 			   alert(w+' '+t+' '+f);
@@ -448,4 +439,15 @@ function successCB() {
 function successCBData() {
 	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
 	db.transaction(queryDBData, errorCB);
+}
+
+
+function showModal(){
+  $('body').append("<div class='ui-loader-background'> </div>");
+  $.mobile.loading( "show" );
+}
+
+function hideModal(){
+	 $(".ui-loader-background").remove();
+	 $.mobile.loading( "hide" );
 }
