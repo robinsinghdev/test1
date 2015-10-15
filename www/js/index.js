@@ -189,7 +189,7 @@ function handleLogin() {
 			   //contentType: "application/json; charset=utf-8",		   
 			   success:function(data,t,f){
 				//alert(data+' '+t+' '+f);
-				alert("Logging In...");
+				console.log("Logging In...");
 				var responseJson=jQuery.parseJSON(data);
 				//var jsonString = JSON.stringify(data);
 				//alert(jsonString);
@@ -201,7 +201,7 @@ function handleLogin() {
 					window.localStorage["user_logged_in"] = 1;
 					
 					
-					window.localStorage["grnUser"] = grnUser;
+					window.localStorage["grnUser"] = JSON.stringify(grnUser);
 					window.localStorage["ID"] = grnUser["ID"];
 					window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
 					window.localStorage["full_name"] = grnUser["full_name"];
@@ -265,7 +265,7 @@ function handleLogin() {
 
 function getSalesOrders(){
 	alert('checkSession called');
-	var grnUserObj=JSON.stringify(window.localStorage.getItem("grnUser"));
+	var grnUserObj=window.localStorage.getItem("grnUser");
 	alert(grnUserObj);
 	$.ajax({
 		type : 'POST',
@@ -280,6 +280,7 @@ function getSalesOrders(){
 			   console.log(data);
 			   var responseJson = $.parseJSON(data);
 			   alert(responseJson.status);
+			   alert(JSON.stringify(responseJson));
 			},
 			error:function(w,t,f){
 			   alert(w+' '+t+' '+f);
