@@ -106,9 +106,28 @@ function alertexit(button){
     }
 }
 
+function doLogout() {
+	showLogoutDialog();
+}
+
+function showLogoutDialog() {
+    navigator.notification.confirm(
+            ("Are you sure to Logout?"), // message
+            alertlogout, // callback
+            'BP METRICS', // title
+            'YES,NO' // buttonName
+    );
+}
+
+//Call logout function
+function alertlogout(button){
+    if(button=="1" || button==1){
+    	logout();
+    }
+}
+
 function checkConnection() {
     var networkState = navigator.connection.type;
-
     var states = {};
     states[Connection.UNKNOWN]  = 'Unknown connection';
     states[Connection.ETHERNET] = 'Ethernet connection';
@@ -576,7 +595,6 @@ function hideModal(){
 }
 
 function showHideTable(thiss){
-	
 	var currTableObj = $(thiss).parent();
 	currTableObj.find('tbody').toggle();
 	currTableObj.find('tfoot').toggle();
@@ -586,5 +604,17 @@ function  hideAllTablesData(){
 	//var allTableObj = $('.sales-table');
 	 $('table').find('tbody').hide();
 	 $('table').find('tfoot').hide();
+}
+
+function logTimer(){
+	navigator.notification.alert("Time Tracker will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
+}
+
+function getLogTimeListOfOrder(){
+	navigator.notification.alert("Log Time Report will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
+}
+
+function changeLoginRole(roleId){
+	navigator.notification.alert("Change Login Role will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
 }
 
