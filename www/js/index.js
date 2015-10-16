@@ -263,10 +263,14 @@ function handleLogin() {
 
 function getSalesOrders(){
 	var grnUserObj=window.localStorage.getItem("grnUser");
+	//var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"1","email":"support@dynaread.com","lastActive":1444985408};
+	//var grnUserObj=JSON.stringify(grnUserData)
 	
 	if(grnUserObj != '') {
 		
 		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";
+		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
 		}
@@ -282,23 +286,85 @@ function getSalesOrders(){
 			   //dataType: 'json',
 			   //contentType: "application/json; charset=utf-8",		   
 			   success:function(data){
-				   		hideModal();
-				   		console.log(data);
-				   		var responseJson = $.parseJSON(data);
-				   		alert(JSON.stringify(responseJson));
-					   
-				   		jQuery.each(responseJson.salse_orders, function(index,value) {
-				        	var jsonObj=value;
-				        	var id=jsonObj["id"];
-				        	alert(id);
-				   		});
-					},
-					error:function(data,t,f){
-						hideModal();
-						navigator.notification.alert("Please check your connection or try again after sometime.", function() {});	
-						alert(data+' '+t+' '+f);
-						console.log(data+' '+t+' '+f);
-					}
+			   		hideModal();
+			   		console.log(data);
+			   		var responseJson = $.parseJSON(data);
+			   		//alert(JSON.stringify(responseJson));
+				   
+			   		jQuery.each(responseJson.salse_orders, function(index,value) {
+			        	var jsonObj=value;
+			        	var id=jsonObj["id"];
+			        	var grn_companies_id=jsonObj["grn_companies_id"];
+			        	var sp_manager=jsonObj["sp_manager"];
+			        	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
+			        	var sp_jobName=jsonObj["sp_jobName"];
+			        	var grn_colors_id=jsonObj["grn_colors_id"];
+			        	var time_running_status=jsonObj["time_running_status"];
+			        	var grn_status_id=jsonObj["grn_status_id"];
+			        	var HexColor=jsonObj["HexColor"];
+			        	
+			        	var divObj='<div id="" class="sales-table-div">'+
+				                		'<table class="order-box ui-table" style="border: 1px solid #'+HexColor+';" id="sp_order_1" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
+									     '<thead onclick="showHideTable(this);">'+
+									         '<tr>'+
+									             '<th style="background-color: #'+HexColor+';" class="sp-order " colspan="3" id="sp_order_name_1">'+
+									             		sp_jobName+sp_salesorderNumber+
+									                 '<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="1">Report'+
+									                 '</a>'+
+									             '</th>'+
+									         '</tr>'+
+									     '</thead>'+
+									     '<tbody>'+
+									             '<tr>'+
+									                 '<td class="order-p-icon">'+
+									                     '<span class="process-icon cm-10">'+
+									                         '<img class="icon-img" src="img/icon_production.png" id="timer_img_1_prog_production" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">'+
+									                     '</span>'+
+									                 '</td>'+
+									                 '<td>'+
+									                     '<span id="orderId_1" class="timer col-xs-12">3:6 hrs</span>'+
+									                 '</td>'+
+									                 '<td class="order-t-icon">'+
+									                     '<a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">'+
+														 ' &nbsp;<img class="icon-img" src="img/icon-clock.png" >'+
+														 '</a>'+
+									                 '</td>'+
+									             '</tr>'+
+									             '<tr>'+
+									                 '<td class="order-p-icon">'+
+									                     '<span class="process-icon cm-10">'+
+									                         '<img class="icon-img" src="img/icon_handover.png" id="timer_img_1_prog_handover" data-order="1" data-timecat="prog_handover" data-action="clock" onclick="logTimer(this);return false;">'+
+									                     '</span>'+
+									                 '</td>'+
+									                 '<td>'+
+									                     '<span id="orderId_1" class="timer col-xs-12">0:0 hrs</span>'+
+									                 '</td>'+
+									                 '<td class="order-t-icon">'+
+									                 	 '<a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">'+
+														 ' &nbsp;<img class="icon-img" src="img/icon-clock.png" >'+
+														 '</a>'+
+									                 '</td>'+
+									             '</tr>'+
+									     '</tbody>'+
+									     '<tfoot>'+
+									         '<tr>'+
+									             '<td colspan="3" class="td-danger"><a href="#" class="order-close"><span>CLOSE</span></a>'+
+									             '</td>'+ 
+									         '</tr>'+
+									     '</tfoot>'+
+									 '</table>'+
+								 '</div>';
+			        	
+			        	$('#salesOrderMainDiv').append(divObj);
+			   		});
+			   		hideAllTablesData();
+				},
+				error:function(data,t,f){
+					hideModal();
+					navigator.notification.alert("Please check your connection or try again after sometime.", function() {});	
+					alert(data+' '+t+' '+f);
+					console.log(data+' '+t+' '+f);
+				}
 			});
 		}
 	}
@@ -471,3 +537,17 @@ function hideModal(){
 	 $(".ui-loader-background").remove();
 	 $.mobile.loading( "hide" );
 }
+
+function showHideTable(thiss){
+	
+	var currTableObj = $(thiss).parent();
+	currTableObj.find('tbody').toggle();
+	currTableObj.find('tfoot').toggle();
+}
+
+function  hideAllTablesData(){
+	//var allTableObj = $('.sales-table');
+	 $('table').find('tbody').hide();
+	 $('table').find('tfoot').hide();
+}
+
