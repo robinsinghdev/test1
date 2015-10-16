@@ -26,16 +26,10 @@
         <title>BP Metrics</title>
     </head>
 	<body>
-	
 		
         <div id="app">
         
         	<div  id="login-page" data-role="page">
-        		
-				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header">
-                    <h1>Log-in Form</h1>
-                </div>
-				
                 <div data-role="content">
 					<div  class="login-box">
 						<div id="logoContainer" class="centerText">
@@ -51,7 +45,6 @@
 					</div>
                 </div>
             </div>
-            
             
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -111,7 +104,7 @@
                     <div id="navbar" data-role="navbar">
                         <ul>
                             <li><a id="map-button" href="#home-page" data-icon="home" data-theme="b" class="app-link active">Home</a></li>
-                            <li><a id="list-button" href="#view-all-sales-order" onclick="getSalesOrders();" data-icon="bars" class="app-link">Sales Order</a></li>
+                            <li><a id="list-button" href="#view-all-sales-order" onclick="getCategoriesForTimeTracking();" data-icon="bars" class="app-link">Sales Order</a></li>
                         </ul>
                     </div>
                 </div>
@@ -184,64 +177,6 @@
 							     </tfoot>
 							 </table>
 						 </div>
-						 
-						 <div id="" class="sales-table-div">
-							 <table class="order-box" style="border: 1px solid #87CEEB" id="sp_order_1" data-role="table" data-mode="" class="ui-responsive table-stroke">
-							     <thead onclick="showHideTable(this);">
-							         <tr>
-							             <th style="background-color: #87CEEB;" class="sp-order " colspan="3" id="sp_order_name_1">
-							                 Jackson #1001
-							                 <a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="1">
-							                      Report
-							                 </a>
-							             </th>
-							         </tr>
-							     </thead>
-							     <tbody>
-							             <tr>
-							                 <td class="order-p-icon">
-							                     <span class="process-icon cm-10">
-							                         <img class="icon-img" src="img/icon_production.png" id="timer_img_1_prog_production" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
-							                     </span>
-							                 </td>
-							                 <td>
-							                     <span id="orderId_1" class="timer col-xs-12">3:6 hrs</span>
-							                 </td>
-							                 <td class="order-t-icon">
-							                     <a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" 
-							                     data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
-							                     &nbsp;<img class="icon-img" src="img/icon-clock.png" ></a>
-							                     
-							                     
-							                     
-							                 </td>
-							             </tr>
-							             <tr>
-							                 <td class="order-p-icon">
-							                     <span class="process-icon cm-10">
-							                         <img class="icon-img" src="img/icon_handover.png" id="timer_img_1_prog_handover" data-order="1" data-timecat="prog_handover" data-action="clock" onclick="logTimer(this);return false;">
-							                     </span>
-							                 </td>
-							                 <td>
-							                     <span id="orderId_1" class="timer col-xs-12">0:0 hrs</span>
-							                 </td>
-							                 <td class="order-t-icon">
-							                     <!-- <a class="timer timer-icon clock" id="timer_1_prog_handover" data-order="1" data-timecat="prog_handover" data-action="clock" onclick="logTimer(this);return false;">&nbsp;</a>
-							                 	  -->
-							                 	 <a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" 
-							                     data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
-							                     &nbsp;<img class="icon-img" src="img/icon-clock.png" ></a>
-							                 </td>
-							             </tr>
-							     </tbody>
-							     <tfoot>
-							         <tr>
-							             <td colspan="3" class="td-danger"><a href="#" class="order-close"><span>CLOSE</span></a>
-							             </td> 
-							         </tr>
-							     </tfoot>
-							 </table>
-						</div>	 
                 	</div>
                 </div>
                 
@@ -249,7 +184,7 @@
                     <div id="navbar" data-role="navbar">
                         <ul>
                             <li><a id="map-button" href="#home-page" data-icon="home" data-theme="b" class="app-link">Home</a></li>
-                            <li><a id="list-button" href="#view-all-sales-order" onclick="getSalesOrders();" data-icon="bars" class="app-link active">Sales Order</a></li>
+                            <li><a id="list-button" href="#view-all-sales-order" onclick="getCategoriesForTimeTracking();" data-icon="bars" class="app-link active">Sales Order</a></li>
                         </ul>
                     </div>
                 </div>

@@ -261,36 +261,103 @@ function handleLogin() {
 	return false;
 }
 
-function getSalesOrders(){
-	var grnUserObj=window.localStorage.getItem("grnUser");
-	//var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"1","email":"support@dynaread.com","lastActive":1444985408};
-	//var grnUserObj=JSON.stringify(grnUserData)
+var time_cats_arr;
+function getCategoriesForTimeTracking(){
+	//var grnUserObj=window.localStorage.getItem("grnUser");
+	
+	//var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"7","email":"support@dynaread.com","lastActive":1444985408};
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	var grnUserObj=JSON.stringify(grnUserData)
 	
 	if(grnUserObj != '') {
 		
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
 		}
 		else if(connectionType=="WiFi connection"){
 			showModal();
-			alert(grnUserObj);
 			$.ajax({
 				type : 'POST',
 			   url:'https://dev.bpmetrics.com/grn/m_app/',
-			   //cache : false,
-			   //async: false,
-			   data:{action:'getSalesOrders',grn_user:grnUserObj},
-			   //dataType: 'json',
-			   //contentType: "application/json; charset=utf-8",		   
+			   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
 			   success:function(data){
 			   		hideModal();
-			   		console.log(data);
 			   		var responseJson = $.parseJSON(data);
-			   		//alert(JSON.stringify(responseJson));
-				   
+			   		time_cats_arr=responseJson.time_cats;
+			   		getSalesOrders();
+				},
+				error:function(data,t,f){
+					hideModal();
+					console.log(data+' '+t+' '+f);
+					navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+				}
+			});
+		}
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
+function getSalesOrders(){
+	//var grnUserObj=window.localStorage.getItem("grnUser");
+	
+	//var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"1","email":"support@dynaread.com","lastActive":1444985408};
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	var grnUserObj=JSON.stringify(grnUserData)
+	
+	if(grnUserObj != '') {
+		
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";
+		
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+		}
+		else if(connectionType=="WiFi connection"){
+			showModal();
+			$.ajax({
+				type : 'POST',
+			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   data:{action:'getSalesOrders',grn_user:grnUserObj},
+			   success:function(data){
+			   		hideModal();
+			   		var responseJson = $.parseJSON(data);
+			   		$('#salesOrderMainDiv').html('');
+			   		
+			   		var tbodyObj='<tbody>';
+			   		jQuery.each(time_cats_arr, function(index,value) {
+			        	var jsonObj=value;
+			        	var id=jsonObj["id"];
+			        	var timeCats=jsonObj["timeCats"];
+			        	var title=jsonObj["title"];
+			        	var grn_roles_id=jsonObj["grn_roles_id"];
+			        	var revision=jsonObj["revision"];
+			        	var status=jsonObj["status"];
+			        	
+			        	tbodyObj+='<tr>'+
+					                 '<td class="order-p-icon">'+
+					                     '<span class="process-icon cm-10">'+
+					                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_1_'+timeCats+'" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+					                     '</span>'+
+					                 '</td>'+
+					                 '<td>'+
+					                     '<span id="orderId_1" class="timer">--:-- hrs</span>'+
+					                 '</td>'+
+					                 '<td class="order-t-icon">'+
+					                     '<a class="timer timer-icon clock" id="timer_1_'+timeCats+'" data-icon="flat-time" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+										 ' &nbsp;<img class="icon-img" src="img/icon-clock.png" >'+
+										 '</a>'+
+					                 '</td>'+
+					             '</tr>';
+			   		});
+			   		tbodyObj+='</tbody>';
+			   		
+			   		
 			   		jQuery.each(responseJson.salse_orders, function(index,value) {
 			        	var jsonObj=value;
 			        	var id=jsonObj["id"];
@@ -308,43 +375,13 @@ function getSalesOrders(){
 									     '<thead onclick="showHideTable(this);">'+
 									         '<tr>'+
 									             '<th style="background-color: #'+HexColor+';" class="sp-order " colspan="3" id="sp_order_name_1">'+
-									             		sp_jobName+sp_salesorderNumber+
+									             		sp_jobName+' #'+sp_salesorderNumber+
 									                 '<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="1">Report'+
 									                 '</a>'+
 									             '</th>'+
 									         '</tr>'+
 									     '</thead>'+
-									     '<tbody>'+
-									             '<tr>'+
-									                 '<td class="order-p-icon">'+
-									                     '<span class="process-icon cm-10">'+
-									                         '<img class="icon-img" src="img/icon_production.png" id="timer_img_1_prog_production" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">'+
-									                     '</span>'+
-									                 '</td>'+
-									                 '<td>'+
-									                     '<span id="orderId_1" class="timer col-xs-12">3:6 hrs</span>'+
-									                 '</td>'+
-									                 '<td class="order-t-icon">'+
-									                     '<a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">'+
-														 ' &nbsp;<img class="icon-img" src="img/icon-clock.png" >'+
-														 '</a>'+
-									                 '</td>'+
-									             '</tr>'+
-									             '<tr>'+
-									                 '<td class="order-p-icon">'+
-									                     '<span class="process-icon cm-10">'+
-									                         '<img class="icon-img" src="img/icon_handover.png" id="timer_img_1_prog_handover" data-order="1" data-timecat="prog_handover" data-action="clock" onclick="logTimer(this);return false;">'+
-									                     '</span>'+
-									                 '</td>'+
-									                 '<td>'+
-									                     '<span id="orderId_1" class="timer col-xs-12">0:0 hrs</span>'+
-									                 '</td>'+
-									                 '<td class="order-t-icon">'+
-									                 	 '<a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">'+
-														 ' &nbsp;<img class="icon-img" src="img/icon-clock.png" >'+
-														 '</a>'+
-									                 '</td>'+
-									             '</tr>'+
+									     	tbodyObj+
 									     '</tbody>'+
 									     '<tfoot>'+
 									         '<tr>'+
