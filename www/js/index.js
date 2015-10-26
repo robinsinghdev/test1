@@ -59,7 +59,7 @@ var app = {
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
 		/*
-		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
 		db.transaction(initializeDB, errorCB, successCB);
 		*/
         checkPreAuth();
@@ -280,16 +280,152 @@ function handleLogin() {
 	return false;
 }
 
-var time_cats_arr;
-function getCategoriesForTimeTracking(){
+function getSOBySONumber(){
 	//var grnUserObj=window.localStorage.getItem("grnUser");
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"7","email":"support@dynaread.com","lastActive":1444985408};
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
 	var grnUserObj=JSON.stringify(grnUserData)
 	
 	if(grnUserObj != '') {
 		
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";
+		
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+		}
+		else if(connectionType=="WiFi connection"){
+			var sp_salesOrderNumber=$('#sp_salesOrderNumber').val();
+			showModal();
+			if(typeof sp_salesOrderNumber === "undefined" || sp_salesOrderNumber==""){
+				navigator.notification.alert("Please input Sales Order Number.", function() {});
+			}
+			else{
+				$.ajax({
+					type : 'POST',
+				   url:'https://dev.bpmetrics.com/grn/m_app/',
+				   data:{action:'checkSOonSP',grn_user:grnUserObj,sp_salesorderNumber :sp_salesOrderNumber},
+				   success:function(data){
+				   		hideModal();
+				   		var responseJson = $.parseJSON(data);
+				   		//{"status":"success","soInfo":{"SO#":"192","Job":"Cheryl & Marvin Fisher"}}
+				   		//alert(responseJson.soInfo);
+				   		var $sp_details_div=$('#sp_details_div');
+				   		if(responseJson.status=="success"){
+				   			var soInfo=responseJson.soInfo;
+					   		//alert(soInfo["SO#"]+"-----"+soInfo.Job);
+					   		$sp_details_div.find('#sp_jobName').val(soInfo["Job"]);
+					   		$sp_details_div.find('#chooseColorForSalesOrder').val(getRandomColor());
+					   		
+					   		$sp_details_div.show();
+					   		//createNewSO(soInfo["Job"],soInfo["SO#"]);
+					   		
+					   		$('a#tryAgainBtn').removeClass('display-none');
+					   		$('a#addNewSalesOrderBtn').removeClass('display-none');
+					   		$('a#getSOBySONumberBtn').addClass('display-none');
+					   		
+					   		$(".sales-order-msg").html('');
+				   		}
+				   		else if(responseJson.status=="fail"){
+				   			$sp_details_div.hide();
+				   			//alert(responseJson.msg);
+				   			$(".sales-order-msg").html(responseJson.msg);
+				   		} 
+					},
+					error:function(data,t,f){
+						hideModal();
+						console.log(data+' '+t+' '+f);
+						navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+					}
+				});
+			}	
+		}
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
+function tryAgainSOBySONumber(){
+	var $sp_details_div=$('#sp_details_div');
+	$sp_details_div.hide();
+	$('#sp_salesOrderNumber').val('');
+	$sp_details_div.find('#sp_jobName').val('');
+	$sp_details_div.find('#chooseColorForSalesOrder').val('');
+	
+	$sp_details_div.hide();
+	$('a#tryAgainBtn').addClass('display-none');
+	$('a#addNewSalesOrderBtn').addClass('display-none');
+	$('a#getSOBySONumberBtn').removeClass('display-none');
+	$(".sales-order-msg").html('');
+}
+
+function getRandomColor(){
+	var minimumColor=1;
+	var maximumColor=74;
+	var randomColor = Math.floor(Math.random() * (maximumColor - minimumColor + 1)) + minimumColor;
+	return randomColor;
+}
+
+function createNewSO(){
+	//var grnUserObj=window.localStorage.getItem("grnUser");
+	
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	var grnUserObj=JSON.stringify(grnUserData)
+	
+	if(grnUserObj != '') {
+		
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";
+		
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+		}
+		else if(connectionType=="WiFi connection"){
+			var spJobName=$('#sp_jobName').val();
+			var spSalesorderNumber=$('#sp_salesOrderNumber').val();
+			var grn_colors_id=$('#chooseColorForSalesOrder').val(); 
+			showModal();
+			var grn_colors_id=getRandomColor();
+			$.ajax({
+				type : 'POST',
+			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   data:{action:'addSaleOrderTime',grn_user:grnUserObj,grn_colors_id :grn_colors_id,sp_jobName:spJobName,sp_salesorderNumber:spSalesorderNumber},
+			   success:function(data){
+			   		hideModal();
+			   		var responseJson = $.parseJSON(data);
+			   		//alert(responseJson.status);
+			   		//alert(responseJson.msg);
+			   		tryAgainSOBySONumber();
+			   		$(".sales-order-msg").html(responseJson.msg);
+			   		//$.mobile.changePage('#view-all-sales-order','slide');
+				},
+				error:function(data,t,f){
+					hideModal();
+					console.log(data+' '+t+' '+f);
+					navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+				}
+			});
+		}
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
+var time_cats_arr;
+function getCategoriesForTimeTracking(){
+	//var grnUserObj=window.localStorage.getItem("grnUser");
+	
+	var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"7","email":"support@dynaread.com","lastActive":1444985408};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {		
 		//var connectionType=checkConnection();
 		var connectionType="WiFi connection";
 		
@@ -325,9 +461,9 @@ function getCategoriesForTimeTracking(){
 function getSalesOrders(){
 	//var grnUserObj=window.localStorage.getItem("grnUser");
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"1","email":"support@dynaread.com","lastActive":1444985408};
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
-	var grnUserObj=JSON.stringify(grnUserData)
+	var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"7","email":"support@dynaread.com","lastActive":1444985408};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
 		
@@ -344,7 +480,7 @@ function getSalesOrders(){
 			   url:'https://dev.bpmetrics.com/grn/m_app/',
 			   data:{action:'getSalesOrders',grn_user:grnUserObj},
 			   success:function(data){
-			   		hideModal();
+			   		
 			   		var responseJson = $.parseJSON(data);
 			   		$('#salesOrderMainDiv').html('');
 			   		
@@ -361,14 +497,14 @@ function getSalesOrders(){
 			        	tbodyObj+='<tr>'+
 					                 '<td class="order-p-icon">'+
 					                     '<span class="process-icon cm-10">'+
-					                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_1_'+timeCats+'" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+					                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderNoReplace_'+timeCats+'" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 					                     '</span>'+
 					                 '</td>'+
 					                 '<td>'+
-					                     '<span id="orderId_1" class="timer">--:-- hrs</span>'+
+					                     '<span id="orderId_spOrderNoReplace" class="timer">--:-- hrs</span>'+
 					                 '</td>'+
 					                 '<td class="order-t-icon">'+
-					                     '<a class="timer timer-icon clock" id="timer_1_'+timeCats+'" data-icon="flat-time" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+					                     '<a class="timer timer-icon clock" id="timer_spOrderNoReplace_'+timeCats+'" data-icon="flat-time" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 										 ' &nbsp;<img class="icon-img" src="img/icon-clock.png" >'+
 										 '</a>'+
 					                 '</td>'+
@@ -376,8 +512,8 @@ function getSalesOrders(){
 			   		});
 			   		tbodyObj+='</tbody>';
 			   		
-			   		
-			   		jQuery.each(responseJson.salse_orders, function(index,value) {
+			   		var salse_orders_arr=responseJson.salse_orders;
+			   		jQuery.each(salse_orders_arr, function(index,value) {
 			        	var jsonObj=value;
 			        	var id=jsonObj["id"];
 			        	var grn_companies_id=jsonObj["grn_companies_id"];
@@ -389,18 +525,19 @@ function getSalesOrders(){
 			        	var grn_status_id=jsonObj["grn_status_id"];
 			        	var HexColor=jsonObj["HexColor"];
 			        	
-			        	var divObj='<div id="" class="sales-table-div">'+
-				                		'<table class="order-box ui-table" style="border: 1px solid #'+HexColor+';" id="sp_order_1" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
+			        	var tbodyObjCurr = tbodyObj.replace("spOrderNoReplace", sp_salesorderNumber);
+			        	var divObj='<div id="sales-table-div_'+sp_salesorderNumber+'" class="sales-table-div">'+
+				                		'<table id="sp_order_'+sp_salesorderNumber+'"  class="order-box ui-table" style="border: 1px solid #'+HexColor+';" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
 									     '<thead onclick="showHideTable(this);">'+
 									         '<tr>'+
-									             '<th style="background-color: #'+HexColor+';" class="sp-order " colspan="3" id="sp_order_name_1">'+
+									             '<th style="background-color: #'+HexColor+';" class="sp-order " colspan="3" id="sp_order_name_'+sp_salesorderNumber+'">'+
 									             		sp_jobName+' #'+sp_salesorderNumber+
 									                 '<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="1">Report'+
 									                 '</a>'+
 									             '</th>'+
 									         '</tr>'+
 									     '</thead>'+
-									     	tbodyObj+
+									     tbodyObjCurr+
 									     '</tbody>'+
 									     '<tfoot>'+
 									         '<tr>'+
@@ -414,6 +551,10 @@ function getSalesOrders(){
 			        	$('#salesOrderMainDiv').append(divObj);
 			   		});
 			   		hideAllTablesData();
+			   		hideModal();
+			   		if(salse_orders_arr.length <= 0){
+			   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
+			   		}
 				},
 				error:function(data,t,f){
 					hideModal();
@@ -423,12 +564,50 @@ function getSalesOrders(){
 				}
 			});
 		}
+		$.mobile.changePage('#view-all-sales-order','slide');
 	}
 	else{
 		logout();
 		navigator.notification.alert("Please login again.", function() {});
 	}
 }
+
+function showModal(){
+  $('body').append("<div class='ui-loader-background'> </div>");
+  $.mobile.loading( "show" );
+}
+
+function hideModal(){
+	 $(".ui-loader-background").remove();
+	 $.mobile.loading( "hide" );
+}
+
+function showHideTable(thiss){
+	var currTableObj = $(thiss).parent();
+	currTableObj.find('tbody').toggle();
+	currTableObj.find('tfoot').toggle();
+}
+
+function  hideAllTablesData(){
+	//var allTableObj = $('.sales-table');
+	 $('table').find('tbody').hide();
+	 $('table').find('tfoot').hide();
+}
+
+function logTimer(){
+	navigator.notification.alert("Time Tracker will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
+}
+
+function getLogTimeListOfOrder(){
+	navigator.notification.alert("Log Time Report will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
+}
+
+function changeLoginRole(roleId){
+	navigator.notification.alert("Change Login Role will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
+}
+
+
+/* ----------------  Code Reusable -------------------------  */
 
 function getTodayDate(){
 	var today = new Date();
@@ -454,7 +633,7 @@ function startTracker() {
 	endTimerDiv.setAttribute('style', 'display:block;');
 	
 	var currtimetrackerid; 
-	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
 	db.transaction(function(tx) {
 		tx.executeSql('INSERT INTO DEMO(data, tracker_date) VALUES (?,?)',["0",getTodayDate().toString()]
 			,function(tx, results){
@@ -471,7 +650,7 @@ function stopTracker() {
 	var timeTracked=$('#timeTrackerDiv').data('seconds'); 
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	
-	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
 	db.transaction(function(tx) {
 		//tx.executeSql('INSERT INTO DEMO(data, tracker_date) VALUES (?,?)',[timeTracked.toString(),getTodayDate().toString()]);
 		tx.executeSql("UPDATE DEMO SET data='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
@@ -497,13 +676,13 @@ function stopTracker() {
 			
 function AddValueToDB() {
    //alert('Databases are nowwww supported in this browser.');
-   var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+   var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
    db.transaction(initializeDB, errorCB, successCB);
 } 
 
 function GetValueToDB() {
    //alert('Databases are nowwww supported in this browser.');
-   var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+   var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
    db.transaction(successCBData, errorCB);
 } 
 
@@ -574,47 +753,12 @@ function errorCB(err) {
 
 // Transaction success callback
 function successCB() {
-	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
 	db.transaction(queryDB, errorCB);
 }
 
 function successCBData() {
-	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
 	db.transaction(queryDBData, errorCB);
-}
-
-
-function showModal(){
-  $('body').append("<div class='ui-loader-background'> </div>");
-  $.mobile.loading( "show" );
-}
-
-function hideModal(){
-	 $(".ui-loader-background").remove();
-	 $.mobile.loading( "hide" );
-}
-
-function showHideTable(thiss){
-	var currTableObj = $(thiss).parent();
-	currTableObj.find('tbody').toggle();
-	currTableObj.find('tfoot').toggle();
-}
-
-function  hideAllTablesData(){
-	//var allTableObj = $('.sales-table');
-	 $('table').find('tbody').hide();
-	 $('table').find('tfoot').hide();
-}
-
-function logTimer(){
-	navigator.notification.alert("Time Tracker will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
-}
-
-function getLogTimeListOfOrder(){
-	navigator.notification.alert("Log Time Report will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
-}
-
-function changeLoginRole(roleId){
-	navigator.notification.alert("Change Login Role will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
 }
 

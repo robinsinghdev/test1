@@ -29,6 +29,7 @@
 		
         <div id="app">
         
+        
         	<div  id="login-page" data-role="page">
                 <div data-role="content">
 					<div  class="login-box">
@@ -45,6 +46,7 @@
 					</div>
                 </div>
             </div>
+            
             
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -71,6 +73,10 @@
                 		<p>Welcome,<span id="userFullName"></span></p>
                 		<p>You can see your sales order and track your time</p>
 						<p>Timer : New Feature (Coming Soon...)</p>
+						
+						<div id="timeTrackerInfoDiv">
+	                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog" data-transition="sildedown" >Add New Sales Order</a>
+	                    </div>
                 	</div>
 					
                 </div>
@@ -91,6 +97,45 @@
                 </div>
                 
                 <div data-role="content" >
+                	<div id="timeTrackerInfoDiv">
+                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog" data-transition="sildedown" >Add New Sales Order</a>
+                    </div>
+                    <hr class="style">
+                    
+                    <div id="running_tracker" class="running-tracker">
+					    <p style="text-align: center;">
+							<span style="vertical-align: top;" class="" id="logging_proc_icon">
+								<img class="icon-img" src="img/prod_handover.png" id="timer_img_spOrderNoReplace_" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
+							</span> 
+							<span id="logging_detail" class="order-detail" style="background-color: #20B2AA;" class="">
+								Cheryl & Marvin Fisher #192  Report
+							</span>
+						</p>
+						
+					    <div class="ui-grid-c" style="text-align: center;">
+					    
+						  <div id="logging_time" class="ui-block-a" >00:00:00</div>
+						  
+						  <div class="ui-block-b"  >
+						  		<div class="timer timer-icon play">
+						  				<img id="logging_play" class="icon-img" src="img/icon-play.png" data-timecat="1" data-action="resume" onclick="logTimer(this);return false;">
+						  		</div>
+						  		<div class="timer timer-icon pause display-none">
+						  			<img id="logging_pause" class="icon-img" src="img/icon-pause.png" data-timecat="1" data-action="pause" onclick="logTimer(this);return false;">
+						  		</div>
+						  </div>
+						  
+						  <div id="logging_clock" class="ui-block-c timer timer-icon clock" data-action="logtime" >
+								<img class="icon-img" src="img/icon-clock.png" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
+						  </div>
+						  
+						  <div id="logging_delete" class="ui-block-d timer timer-icon delete" data-action="delete" >
+						  		<img class="icon-img" src="img/icon-delete.png" id="timer_img_spOrderNoReplace_" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
+						  </div>
+						</div>
+					    <hr class="style">  
+					</div>    
+                    
                     <div id="salesOrderMainDiv">
                     	<!-- 
                     	<div id="" class="sales-table-div">
@@ -119,9 +164,6 @@
 							                     <a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" 
 							                     data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
 							                     &nbsp;<img class="icon-img" src="img/icon-clock.png" ></a>
-							                     
-							                     
-							                     
 							                 </td>
 							             </tr>
 							             <tr>
@@ -151,6 +193,8 @@
 							 </table>
 						 </div> 
 						 -->
+						 
+						 <div class="sales-table-div" id="sales-table-div_1001"><table data-mode="" data-role="table" style="border: 1px solid #87CEEB;" class="order-box ui-table" id="sp_order_1001"><thead onclick="showHideTable(this);"><tr><th id="sp_order_name_1001" colspan="3" class="sp-order " style="background-color: #87CEEB;">Jackson #1001<a data-order="1" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></th></tr></thead><tbody style="display: none;"><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" id="timer_img_1001_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_materials" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" id="timer_img_spOrderNoReplace_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_setup" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" id="timer_img_spOrderNoReplace_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_unload" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" id="timer_img_spOrderNoReplace_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_rodding" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" id="timer_img_spOrderNoReplace_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_handover" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" id="timer_img_spOrderNoReplace_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_maint_scheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" id="timer_img_spOrderNoReplace_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_maint_unscheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr></tbody><tfoot style="display: none;"><tr><td class="td-danger" colspan="3"><a class="order-close" href="#"><span>CLOSE</span></a></td></tr></tfoot></table></div>
                 	</div>
                 </div>
                 
@@ -165,12 +209,29 @@
             </div><!-- /page  -->
 			
 			<!-- Dialog only page -->
-			<div data-role="dialog" id="dialog">
+			<div data-role="page" id="getSOBySONumberDialog" data-close-btn="right" data-corners="false" >
 			  <div data-role="header">
-				<h1>Dialog Only Page</h1>
+				<h1>Create Sales Order</h1>
 			  </div>
 			  <div data-role="content">
-				<p>I can only be served as a dialog, and I don't need a data-rel="dialog" attribute on a link</p>
+			  	<p class="msg-info sales-order-msg"></p>
+			  	<label for="Sales Order Number">Sales Order Number </label>
+				<input type="text" name="sp_salesOrderNumber" id="sp_salesOrderNumber" placeholder="Sales Order Number" autocomplete="off" />
+				
+				<div id="sp_details_div" class="display-none">
+					<label for="Sales Order Number">Job Name</label>
+					<input type="text" name="sp_jobName" id="sp_jobName" placeholder="Job Name" autocomplete="off" />
+					<label for="Sales Order Number">Choose Color</label>
+					<input type="text" name="chooseColorForSalesOrder" id="chooseColorForSalesOrder" placeholder="Choose Color" autocomplete="off" />
+				</div>
+				
+				<div class="ui-grid-a sales-order-btn-group">
+				  <!-- <div class="ui-block-a"><a data-rel="back" data-role="button" href="#view-all-sales-order" >Close</a></div> -->
+				  <div class="ui-block-a" ><a  id="tryAgainBtn" class="display-none" data-theme="a" data-role="button" href="#" onclick="tryAgainSOBySONumber();" >Try Again</a></div>
+				  <div class="ui-block-b"><a id="getSOBySONumberBtn" data-theme="a" data-role="button" href="#" onclick="getSOBySONumber();" >Submit</a></div>
+				  <div class="ui-block-b"><a id="addNewSalesOrderBtn" class="display-none"  data-theme="a" data-role="button" href="#" onclick="createNewSO();" >Create</a></div>
+				</div><!-- /grid-a -->
+				
 			  </div>
 			</div>
             
