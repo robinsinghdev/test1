@@ -31,6 +31,8 @@ $( document ).on( "mobileinit", function() {
      jQuery.mobile.loader.prototype.options.theme = "a";
 });
 
+var appRequiresWiFi='This app requires an active WiFi connection.';
+
 var app = {
     SOME_CONSTANTS : false,  // some constant
 
@@ -86,6 +88,9 @@ function onBackKeyDown() {
    }
 	else if($.mobile.activePage.is('#view-all-sales-order')){
        $.mobile.changePage('#home-page','slide');
+   }
+	else{
+	   
    }
 }
 
@@ -191,7 +196,7 @@ function handleLogin() {
 		
 		var connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
 		else if(connectionType=="WiFi connection"){
 			showModal();
@@ -256,20 +261,20 @@ function handleLogin() {
 			   },
 			   error:function(data,t,f){
 				   hideModal();
-				   navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+				   navigator.notification.alert(appRequiresWiFi, function() {});
 				 var responseJson = $.parseJSON(data);
 				 alert(w+' '+t+' '+f);
 				 console.log(data+' '+t+' '+f);
 				 alert(JSON.stringify(data));
 				 alert(responseJson.status);
 				 if(responseJson.status==404){
-					 navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+					 navigator.notification.alert(appRequiresWiFi, function() {});
 				 }
 			   }
 			});
 		}
 		else{
-			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
 		$("#submitButton").removeAttr("disabled");
 	}
@@ -293,7 +298,7 @@ function getSOBySONumber(){
 		var connectionType="WiFi connection";
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
 		else if(connectionType=="WiFi connection"){
 			var sp_salesOrderNumber=$('#sp_salesOrderNumber').val();
@@ -336,7 +341,7 @@ function getSOBySONumber(){
 					error:function(data,t,f){
 						hideModal();
 						console.log(data+' '+t+' '+f);
-						navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+						navigator.notification.alert(appRequiresWiFi, function() {});
 					}
 				});
 			}	
@@ -382,7 +387,7 @@ function createNewSO(){
 		var connectionType="WiFi connection";
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
 		else if(connectionType=="WiFi connection"){
 			var spJobName=$('#sp_jobName').val();
@@ -406,7 +411,7 @@ function createNewSO(){
 				error:function(data,t,f){
 					hideModal();
 					console.log(data+' '+t+' '+f);
-					navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+					navigator.notification.alert(appRequiresWiFi, function() {});
 				}
 			});
 		}
@@ -430,7 +435,7 @@ function getCategoriesForTimeTracking(){
 		var connectionType="WiFi connection";
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
 		else if(connectionType=="WiFi connection"){
 			showModal();
@@ -439,15 +444,15 @@ function getCategoriesForTimeTracking(){
 			   url:'https://dev.bpmetrics.com/grn/m_app/',
 			   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
 			   success:function(data){
-			   		hideModal();
 			   		var responseJson = $.parseJSON(data);
 			   		time_cats_arr=responseJson.time_cats;
 			   		getSalesOrders();
+			   		hideModal();
 				},
 				error:function(data,t,f){
 					hideModal();
 					console.log(data+' '+t+' '+f);
-					navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+					navigator.notification.alert(appRequiresWiFi, function() {});
 				}
 			});
 		}
@@ -466,12 +471,11 @@ function getSalesOrders(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		
 		//var connectionType=checkConnection();
 		var connectionType="WiFi connection";
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert("Please check your connection or try again after sometime.", function() {});
+			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
 		else if(connectionType=="WiFi connection"){
 			showModal();
@@ -497,14 +501,14 @@ function getSalesOrders(){
 			        	tbodyObj+='<tr>'+
 					                 '<td class="order-p-icon">'+
 					                     '<span class="process-icon cm-10">'+
-					                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderNoReplace_'+timeCats+'" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+					                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 					                     '</span>'+
 					                 '</td>'+
 					                 '<td>'+
-					                     '<span id="orderId_spOrderNoReplace" class="timer">--:-- hrs</span>'+
+					                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
 					                 '</td>'+
 					                 '<td class="order-t-icon">'+
-					                     '<a class="timer timer-icon clock" id="timer_spOrderNoReplace_'+timeCats+'" data-icon="flat-time" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+					                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 										 ' &nbsp;<img class="icon-img" src="img/icon-clock.png" >'+
 										 '</a>'+
 					                 '</td>'+
@@ -525,15 +529,23 @@ function getSalesOrders(){
 			        	var grn_status_id=jsonObj["grn_status_id"];
 			        	var HexColor=jsonObj["HexColor"];
 			        	
-			        	var tbodyObjCurr = tbodyObj.replace("spOrderNoReplace", sp_salesorderNumber);
-			        	var divObj='<div id="sales-table-div_'+sp_salesorderNumber+'" class="sales-table-div">'+
-				                		'<table id="sp_order_'+sp_salesorderNumber+'"  class="order-box ui-table" style="border: 1px solid #'+HexColor+';" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
+			        	var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
+			        	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
+				                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
 									     '<thead onclick="showHideTable(this);">'+
 									         '<tr>'+
-									             '<th style="background-color: #'+HexColor+';" class="sp-order " colspan="3" id="sp_order_name_'+sp_salesorderNumber+'">'+
-									             		sp_jobName+' #'+sp_salesorderNumber+
-									                 '<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="1">Report'+
-									                 '</a>'+
+									             '<th class="sp-order " colspan="3" id="sp_order_name_'+id+'">'+
+									             		
+									             	'<div id="so_details_box" class="so-details-box" style="border-color: #'+HexColor+';">'+
+								                    	'<div class="so-color-box" style="background-color: #'+HexColor+';">'+
+								                    		'<span style="">&nbsp;</span>'+
+								                        '</div>'+
+								                        '<div class="so-name-box" >'+
+								                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
+								                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
+											                 '</a>'+
+								                        '</div>'+
+								                    '</div>'+	
 									             '</th>'+
 									         '</tr>'+
 									     '</thead>'+
@@ -558,7 +570,7 @@ function getSalesOrders(){
 				},
 				error:function(data,t,f){
 					hideModal();
-					navigator.notification.alert("Please check your connection or try again after sometime.", function() {});	
+					navigator.notification.alert(appRequiresWiFi, function() {});	
 					alert(data+' '+t+' '+f);
 					console.log(data+' '+t+' '+f);
 				}
@@ -598,15 +610,194 @@ function logTimer(){
 	navigator.notification.alert("Time Tracker will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
 }
 
-function getLogTimeListOfOrder(){
+/*function getLogTimeListOfOrder(){
 	navigator.notification.alert("Log Time Report will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
-}
+}*/
 
 function changeLoginRole(roleId){
 	navigator.notification.alert("Change Login Role will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
 }
 
+function getLogTimeListOfOrder(data){
+//var grnUserObj=window.localStorage.getItem("grnUser");
+	showModal();
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";
+		
+		var $thisData=$(data);
+   		var $so_name_box = $('#so_name_box_history');
+   		$so_name_box.css('background-color',$thisData.attr("data-hexcolor"));
+   		$so_name_box.find("#so_name").html($thisData.attr("data-oname"));
+		var oid=$thisData.attr("data-order");
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert(appRequiresWiFi, function() {});
+		}
+		else if(connectionType=="WiFi connection"){
+			
+			$.ajax({
+				type : 'POST',
+			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   data:{action:'getLogTimeListOfOrder',grn_user:grnUserObj,orderId:oid},
+			   success:function(data){
+			   		var responseJson = $.parseJSON(data);
+			   		var records_arr=responseJson.records;
+			   		
+			   		$('#logTimeHistoryDiv').html('');
+			   		
+			   		if(records_arr==null || records_arr.length==0) {
+			   			var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
+											'<div class="process-details">'+
+												'<div class="ui-grid-a my-breakpoint">'+
+												  '<div class="ui-block-a text-align-center">'+
+														'<div class="process-name">No History Found</div>'+
+												  '</div>'+
+												'</div>'+
+											'</div>'+
+										'</div>';
+			   			$('#logTimeHistoryDiv').append(logTimeDiv);
+			   			hideModal();
+			   		}
+			   		else{
+				   		jQuery.each(records_arr, function(index,value) {
+				   			var id =value.id;
+				   			var grn_salesorderTime_id=value.grn_salesorderTime_id;
+				   			var decimalTime=value.time;
+				   			var date =value.date;
+				   			var timer_flag =value.timer_flag;
+				   			var crew_size =value.crew_size;
+				   			var grn_timeCat =value.grn_timeCat;
+				   			var comments =value.comments;
+				   			var title =value.title;
+				   			var grn_timeCat_img = grn_timeCat;
+				   			
+				   			console.log(decimalTime);
+				   			var timeInHours=convertDecimalTimeToHours(decimalTime);
+				   			grn_timeCat_img=grn_timeCat_img.replace("_revision", "");
+				   			var revisionSpan;
+				   			if (grn_timeCat.toLowerCase().indexOf("revision") >= 0){
+				   				revisionSpan='<span style="vertical-align: top;" class="text-pink">Revision Work</span>';
+				   			}else{
+				   				revisionSpan='<span style="vertical-align: top;" class="text-purple">Work</span>';
+				   			}
+				   				
+				   			if(comments==""){
+				   				comments="No Comments";
+				   			}
+				   			
+					   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
+										   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
+												'<span class="pull-right">'+timeInHours+' hrs</span>'+
+											'</div>'+
+											'<div class="process-details">'+
+												'<div class="ui-grid-a my-breakpoint">'+
+												  '<div class="ui-block-a">'+
+														'<div class="process-img">'+
+															'<img src="img/'+grn_timeCat_img+'.png">'+                    				 
+														'</div>'+
+														'<div class="process-name">'+title+'</div>'+
+												  '</div>'+
+												  '<div class="ui-block-b text-align-right">'+
+														'<span class="link-custom-spam">'+
+															'<a onclick="editLogTime(1,12);" href="#" >Edit</a>'+
+														'</span>'+	
+												  '</div>'+
+												'</div>'+
+												'<div class="more-process-details-main ">'+
+													'<div class="text-align-right">'+
+														'<a onclick="moreProcessDetails(this);" href="#" class="link">Show Details</a>'+
+													'</div>'+
+													'<div class="more-process-details moreDetailsDiv12" style="display: none;">'+
+														'<p class="process-comment">Revision: '+revisionSpan+'</p>'+
+														'<p class="process-comment">Comment: <span>'+comments+'</span></p>'+
+													'</div>'+
+												'</div>'+    
+											'</div>'+
+										'</div>';
+					   		
+					   		$('#logTimeHistoryDiv').append(logTimeDiv);
+				   		});
+				   		hideModal();
+			   		}
+			   		
+				},
+				error:function(data,t,f){
+					hideModal();
+					console.log(data+' '+t+' '+f);
+					navigator.notification.alert(appRequiresWiFi, function() {});
+				}
+			});
+		}
+		
+		$.mobile.changePage('#view-log-time-history','slide');
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
 
+function addLogTime(){
+	$.mobile.changePage('#add-log-time','slide');
+	
+}
+function editLogTime(oid,cid){
+	$.mobile.changePage('#add-log-time','slide');
+}
+
+function moreProcessDetails(currObj){
+	var $parentDiv = $(currObj).parents(".more-process-details-main");
+	var $moreProcessDetails = $parentDiv.find('.more-process-details');
+	
+	if($moreProcessDetails.is(':visible')){
+		$(currObj).text('Show Details');
+		$moreProcessDetails.hide();
+	}else{
+        $(currObj).text('Hide Details');
+        $moreProcessDetails.show();
+	}
+}
+
+function convertDecimalTimeToHours(decimalTimeVal) {
+	/*
+    2.88 hours can be broken down to 2 hours plus 0.88 hours - 2 hours
+    0.88 hours * 60 minutes/hour = 52.8 minutes - 52 minutes
+    0.8 minutes * 60 seconds/minute = 48 seconds - 48 seconds
+    02:52:48
+	*/
+	
+	var decimalTime=""+decimalTimeVal+"";
+	var splitDecimalTime=decimalTime.split(".");
+	var hours=splitDecimalTime[0];
+	var minutes=(decimalTime % 1).toFixed(4);
+	//console.log("minutes..."+minutes);
+	minutes=minutes*60;
+	//console.log("minutes..."+minutes);
+	
+	//minutes=Math.round(minutes);
+	
+	//console.log("minutes..+++."+minutes);
+	if(minutes<1){
+		minutesString="00";
+	} 
+	else if(minutes>= 1 && minutes<10){
+		minutesString="0"+Math.round(minutes);;
+	}else if(minutes>= 10 ){
+		minutesString=Math.round(minutes);
+	}
+	var convertedHours=hours+":"+minutesString;
+	//console.log(convertedHours);
+	return convertedHours;
+	
+}
+
+function changeTimeCatImage(obj){
+	
+}
 /* ----------------  Code Reusable -------------------------  */
 
 function getTodayDate(){

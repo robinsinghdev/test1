@@ -4,56 +4,12 @@ body {
 }
 * {
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
-}
-/* 
-body {
-    -webkit-touch-callout: none;                prevent callout to copy image, etc when tap to hold
-    -webkit-text-size-adjust: none;             prevent webkit from resizing text to fit
-    -webkit-user-select: none;                  prevent copy paste, to allow, change 'none' to 'text'
-    background-color:#FFFFFF;
-    background-image:linear-gradient(top, #CCC 0%, #FFFFFF 51%);
-    background-image:-webkit-linear-gradient(top, #CCC 0%, #FFFFFF 51%);
-    background-image:-ms-linear-gradient(top, #CCC 0%, #FFFFFF 51%);
-    background-image:-webkit-gradient(
-        linear,
-        left top,
-        left bottom,
-        color-stop(0, #CCC),
-        color-stop(0.51, #FFFFFF)
-    );
-    background-attachment:fixed;
-    font-size:12px;
-    height:100%;
-    margin:0px;
-    padding:0px;
-    width:100%;
+    text-shadow: none !important; 
 }
 
 
-h1 {
-    font-size:24px;
-    font-weight:normal;
-    margin:0px;
-    overflow:visible;
-    padding:0px;
-    text-align:center;
-}
-
-header
-.ui-header > .ui-btn {
-    padding: 7px 10px 11px;
-    background:none;
-    border:none;
-    overflow:;
-}
-.ui-header .ui-title{
-
-margin: .8em 30% .8em;
-
-}
- */
-
-/* home page */
+.my-breakpoint.ui-grid-a .ui-block-a { width: 79.95%; }
+.my-breakpoint.ui-grid-a .ui-block-b { width: 19.925%; }
 
 #logo{
     width:70%;
@@ -194,6 +150,7 @@ td.td-danger {
 }
 .order-box td {
    /*  padding: 10px 0; */
+   text-align: center;
 }
 .order-box .timer {
     text-align: center;
@@ -216,6 +173,12 @@ a {
 }
 .pull-right{float: right;}
 .pull-left{float: left;}
+.text-align-right{text-align: right;}
+.text-align-center{text-align: center;}
+
+.text-purple{color:#a696ce;}
+.text-pink{color:#db5e8c;}
+
 
 .ui-loader-background {
     width:100%;
@@ -251,3 +214,79 @@ hr.style {
     background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.75), rgba(0,0,0,0)); 
     background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.75), rgba(0,0,0,0)); 
 }
+
+.log-time-entry-div{
+	border-bottom: 1px solid #afafaf;
+	font-size: 13px;
+	padding-top: 10px;
+}
+.log-time-entry-div > a {	
+	font-weight: 500 !important ;
+}
+.log-time-entry-div .date-time-details{
+	padding-bottom: 10px;
+    font-size: 14px;
+    color: #5d5d5d;
+}
+.log-time-entry-div .process-details{
+	padding-bottom: 5px;
+}
+
+.log-time-entry-div .process-details .process-name{
+	 
+	 width: 70%;
+} 
+.log-time-entry-div .process-details .process-img{
+	float: left;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.log-time-entry-div .process-details .process-name{
+}
+
+.process-comment{
+	font-size: 12px;
+	color: #5d5d5d;
+}
+
+.link-custom-spam{
+}
+
+.link-custom-spam a{
+}
+
+.so-details-box {
+    border: 1px solid ;
+    border-color:#20b2aa;
+    padding-left: 20px;
+    position: relative;
+    text-align: center;
+    font-size: 14px;
+}
+
+.so-color-box {
+    background-color: #20b2aa;
+    box-sizing: border-box;
+    float: left;
+    height: 100%;
+    left: 0;
+    padding: 0.4em 0.5em;
+    position: absolute;
+    width: 30px;
+}
+
+.so-name-box{
+	padding: 0.4em 0.7em;
+}
+
+.small-custom-input{
+    width: 75px !important;
+}
+
+
+
+
+
+
+

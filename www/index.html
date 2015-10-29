@@ -8,6 +8,7 @@
         <!-- <link rel="stylesheet"  href="libs/jQM-flat/jquery.mobile.flatui.css"> -->
         <link rel="stylesheet"  href="libs/jQueryMobile/jquery.mobile-1.4.5.min.css">
         <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" href="libs/jqm-datebox-1.4.5.css" />
         
         <script type="text/javascript" src="libs/fastclick.min.js"></script>
         <script type="text/javascript" src="phonegap.js"></script>
@@ -15,6 +16,7 @@
         <script type="text/javascript" src="libs/jquery.min.js"></script>
         
         <script type="text/javascript" src="libs/jQueryMobile/jquery.mobile-1.4.5.min.js"></script>
+		 <script src="libs/jqm-datebox-1.4.5.js"></script>
 
         <script type="text/javascript" src="js/index.js"></script>
 		<script type="text/javascript" src="js/timer.jquery.js"></script>
@@ -30,6 +32,7 @@
         <div id="app">
         
         
+        <!-- 
         	<div  id="login-page" data-role="page">
                 <div data-role="content">
 					<div  class="login-box">
@@ -46,7 +49,103 @@
 					</div>
                 </div>
             </div>
+             -->
             
+            
+            <div id="add-log-time" data-role="page">
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
+                	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
+                    <h1>Log Time Entry</h1>
+					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
+                </div>
+                
+                <div data-role="content" >
+                	
+              	  	<div id="so_details_box" class="so-details-box">
+                    	<div class="so-color-box" >
+                    		<span style="">&nbsp;</span>
+                        </div>
+                        <div class="so-name-box" >
+                        	Order: <span class="" id="so_name">1 time Customer CustomerCustomer Customer #123</span>
+                        </div>
+                    </div>
+                    	
+                    <div id="addLogTimeMainDiv">
+                    		<div>
+		                    	<div class="ui-field-contain">
+								    <label for="select-native-2">
+								    	Process: <span class="" id="process-img" style="vertical-align: top;">
+			                        				<img width="25px" src="https://dev.bpmetrics.com/assets/img/icon/prog_crm.png">
+			                        			</span>
+			                        </label>
+			                    	<select data-mini="true" onchange="changeTimeCatImage(this); return false;" class="" name="timeCat" id="timeCat" >                    
+			                    		<option value="">--Select Process--</option>
+			                            <option value="prog_materialsPrep">Programming Materials Prep </option>
+			                            <option value="prog_crm">Programming CRM</option>
+			                            <option value="prog_production">Programming Production</option>
+			                            <option value="prog_handover">Programming Handover</option>
+			                        </select>
+			                    </div>   
+			                    
+								<h4> Modify time logged: </h4>
+			                    <div class="ui-field-contain">
+								    <label for="">Date: </label>
+								    <!-- <input data-role="datebox" type="text" id="date" data-inline="false"> -->
+								    <input type="text" data-mini="true" data-options="{&quot;mode&quot;:&quot;calbox&quot;}" data-role="datebox" id="mode1" name="mode1" readonly="readonly">
+			                    </div> 
+			                    <div class="ui-field-contain">
+			                    	 <label for="">Time: </label>
+								    
+								    <div class="ui-grid-a">
+									    <div class="ui-block-a">
+											<input type="text" data-mini="true" id="hours" name="hours" data-wrapper-class="small-custom-input" placeholder="Hours" >
+										</div>
+									    <div class="ui-block-b">
+											<input type="text" data-mini="true" id="minutes" name="minutes" data-wrapper-class="small-custom-input" placeholder="Mins">
+										</div>
+									</div><!-- /grid-a -->
+			                    </div> 
+			                    
+			                    <div class="ui-field-contain">
+								    <label for="">Add a description: </label>
+								    <textarea cols="40" rows="4" name="textarea" id="textarea"></textarea>
+			                    </div>     
+			                    
+			                    <div class="ui-field-contain">
+			                    	<label for="">Crew Size: </label>
+								    <select data-mini="true" onchange="calcTotalCrewTime(this); return false;" class="" name="crew-size" id="crew-size" >                    
+			                            <option value="1">1</option>
+			                            <option value="2">2</option>
+			                            <option value="3">3</option>
+			                            <option value="4">4</option>
+			                        </select>
+			                    </div> 
+			                    
+			                    <div class="ui-field-contain">
+			                    	<p><span >Total Time: </span> <span>00:00 </span></p>
+			                    	
+								    
+			                    </div> 
+	                        
+	                   		</div>     
+	                   		
+                	</div>
+                	<div>
+			                  <fieldset class="ui-grid-a">
+							    <div class="ui-block-a"><input type="button" value="Log Time "></div>
+							    <div class="ui-block-b"><input type="reset" value="Log Time As Revision"></div>
+							  </fieldset>
+                	</div>
+                
+                <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="true" class="app-footer-section" class="footer-div">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" data-icon="home" data-theme="b" class="app-link">Home</a></li>
+                            <li><a id="list-button" href="#" onclick="getCategoriesForTimeTracking();" data-icon="bars" class="app-link">Sales Order</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- /page  -->
             
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -70,15 +169,24 @@
 					 </div> 
 					 
                 	<div id="menu">
-                		<p>Welcome,<span id="userFullName"></span></p>
-                		<p>You can see your sales order and track your time</p>
-						<p>Timer : New Feature (Coming Soon...)</p>
-						
-						<div id="timeTrackerInfoDiv">
-	                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog" data-transition="sildedown" >Add New Sales Order</a>
-	                    </div>
+                		<div>
+                			<h4>Welcome,<span id="userFullName"></span></h4>
+                		</div>	
+                		<div>
+	                		<ul data-role="listview"  data-divider-theme="a">
+	                			<li data-role="list-divider">Sales Order</li> 
+							    <li data-icon="bars"><a href="#" onclick="getCategoriesForTimeTracking();">Your Orders</a></li>
+							    <li data-icon="plus"><a href="#getSOBySONumberDialog" data-rel="dialog">Add New Order</a></li>
+							    <li data-role="list-divider">Roles</li>
+							    <li data-icon="action"><a href="#overlayPanel" >Select Roles</a></li>
+							</ul>
+						</div>
                 	</div>
-					
+                	<!-- 
+                	<div id="timeTrackerInfoDiv">
+                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog">Add New Sales Order</a>
+                    </div>
+					 -->
                 </div>
                 <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="true" class="app-footer-section" class="footer-div">
                     <div id="navbar" data-role="navbar">
@@ -92,13 +200,14 @@
 			
 			<div id="view-all-sales-order" data-role="page">
                 <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
+                	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
                     <h1>Sales Order</h1>
 					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
                 </div>
                 
                 <div data-role="content" >
                 	<div id="timeTrackerInfoDiv">
-                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog" data-transition="sildedown" >Add New Sales Order</a>
+                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button"  data-rel="dialog">Add New Sales Order</a>
                     </div>
                     <hr class="style">
                     
@@ -137,63 +246,7 @@
 					</div>    
                     
                     <div id="salesOrderMainDiv">
-                    	<!-- 
-                    	<div id="" class="sales-table-div">
-	                		<table class="order-box" style="border: 1px solid #87CEEB" id="sp_order_1" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">
-							     <thead onclick="showHideTable(this);">
-							         <tr>
-							             <th style="background-color: #87CEEB;" class="sp-order " colspan="3" id="sp_order_name_1">
-							                 Jackson #1001
-							                 <a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="1">
-							                      Report
-							                 </a>
-							             </th>
-							         </tr>
-							     </thead>
-							     <tbody>
-							             <tr>
-							                 <td class="order-p-icon">
-							                     <span class="process-icon cm-10">
-							                         <img class="icon-img" src="img/icon_production.png" id="timer_img_1_prog_production" data-order="1" data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
-							                     </span>
-							                 </td>
-							                 <td>
-							                     <span id="orderId_1" class="timer col-xs-12">3:6 hrs</span>
-							                 </td>
-							                 <td class="order-t-icon">
-							                     <a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" 
-							                     data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
-							                     &nbsp;<img class="icon-img" src="img/icon-clock.png" ></a>
-							                 </td>
-							             </tr>
-							             <tr>
-							                 <td class="order-p-icon">
-							                     <span class="process-icon cm-10">
-							                         <img class="icon-img" src="img/icon_handover.png" id="timer_img_1_prog_handover" data-order="1" data-timecat="prog_handover" data-action="clock" onclick="logTimer(this);return false;">
-							                     </span>
-							                 </td>
-							                 <td>
-							                     <span id="orderId_1" class="timer col-xs-12">0:0 hrs</span>
-							                 </td>
-							                 <td class="order-t-icon">
-							                     <a class="timer timer-icon clock" id="timer_1_prog_handover" data-order="1" data-timecat="prog_handover" data-action="clock" onclick="logTimer(this);return false;">&nbsp;</a>
-							                 	 
-							                 	 <a class="timer timer-icon clock" id="timer_1_prog_production" data-icon="flat-time" data-order="1" 
-							                     data-timecat="prog_production" data-action="clock" onclick="logTimer(this);return false;">
-							                     &nbsp;<img class="icon-img" src="img/icon-clock.png" ></a>
-							                 </td>
-							             </tr>
-							     </tbody>
-							     <tfoot>
-							         <tr>
-							             <td colspan="3" class="td-danger"><a href="#" class="order-close"><span>CLOSE</span></a>
-							             </td> 
-							         </tr>
-							     </tfoot>
-							 </table>
-						 </div> 
-						 -->
-						 
+                    	
 						 <div class="sales-table-div" id="sales-table-div_1001"><table data-mode="" data-role="table" style="border: 1px solid #87CEEB;" class="order-box ui-table" id="sp_order_1001"><thead onclick="showHideTable(this);"><tr><th id="sp_order_name_1001" colspan="3" class="sp-order " style="background-color: #87CEEB;">Jackson #1001<a data-order="1" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></th></tr></thead><tbody style="display: none;"><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" id="timer_img_1001_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_materials" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" id="timer_img_spOrderNoReplace_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_setup" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" id="timer_img_spOrderNoReplace_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_unload" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" id="timer_img_spOrderNoReplace_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_rodding" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" id="timer_img_spOrderNoReplace_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_handover" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" id="timer_img_spOrderNoReplace_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_maint_scheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" id="timer_img_spOrderNoReplace_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_maint_unscheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr></tbody><tfoot style="display: none;"><tr><td class="td-danger" colspan="3"><a class="order-close" href="#"><span>CLOSE</span></a></td></tr></tfoot></table></div>
                 	</div>
                 </div>
@@ -234,7 +287,43 @@
 				
 			  </div>
 			</div>
-            
+			
+			<div id="view-log-time-history" data-role="page">
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
+                	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
+                    <h1>Log Time History</h1>
+					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
+                </div>
+                
+                <div data-role="content" >
+                	<div>
+                	    <a href="#" data-theme="a" data-role="button" onclick="addLogTime();" >Log More Time</a>
+                	    <hr class="style">
+                    </div>
+                    
+                    <div id="so_details_box" class="so-details-box">
+                    	<div class="so-color-box" >
+                    		<span style="">&nbsp;</span>
+                        </div>
+                        <div class="so-name-box" >
+                        	Order: <span class="" id="so_name">1 time Customer Customer #123</span>
+                        </div>
+                    </div>
+                    
+                    <div id="logTimeHistoryDiv"></div>
+                	
+                </div>
+                
+                <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="true" class="app-footer-section" class="footer-div">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" data-icon="home" data-theme="b" class="app-link">Home</a></li>
+                            <li><a id="list-button" href="#" onclick="getCategoriesForTimeTracking();" data-icon="bars" class="app-link">Sales Order</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- /page  -->
+			
         </div>
 		
     </body>
