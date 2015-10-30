@@ -196,8 +196,8 @@ function handleLogin() {
 	
 	if(u != '' && p!= '') {
 		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -219,19 +219,13 @@ function handleLogin() {
 				//var jsonString = JSON.stringify(data);
 				//alert(jsonString);
 				if(responseJson.status == "success" ){
-					var grnUser=responseJson.grn_user;
-					alert('login success');
-					
 					//$.mobile.changePage('#home-page','slide');					
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
 					
-					
-					/*
+					var grnUser=responseJson.grn_user;
 					window.localStorage["username"] = u;
 					window.localStorage["password"] = p;
 					window.localStorage["user_logged_in"] = 1;
-					
-					
 					window.localStorage["grnUser"] = JSON.stringify(grnUser);
 					window.localStorage["ID"] = grnUser["ID"];
 					window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
@@ -239,13 +233,8 @@ function handleLogin() {
 					window.localStorage["nickname"] = grnUser["nickname"];
 					window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
 					window.localStorage["permissions"] = grnUser["permissions"];
-					
 					window.localStorage["email"] = grnUser["email"];
 					window.localStorage["lastActive"] = grnUser["lastActive"];
-					*/
-					//alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
-					//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
-					
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
@@ -298,14 +287,14 @@ function handleLogin() {
 function getSOBySONumber(){
 	//var grnUserObj=window.localStorage.getItem("grnUser");
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData)
 	
 	if(grnUserObj != '') {
 		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -355,6 +344,7 @@ function getSOBySONumber(){
 					}
 				});
 			}	
+			hideModal();
 		}
 	}
 	else{
@@ -387,14 +377,14 @@ function getRandomColor(){
 function createNewSO(){
 	//var grnUserObj=window.localStorage.getItem("grnUser");
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData)
 	
 	if(grnUserObj != '') {
 		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -434,15 +424,14 @@ function createNewSO(){
 
 var time_cats_arr;
 function getCategoriesForTimeTracking(){
-	//var grnUserObj=window.localStorage.getItem("grnUser");
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"7","email":"support@dynaread.com","lastActive":1444985408};
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -474,15 +463,14 @@ function getCategoriesForTimeTracking(){
 }
 
 function getSalesOrders(){
-	//var grnUserObj=window.localStorage.getItem("grnUser");
-	
-	var grnUserData={"ID":"1","grn_companies_id":"1","full_name":"Dynaread IT","nickname":"IT","grn_roles_id":"1,2,3,4,5,6,7,8,9,10","permissions":"7","email":"support@dynaread.com","lastActive":1444985408};
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -621,24 +609,19 @@ function logTimer(){
 	navigator.notification.alert("Time Tracker will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
 }
 
-/*function getLogTimeListOfOrder(){
-	navigator.notification.alert("Log Time Report will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
-}*/
-
 function changeLoginRole(roleId){
 	navigator.notification.alert("Change Login Role will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
 }
 
 function getLogTimeListOfOrder(data){
-//var grnUserObj=window.localStorage.getItem("grnUser");
 	showModal();
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"full_name":window.localStorage.getItem("full_name"),"nickname":window.localStorage.getItem("nickname"),"grn_roles_id":window.localStorage.getItem("grn_roles_id"),"permissions":"7","email":window.localStorage.getItem("email"),"lastActive":window.localStorage.getItem("lastActive")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		var $thisData=$(data);
 		currDataHexcolor=$thisData.attr("data-hexcolor");

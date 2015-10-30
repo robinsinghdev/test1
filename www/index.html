@@ -16,7 +16,7 @@
         <script type="text/javascript" src="libs/jquery.min.js"></script>
         
         <script type="text/javascript" src="libs/jQueryMobile/jquery.mobile-1.4.5.min.js"></script>
-		 <script src="libs/jqm-datebox-1.4.5_2.js"></script>
+		 <script src="libs/jqm-datebox-1.4.5.js"></script>
 
         <script type="text/javascript" src="js/index.js"></script>
 		<script type="text/javascript" src="js/timer.jquery.js"></script>
@@ -30,7 +30,6 @@
 	<body>
 		
         <div id="app">
-        
         
         	<div  id="login-page" data-role="page">
                 <div data-role="content">
@@ -49,135 +48,6 @@
 							 -->
 						</form>
 					</div>
-                </div>
-            </div>
-            
-            <div id="add-log-time" data-role="page">
-                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
-                	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
-                    <h1>Log Time Entry</h1>
-					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
-                </div>
-                
-                <div data-role="content" id="addLogTimeContent">
-                	
-              	  	<div id="so_details_box" class="so-details-box">
-                    	<div class="so-color-box" >
-                    		<span style="">&nbsp;</span>
-                        </div>
-                        <div class="so-name-box" >
-                        	Order: <span class="" id="so_name">1</span>
-                        </div>
-                    </div>
-                    	
-                    <div id="addLogTimeMainDiv">
-                    	<form id="addLogTimeForm">
-		                   	<div class="ui-field-contain">
-							    <label for="select-native-2">
-							    	Process: <span class="" id="process-img" style="vertical-align: top;">
-		                        				<img id="changeTimeCatImageId" width="25px" src="img/prod_materials.png">
-		                        			</span>
-		                        </label>
-		                    	<select onchange="changeTimeCatImage(this); return false;" name="timeCat" id="timeCat" data-mini="true" >                    
-		                    		<option value="">--Select Process--</option>
-		                            <option value="prod_materials">Production Materials</option>
-		                            <option value="prod_setup">Production Setup</option>
-		                            <option value="prod_handover">Production Handover</option>
-		                        </select>
-		                    </div>   
-		                    
-							<h4> Modify time logged: </h4>
-		                    <div class="ui-field-contain">
-							    <label for="Date:">Date: </label>
-							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
-							    	data-options='{"mode": "calbox", "overrideDateFormat": "%Y-%m-%d"}' >
-							    <!-- 	
-							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
-							    	data-options='{"mode": "flipbox", "overrideDateFormat": "%Y-%m-%d"}' >
-							     -->		
-		                    </div>
-		                    
-		                     <div class="ui-field-contain">	
-								<label for="Time:">Time</label>
-		                    	<input onchange="calcTotalCrewTime();" type="text" data-mini="true" data-role="datebox" id="timeDuration" name="timeDuration" readonly="readonly"
-							    	data-options='{"mode": "durationflipbox","overrideDurationOrder":["h","i"] ,"overrideDurationFormat": " %Dl:%DM "}' >
-		                    </div> 
-		                    
-		                    <!-- 
-		                    <div class="ui-field-contain">
-		                    	<label for="Time:">Hours and Minutes: </label>
-		                    	<input type="number" onchange="calcTotalCrewTime();" data-mini="true" id="log-hours" name="log-hours" 
-								    		 value="00" placeholder="Hours" >
-							</div>
-							<div class="ui-field-contain">	
-								<label for="Time:">Minutes: </label>
-		                    	<input type="number" onchange="calcTotalCrewTime();" data-mini="true" id="log-minutes" name="log-minutes" 
-											data-wrapper-class="small-custom-input" value="00" placeholder="Mins">
-		                    </div> 
-		                    
-		                     -->
-		                    <!--     		
-								<div class="ui-grid-d">
-									<div class="ui-block-a" ><label for="Hours">Hours: </label></div>
-									<div class="ui-block-b" >
-								    	<input type="number" onchange="calcTotalCrewTime();" data-mini="true" id="log-hours" name="log-hours" 
-								    		data-wrapper-class="small-custom-input" value="00" placeholder="Hours" >
-									</div>
-									<div class="ui-block-c" ><label for="Hours">Hours: </label></div>
-								    <div class="ui-block-d" >
-										<input type="number" onchange="calcTotalCrewTime();" data-mini="true" id="log-minutes" name="log-minutes" 
-											data-wrapper-class="small-custom-input" value="00" placeholder="Mins">
-									</div>
-								</div>
-								 -->
-		                    
-		                    <div class="ui-field-contain">
-							    <label for="Add a description:">Add a description: </label>
-							    <textarea cols="40" rows="4" name="textarea" id="textarea"></textarea>
-		                    </div>     
-		                    
-		                    <div class="ui-field-contain">
-		                    	<label for="Crew Size">Crew Size: </label>
-		                    	<select onchange="calcTotalCrewTime();" name="crewSize" id="crewSize" data-mini="true" >                    
-		                    		<option value="1">1</option>
-		                            <option value="2">2</option>
-		                            <option value="3">3</option>
-		                            <option value="4">4</option>
-		                            <option value="5">5</option>
-		                            <option value="6">6</option>
-		                            <option value="7">7</option>
-		                            <option value="8">8</option>
-		                            <option value="9">9</option>
-		                            <option value="10">10</option>
-		                            <option value="11">11</option>
-		                            <option value="12">12</option>
-		                            <option value="13">13</option>
-		                            <option value="14">14</option>
-		                            <option value="15">15</option>
-		                            <option value="16">16</option>
-		                        </select>
-		                    </div> 
-		                    
-		                    <div class="ui-field-contain">
-		                    	<p><span >Total Time: </span><span id="totalCrewTime">00:00</span></p>
-		                    </div> 
-		                    
-		                    <div class="ui-grid-a">
-						      <div class="ui-block-a" ><input type="button" value="Log Time " /></div>
-						      <div class="ui-block-b" ><input type="button" value="Revision Log Time"></div>
-						    </div>
-						</form>	    
-                	</div>
-                	
-                </div>	
-                
-                <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="true" class="app-footer-section" class="footer-div">
-                    <div id="navbar" data-role="navbar">
-                        <ul>
-                            <li><a id="map-button" href="#home-page" data-icon="home" data-theme="b" class="app-link">Home</a></li>
-                            <li><a id="list-button" href="#" onclick="getCategoriesForTimeTracking();" data-icon="bars" class="app-link">Sales Order</a></li>
-                        </ul>
-                    </div>
                 </div>
             </div>
             
@@ -251,7 +121,7 @@
 					    <p style="text-align: center;">
 							
 							<span id="logging_detail" class="order-detail" style="background-color: #20B2AA;width: 50px;" class="">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-							<span id="logging_detail" class="order-detail" class="">#</span>
+							<span id="logging_detail" class="order-detail" class="">Dummy Data # </span>
 							<span style="vertical-align: top;" class="" id="logging_proc_icon">
 								<img class="icon-img" src="img/prod_handover.png" id="timer_img_spOrderNoReplace_" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
 							</span> 
@@ -359,6 +229,108 @@
                     </div>
                 </div>
             </div><!-- /page  -->
+            
+            <div id="add-log-time" data-role="page">
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
+                	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
+                    <h1>Log Time Entry</h1>
+					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
+                </div>
+                
+                <div data-role="content" id="addLogTimeContent">
+                	
+              	  	<div id="so_details_box" class="so-details-box">
+                    	<div class="so-color-box" >
+                    		<span style="">&nbsp;</span>
+                        </div>
+                        <div class="so-name-box" >
+                        	Order: <span class="" id="so_name">1</span>
+                        </div>
+                    </div>
+                    	
+                    <div id="addLogTimeMainDiv">
+                    	<form id="addLogTimeForm">
+		                   	<div class="ui-field-contain">
+							    <label for="select-native-2">
+							    	Process: <span class="" id="process-img" style="vertical-align: top;">
+		                        				<img id="changeTimeCatImageId" width="25px" src="img/prod_materials.png">
+		                        			</span>
+		                        </label>
+		                    	<select onchange="changeTimeCatImage(this); return false;" name="timeCat" id="timeCat" data-mini="true" >                    
+		                    		<option value="">--Select Process--</option>
+		                            <option value="prod_materials">Production Materials</option>
+		                            <option value="prod_setup">Production Setup</option>
+		                            <option value="prod_handover">Production Handover</option>
+		                        </select>
+		                    </div>   
+		                    
+							<h4> Modify time logged: </h4>
+		                    <div class="ui-field-contain">
+							    <label for="Date:">Date: </label>
+							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
+							    	data-options='{"mode": "calbox", "overrideDateFormat": "%Y-%m-%d"}' >
+							    <!-- 	
+							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
+							    	data-options='{"mode": "flipbox", "overrideDateFormat": "%Y-%m-%d"}' >
+							     -->		
+		                    </div>
+		                    
+		                     <div class="ui-field-contain">	
+								<label for="Time:">Time</label>
+		                    	<input onchange="calcTotalCrewTime();" type="text" data-mini="true" data-role="datebox" id="timeDuration" name="timeDuration" readonly="readonly"
+							    	data-options='{"mode": "durationflipbox","overrideDurationOrder":["h","i"] ,"overrideDurationFormat": " %Dl:%DM "}' >
+		                    </div> 
+		                    
+		                    <div class="ui-field-contain">
+							    <label for="Add a description:">Add a description: </label>
+							    <textarea cols="40" rows="4" name="textarea" id="textarea"></textarea>
+		                    </div>     
+		                    
+		                    <div class="ui-field-contain">
+		                    	<label for="Crew Size">Crew Size: </label>
+		                    	<select onchange="calcTotalCrewTime();" name="crewSize" id="crewSize" data-mini="true" >                    
+		                    		<option value="1">1</option>
+		                            <option value="2">2</option>
+		                            <option value="3">3</option>
+		                            <option value="4">4</option>
+		                            <option value="5">5</option>
+		                            <option value="6">6</option>
+		                            <option value="7">7</option>
+		                            <option value="8">8</option>
+		                            <option value="9">9</option>
+		                            <option value="10">10</option>
+		                            <option value="11">11</option>
+		                            <option value="12">12</option>
+		                            <option value="13">13</option>
+		                            <option value="14">14</option>
+		                            <option value="15">15</option>
+		                            <option value="16">16</option>
+		                        </select>
+		                    </div> 
+		                    
+		                    <div class="ui-field-contain">
+		                    	<p><span >Total Time: </span><span id="totalCrewTime">00:00</span></p>
+		                    </div> 
+		                    
+		                    <div class="ui-grid-a">
+						      <div class="ui-block-a" ><input type="button" value="Log Time " /></div>
+						      <div class="ui-block-b" ><input type="button" value="Revision Log Time"></div>
+						    </div>
+						</form>	    
+                	</div>
+                	
+                </div>	
+                
+                <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="true" class="app-footer-section" class="footer-div">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" data-icon="home" data-theme="b" class="app-link">Home</a></li>
+                            <li><a id="list-button" href="#" onclick="getCategoriesForTimeTracking();" data-icon="bars" class="app-link">Sales Order</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
         </div>
 		
     </body>
