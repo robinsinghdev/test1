@@ -11,6 +11,10 @@ body {
 .my-breakpoint.ui-grid-a .ui-block-a { width: 79.95%; }
 .my-breakpoint.ui-grid-a .ui-block-b { width: 19.925%; }
 
+.mini-btn {
+    font-size: 12.5px;
+}
+
 #logo{
     width:70%;
     max-width:206px;
@@ -262,7 +266,6 @@ hr.style {
     padding-left: 20px;
     position: relative;
     text-align: center;
-    font-size: 14px;
 }
 
 .so-color-box {
@@ -277,14 +280,25 @@ hr.style {
 }
 
 .so-name-box{
-	padding: 0.4em 0.7em;
+	 padding: 0.4em 60px 0.4em 0.7em;
+	position: relative;
+}
+.process-report.pull-right{
+	 position: absolute;
+    right: 10px;
+    top: 6px;
 }
 
 .small-custom-input{
     width: 75px !important;
 }
 
-
+.current-running-tracker .icon-img, #currRunningTracker .icon-img{
+	width:22px;
+}
+.current-running-tracker .logging-time, #currRunningTracker .logging-time{
+	font-size: 20px;
+}
 
 
 

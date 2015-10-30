@@ -32,6 +32,7 @@ $( document ).on( "mobileinit", function() {
 });
 
 var appRequiresWiFi='This app requires an active WiFi connection.';
+var currDataHexcolor,currDataOname;
 
 var app = {
     SOME_CONSTANTS : false,  // some constant
@@ -64,7 +65,8 @@ var app = {
 		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
 		db.transaction(initializeDB, errorCB, successCB);
 		*/
-        checkPreAuth();
+        
+        //checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
     },
 	// Update DOM on a Received Event
@@ -194,7 +196,9 @@ function handleLogin() {
 	
 	if(u != '' && p!= '') {
 		
-		var connectionType=checkConnection();
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
+		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
@@ -216,7 +220,13 @@ function handleLogin() {
 				//alert(jsonString);
 				if(responseJson.status == "success" ){
 					var grnUser=responseJson.grn_user;
+					alert('login success');
 					
+					//$.mobile.changePage('#home-page','slide');					
+					$.mobile.changePage('#home-page',{ transition: "slideup"});
+					
+					
+					/*
 					window.localStorage["username"] = u;
 					window.localStorage["password"] = p;
 					window.localStorage["user_logged_in"] = 1;
@@ -232,10 +242,10 @@ function handleLogin() {
 					
 					window.localStorage["email"] = grnUser["email"];
 					window.localStorage["lastActive"] = grnUser["lastActive"];
-					
+					*/
 					//alert(window.localStorage.getItem("username")+"---------"+window.localStorage.getItem("full_name"));
 					//$.mobile.changePage("../account/home-page.html", { transition: "slide" });
-					$.mobile.changePage('#home-page','slide');
+					
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
@@ -253,10 +263,10 @@ function handleLogin() {
 					var form = $("#loginForm");
 					$("#username", form).val(window.localStorage["username"]);
 					$.mobile.changePage('#login-page','slide');
-					hideModal();
+					
 					navigator.notification.alert("Invalid Credentials, please try again", function() {});
 				}
-				
+				hideModal();
 				$('#userFullName').html(window.localStorage.getItem("full_name"));
 			   },
 			   error:function(data,t,f){
@@ -295,7 +305,7 @@ function getSOBySONumber(){
 	if(grnUserObj != '') {
 		
 		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -384,7 +394,7 @@ function createNewSO(){
 	if(grnUserObj != '') {
 		
 		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -432,7 +442,7 @@ function getCategoriesForTimeTracking(){
 	
 	if(grnUserObj != '') {		
 		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -472,7 +482,7 @@ function getSalesOrders(){
 	
 	if(grnUserObj != '') {
 		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -542,7 +552,8 @@ function getSalesOrders(){
 								                        '</div>'+
 								                        '<div class="so-name-box" >'+
 								                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
-								                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
+								                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
+								                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 											                 '</a>'+
 								                        '</div>'+
 								                    '</div>'+	
@@ -627,12 +638,17 @@ function getLogTimeListOfOrder(data){
 	
 	if(grnUserObj != '') {
 		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";
+		var connectionType="WiFi connection";//For Testing
 		
 		var $thisData=$(data);
-   		var $so_name_box = $('#so_name_box_history');
-   		$so_name_box.css('background-color',$thisData.attr("data-hexcolor"));
-   		$so_name_box.find("#so_name").html($thisData.attr("data-oname"));
+		currDataHexcolor=$thisData.attr("data-hexcolor");
+		currDataOname=$thisData.attr("data-oname");
+		
+   		var $so_name_box = $('#viewLogTimeHistoryContent').find('.so-details-box');
+   		$so_name_box.css('border-color',currDataHexcolor);
+   		$so_name_box.find('.so-color-box').css('background-color',currDataHexcolor);
+   		$so_name_box.find(".so-name-box").html(currDataOname);
+   		
 		var oid=$thisData.attr("data-order");
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -650,14 +666,8 @@ function getLogTimeListOfOrder(data){
 			   		$('#logTimeHistoryDiv').html('');
 			   		
 			   		if(records_arr==null || records_arr.length==0) {
-			   			var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
-											'<div class="process-details">'+
-												'<div class="ui-grid-a my-breakpoint">'+
-												  '<div class="ui-block-a text-align-center">'+
-														'<div class="process-name">No History Found</div>'+
-												  '</div>'+
-												'</div>'+
-											'</div>'+
+			   			var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">'+
+												'<div class="process-name">This order has no previous logged time history.</div>'+
 										'</div>';
 			   			$('#logTimeHistoryDiv').append(logTimeDiv);
 			   			hideModal();
@@ -665,17 +675,19 @@ function getLogTimeListOfOrder(data){
 			   		else{
 				   		jQuery.each(records_arr, function(index,value) {
 				   			var id =value.id;
+				   			var grn_users_id=value.grn_users_id;
 				   			var grn_salesorderTime_id=value.grn_salesorderTime_id;
-				   			var decimalTime=value.time;
 				   			var date =value.date;
+				   			var decimalTime=value.time;
 				   			var timer_flag =value.timer_flag;
 				   			var crew_size =value.crew_size;
 				   			var grn_timeCat =value.grn_timeCat;
-				   			var comments =value.comments;
+				   			var comments =value.comments;				   			
 				   			var title =value.title;
 				   			var grn_timeCat_img = grn_timeCat;
+				   			var grn_timeCat_trimmed=value.grn_timeCat;
+				   			grn_timeCat_trimmed=grn_timeCat_trimmed.replace("_revision", "");
 				   			
-				   			console.log(decimalTime);
 				   			var timeInHours=convertDecimalTimeToHours(decimalTime);
 				   			grn_timeCat_img=grn_timeCat_img.replace("_revision", "");
 				   			var revisionSpan;
@@ -686,7 +698,7 @@ function getLogTimeListOfOrder(data){
 				   			}
 				   				
 				   			if(comments==""){
-				   				comments="No Comments";
+				   				comments="No Comments Yet.";
 				   			}
 				   			
 					   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
@@ -697,7 +709,7 @@ function getLogTimeListOfOrder(data){
 												'<div class="ui-grid-a my-breakpoint">'+
 												  '<div class="ui-block-a">'+
 														'<div class="process-img">'+
-															'<img src="img/'+grn_timeCat_img+'.png">'+                    				 
+															'<img src="img/'+grn_timeCat_img+'.png">'+            				 
 														'</div>'+
 														'<div class="process-name">'+title+'</div>'+
 												  '</div>'+
@@ -718,12 +730,10 @@ function getLogTimeListOfOrder(data){
 												'</div>'+    
 											'</div>'+
 										'</div>';
-					   		
 					   		$('#logTimeHistoryDiv').append(logTimeDiv);
 				   		});
 				   		hideModal();
 			   		}
-			   		
 				},
 				error:function(data,t,f){
 					hideModal();
@@ -732,7 +742,6 @@ function getLogTimeListOfOrder(data){
 				}
 			});
 		}
-		
 		$.mobile.changePage('#view-log-time-history','slide');
 	}
 	else{
@@ -742,10 +751,19 @@ function getLogTimeListOfOrder(data){
 }
 
 function addLogTime(){
-	$.mobile.changePage('#add-log-time','slide');
+	var $so_name_box = $('#addLogTimeContent').find('.so-details-box');
+	$so_name_box.css('border-color',currDataHexcolor);
+	$so_name_box.find('.so-color-box').css('background-color',currDataHexcolor);
+	$so_name_box.find(".so-name-box").html(currDataOname);
 	
+	$.mobile.changePage('#add-log-time','slide');
 }
 function editLogTime(oid,cid){
+	var $so_name_box = $('#addLogTimeContent').find('.so-details-box');
+	$so_name_box.css('border-color',currDataHexcolor);
+	$so_name_box.find('.so-color-box').css('background-color',currDataHexcolor);
+	$so_name_box.find(".so-name-box").html(currDataOname);
+		
 	$.mobile.changePage('#add-log-time','slide');
 }
 
@@ -796,8 +814,43 @@ function convertDecimalTimeToHours(decimalTimeVal) {
 }
 
 function changeTimeCatImage(obj){
+	var imgName=$(obj).find(":selected").val();
+	$('#changeTimeCatImageId').attr('src','img/'+imgName+'.png');
+}
+
+function  calcTotalCrewTime(obj){
+	var $addLogTimeForm=$('form#addLogTimeForm');
+	
+	var crewSize = $addLogTimeForm.find("#crewSize option:selected").val();
+	//var inputHours=$addLogTimeForm.find('#log-hours').val();
+	//var inputMinutes=$addLogTimeForm.find('#log-minutes').val();
+	
+	var timeDuration=$addLogTimeForm.find('#timeDuration').val();
+	
+	if(timeDuration !=''){
+		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
+		var tempSplitVar = timeDuration.split(':'); // split it at the colons
+		var currentLoggedMinutes = (+tempSplitVar[0]) * 60 + (+tempSplitVar[1]);
+		currentLoggedMinutes=currentLoggedMinutes*crewSize;
+		var currentLoggedHours;
+		//console.log("currentLoggedMinutes......"+currentLoggedMinutes);
+		
+		//Convert minutes to hh:mm format
+		var hours = Math.floor( currentLoggedMinutes / 60);          
+	    var minutes = currentLoggedMinutes % 60;
+	    if(minutes < 10){
+	    	minutes="0"+minutes;
+	    }
+	    var totalCrewTime=hours+":"+minutes;
+	    console.log("hh:mm......"+totalCrewTime);
+		$('#totalCrewTime').html(totalCrewTime);
+	}
+	else{
+		console.log('Empty');
+	}
 	
 }
+
 /* ----------------  Code Reusable -------------------------  */
 
 function getTodayDate(){

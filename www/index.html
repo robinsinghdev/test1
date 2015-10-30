@@ -16,7 +16,7 @@
         <script type="text/javascript" src="libs/jquery.min.js"></script>
         
         <script type="text/javascript" src="libs/jQueryMobile/jquery.mobile-1.4.5.min.js"></script>
-		 <script src="libs/jqm-datebox-1.4.5.js"></script>
+		 <script src="libs/jqm-datebox-1.4.5_2.js"></script>
 
         <script type="text/javascript" src="js/index.js"></script>
 		<script type="text/javascript" src="js/timer.jquery.js"></script>
@@ -43,12 +43,14 @@
 							<input type="email" name="username" id="username" placeholder="Username"/>
 							<label for="password">Password </label>
 							<input type="password" name="password" id="password" placeholder="Password" autocomplete="off"/>
-							<input data-theme="a" type="submit" value="Login" id="submitButton" class="app-link">
+							<input type="submit" value="Login" id="submitButton" class="app-link" data-theme="a" >
+							<!-- 
+							<input data-theme="a" type="button" value="Login" id="submitButton" class="app-link" onclick="handleLogin();">  --For Testing
+							 -->
 						</form>
 					</div>
                 </div>
             </div>
-            
             
             <div id="add-log-time" data-role="page">
                 <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -57,83 +59,117 @@
 					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
                 </div>
                 
-                <div data-role="content" >
+                <div data-role="content" id="addLogTimeContent">
                 	
               	  	<div id="so_details_box" class="so-details-box">
                     	<div class="so-color-box" >
                     		<span style="">&nbsp;</span>
                         </div>
                         <div class="so-name-box" >
-                        	Order: <span class="" id="so_name">1 time Customer CustomerCustomer Customer #123</span>
+                        	Order: <span class="" id="so_name">1</span>
                         </div>
                     </div>
                     	
                     <div id="addLogTimeMainDiv">
-                    		<div>
-		                    	<div class="ui-field-contain">
-								    <label for="select-native-2">
-								    	Process: <span class="" id="process-img" style="vertical-align: top;">
-			                        				<img width="25px" src="https://dev.bpmetrics.com/assets/img/icon/prog_crm.png">
-			                        			</span>
-			                        </label>
-			                    	<select data-mini="true" onchange="changeTimeCatImage(this); return false;" class="" name="timeCat" id="timeCat" >                    
-			                    		<option value="">--Select Process--</option>
-			                            <option value="prog_materialsPrep">Programming Materials Prep </option>
-			                            <option value="prog_crm">Programming CRM</option>
-			                            <option value="prog_production">Programming Production</option>
-			                            <option value="prog_handover">Programming Handover</option>
-			                        </select>
-			                    </div>   
-			                    
-								<h4> Modify time logged: </h4>
-			                    <div class="ui-field-contain">
-								    <label for="">Date: </label>
-								    <!-- <input data-role="datebox" type="text" id="date" data-inline="false"> -->
-								    <input type="text" data-mini="true" data-options="{&quot;mode&quot;:&quot;calbox&quot;}" data-role="datebox" id="mode1" name="mode1" readonly="readonly">
-			                    </div> 
-			                    <div class="ui-field-contain">
-			                    	 <label for="">Time: </label>
-								    
-								    <div class="ui-grid-a">
-									    <div class="ui-block-a">
-											<input type="number" data-mini="true" id="hours" name="hours" data-wrapper-class="small-custom-input" placeholder="Hours" >
-										</div>
-									    <div class="ui-block-b">
-											<input type="number" data-mini="true" id="minutes" name="minutes" data-wrapper-class="small-custom-input" placeholder="Mins">
-										</div>
-									</div><!-- /grid-a -->
-			                    </div> 
-			                    
-			                    <div class="ui-field-contain">
-								    <label for="">Add a description: </label>
-								    <textarea cols="40" rows="4" name="textarea" id="textarea"></textarea>
-			                    </div>     
-			                    
-			                    <div class="ui-field-contain">
-			                    	<label for="">Crew Size: </label>
-								    <select data-mini="true" onchange="calcTotalCrewTime(this); return false;" class="" name="crew-size" id="crew-size" >                    
-			                            <option value="1">1</option>
-			                            <option value="2">2</option>
-			                            <option value="3">3</option>
-			                            <option value="4">4</option>
-			                        </select>
-			                    </div> 
-			                    
-			                    <div class="ui-field-contain">
-			                    	<p><span >Total Time: </span> <span>00:00 </span></p>
-			                    	
-								    
-			                    </div> 
-	                        
-	                   		</div>     
-	                   		
+                    	<form id="addLogTimeForm">
+		                   	<div class="ui-field-contain">
+							    <label for="select-native-2">
+							    	Process: <span class="" id="process-img" style="vertical-align: top;">
+		                        				<img id="changeTimeCatImageId" width="25px" src="img/prod_materials.png">
+		                        			</span>
+		                        </label>
+		                    	<select onchange="changeTimeCatImage(this); return false;" name="timeCat" id="timeCat" data-mini="true" >                    
+		                    		<option value="">--Select Process--</option>
+		                            <option value="prod_materials">Production Materials</option>
+		                            <option value="prod_setup">Production Setup</option>
+		                            <option value="prod_handover">Production Handover</option>
+		                        </select>
+		                    </div>   
+		                    
+							<h4> Modify time logged: </h4>
+		                    <div class="ui-field-contain">
+							    <label for="Date:">Date: </label>
+							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
+							    	data-options='{"mode": "calbox", "overrideDateFormat": "%Y-%m-%d"}' >
+							    <!-- 	
+							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
+							    	data-options='{"mode": "flipbox", "overrideDateFormat": "%Y-%m-%d"}' >
+							     -->		
+		                    </div>
+		                    
+		                     <div class="ui-field-contain">	
+								<label for="Time:">Time</label>
+		                    	<input onchange="calcTotalCrewTime();" type="text" data-mini="true" data-role="datebox" id="timeDuration" name="timeDuration" readonly="readonly"
+							    	data-options='{"mode": "durationflipbox","overrideDurationOrder":["h","i"] ,"overrideDurationFormat": " %Dl:%DM "}' >
+		                    </div> 
+		                    
+		                    <!-- 
+		                    <div class="ui-field-contain">
+		                    	<label for="Time:">Hours and Minutes: </label>
+		                    	<input type="number" onchange="calcTotalCrewTime();" data-mini="true" id="log-hours" name="log-hours" 
+								    		 value="00" placeholder="Hours" >
+							</div>
+							<div class="ui-field-contain">	
+								<label for="Time:">Minutes: </label>
+		                    	<input type="number" onchange="calcTotalCrewTime();" data-mini="true" id="log-minutes" name="log-minutes" 
+											data-wrapper-class="small-custom-input" value="00" placeholder="Mins">
+		                    </div> 
+		                    
+		                     -->
+		                    <!--     		
+								<div class="ui-grid-d">
+									<div class="ui-block-a" ><label for="Hours">Hours: </label></div>
+									<div class="ui-block-b" >
+								    	<input type="number" onchange="calcTotalCrewTime();" data-mini="true" id="log-hours" name="log-hours" 
+								    		data-wrapper-class="small-custom-input" value="00" placeholder="Hours" >
+									</div>
+									<div class="ui-block-c" ><label for="Hours">Hours: </label></div>
+								    <div class="ui-block-d" >
+										<input type="number" onchange="calcTotalCrewTime();" data-mini="true" id="log-minutes" name="log-minutes" 
+											data-wrapper-class="small-custom-input" value="00" placeholder="Mins">
+									</div>
+								</div>
+								 -->
+		                    
+		                    <div class="ui-field-contain">
+							    <label for="Add a description:">Add a description: </label>
+							    <textarea cols="40" rows="4" name="textarea" id="textarea"></textarea>
+		                    </div>     
+		                    
+		                    <div class="ui-field-contain">
+		                    	<label for="Crew Size">Crew Size: </label>
+		                    	<select onchange="calcTotalCrewTime();" name="crewSize" id="crewSize" data-mini="true" >                    
+		                    		<option value="1">1</option>
+		                            <option value="2">2</option>
+		                            <option value="3">3</option>
+		                            <option value="4">4</option>
+		                            <option value="5">5</option>
+		                            <option value="6">6</option>
+		                            <option value="7">7</option>
+		                            <option value="8">8</option>
+		                            <option value="9">9</option>
+		                            <option value="10">10</option>
+		                            <option value="11">11</option>
+		                            <option value="12">12</option>
+		                            <option value="13">13</option>
+		                            <option value="14">14</option>
+		                            <option value="15">15</option>
+		                            <option value="16">16</option>
+		                        </select>
+		                    </div> 
+		                    
+		                    <div class="ui-field-contain">
+		                    	<p><span >Total Time: </span><span id="totalCrewTime">00:00</span></p>
+		                    </div> 
+		                    
+		                    <div class="ui-grid-a">
+						      <div class="ui-block-a" ><input type="button" value="Log Time " /></div>
+						      <div class="ui-block-b" ><input type="button" value="Revision Log Time"></div>
+						    </div>
+						</form>	    
                 	</div>
-                	<div>
-			                  <fieldset class="ui-grid-a">
-							    <div class="ui-block-a"><input type="button" value="Log Time "></div>
-							    <div class="ui-block-b"><input type="reset" value="Log Time As Revision"></div>
-							  </fieldset>
-                	</div>
+                	
+                </div>	
                 
                 <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="true" class="app-footer-section" class="footer-div">
                     <div id="navbar" data-role="navbar">
@@ -143,7 +179,7 @@
                         </ul>
                     </div>
                 </div>
-            </div><!-- /page  -->
+            </div>
             
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -180,6 +216,8 @@
 							</ul>
 						</div>
                 	</div>
+                	
+                	
                 	<!-- 
                 	<div id="timeTrackerInfoDiv">
                 	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog">Add New Sales Order</a>
@@ -205,23 +243,24 @@
                 
                 <div data-role="content" >
                 	<div id="timeTrackerInfoDiv">
-                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button"  data-rel="dialog">Add New Sales Order</a>
+                	    <a href="#getSOBySONumberDialog" class="mini-btn" data-theme="a" data-role="button"  data-rel="dialog">Add New Sales Order</a>
                     </div>
                     <hr class="style">
                     
                     <div id="running_tracker" class="running-tracker">
 					    <p style="text-align: center;">
+							
+							<span id="logging_detail" class="order-detail" style="background-color: #20B2AA;width: 50px;" class="">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span id="logging_detail" class="order-detail" class="">#</span>
 							<span style="vertical-align: top;" class="" id="logging_proc_icon">
 								<img class="icon-img" src="img/prod_handover.png" id="timer_img_spOrderNoReplace_" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
 							</span> 
-							<span id="logging_detail" class="order-detail" style="background-color: #20B2AA;" class="">
-								Cheryl & Marvin Fisher #192  Report
-							</span>
+							
 						</p>
-						
-					    <div class="ui-grid-c" style="text-align: center;">
+						 
+					    <div class="ui-grid-c" style="text-align: center;" id="currRunningTracker" class="current-running-tracker" >
 					    
-						  <div id="logging_time" class="ui-block-a" >00:00:00</div>
+						  <div id="logging_time" class="ui-block-a logging-time" >00:00:00</div>
 						  
 						  <div class="ui-block-b"  >
 						  		<div class="timer timer-icon play">
@@ -244,8 +283,7 @@
 					</div>    
                     
                     <div id="salesOrderMainDiv">
-                    	
-						 <div class="sales-table-div" id="sales-table-div_1001"><table data-mode="" data-role="table" style="border: 1px solid #87CEEB;" class="order-box ui-table" id="sp_order_1001"><thead onclick="showHideTable(this);"><tr><th id="sp_order_name_1001" colspan="3" class="sp-order " style="background-color: #87CEEB;">Jackson #1001<a data-order="1" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></th></tr></thead><tbody style="display: none;"><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" id="timer_img_1001_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_materials" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" id="timer_img_spOrderNoReplace_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_setup" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" id="timer_img_spOrderNoReplace_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_unload" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" id="timer_img_spOrderNoReplace_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_rodding" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" id="timer_img_spOrderNoReplace_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_prod_handover" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" id="timer_img_spOrderNoReplace_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_maint_scheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" id="timer_img_spOrderNoReplace_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderNoReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" data-icon="flat-time" id="timer_spOrderNoReplace_maint_unscheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr></tbody><tfoot style="display: none;"><tr><td class="td-danger" colspan="3"><a class="order-close" href="#"><span>CLOSE</span></a></td></tr></tfoot></table></div>
+                    	<div class="sales-table-div" id="sales-table-div_1"><table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_1"><thead onclick="showHideTable(this);"><tr><th id="sp_order_name_1" colspan="3" class="sp-order "><div style="border-color: #87CEEB;" class="so-details-box" id="so_details_box"><div style="background-color: #87CEEB;" class="so-color-box"><span style="">&nbsp;</span></div><div class="so-name-box"><span id="so_name" class="">Jackson #1001</span><a data-hexcolor="#87CEEB" data-oname="Jackson #1001" data-order="1" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div></div></th></tr></thead><tbody style="display: none;"><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" id="timer_img_1_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_materials" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" id="timer_img_spOrderIdReplace_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_setup" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" id="timer_img_spOrderIdReplace_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_unload" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" id="timer_img_spOrderIdReplace_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_rodding" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" id="timer_img_spOrderIdReplace_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_handover" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" id="timer_img_spOrderIdReplace_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_maint_scheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" id="timer_img_spOrderIdReplace_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_maint_unscheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr></tbody><tfoot style="display: none;"><tr><td class="td-danger" colspan="3"><a class="order-close" href="#"><span>CLOSE</span></a></td></tr></tfoot></table></div>
                 	</div>
                 </div>
                 
@@ -293,9 +331,9 @@
 					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
                 </div>
                 
-                <div data-role="content" >
+                <div data-role="content" id="viewLogTimeHistoryContent" >
                 	<div>
-                	    <a href="#" data-theme="a" data-role="button" onclick="addLogTime();" >Log More Time</a>
+                	    <a href="#" class="mini-btn" data-theme="a" data-role="button" onclick="addLogTime();" >Log More Time</a>
                 	    <hr class="style">
                     </div>
                     
@@ -321,7 +359,6 @@
                     </div>
                 </div>
             </div><!-- /page  -->
-			</div>
         </div>
 		
     </body>
