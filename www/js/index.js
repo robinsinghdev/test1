@@ -55,7 +55,7 @@ var app = {
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
 		
-		db = window.openDatabase("Database", "1.0", "BPMETR", 2000000);
+		db = window.sqlitePlugin.openDatabase("Database", "1.0", "BPMETR", 2000000);
 		db.transaction(initializeDB, errorCB, successCB);
         
         checkPreAuth();
