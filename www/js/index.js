@@ -593,7 +593,6 @@ function changeLoginRole(roleId){
 }
 
 function getLogTimeListOfOrder(data){
-	db.transaction(queryDataBase, errorCB);
 	showModal();
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
@@ -714,6 +713,7 @@ function getLogTimeListOfOrder(data){
 		logout();
 		navigator.notification.alert("Please login again.", function() {});
 	}
+	db.transaction(queryDataBase, errorCB);
 }
 
 function addLogTime(){
@@ -1491,9 +1491,10 @@ function queryDataBase(tx) {
 }
 
 // Query the success callback
-function querySuccess(tx, results) {
+function querySuccess(results) {
 	var len = results.rows.length;
 	alert("DEMO table: " + len + " rows found.");
+	alert(JSON.stringify(results));
 	//$("#resultList > li").remove();
 	for (var i=0; i<len; i++){
 		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
