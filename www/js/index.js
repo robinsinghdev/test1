@@ -424,11 +424,8 @@ function getCategoriesForTimeTracking(){
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
 			   		time_cats_arr=responseJson.time_cats;
-			   		alert(time_cats_arr+ JSON.stringify(time_cats_arr));
-			   		
 			   		getSalesOrders();
 			   		hideModal();
-			   		//db.transaction(queryDataBase, errorDB, successDB);// Query Time Category
 				},
 				error:function(data,t,f){
 					hideModal();
@@ -1410,26 +1407,26 @@ function saveRunningTimerAction(button){
 
 // Open Database
 function openDatabase() {
-   alert('opening Db');
+   //alert('opening Db');
 	//db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);
    db.transaction(initializeDB, errorDB, successDB);
    //alert(JSON.stringify(db));
-   alert('opening Db ends');
+   //alert('opening Db ends');
 }
 
 //Populate the database 
 function initializeDB(tx) {
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
-	 alert('initializeDB Db');
+	 //alert('initializeDB Db');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )');
-	 alert('initializeDB Db ends');
+	 //alert('initializeDB Db ends');
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
 	
 }
 
 //Transaction success callback
 function successDB() {
-	//db.transaction(queryDataBase, errorCB);
+	db.transaction(queryDataBase, errorCB);
 }
 
 //Transaction error callback
@@ -1457,10 +1454,7 @@ function insertTimeCategory(tx) {
     	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
     	
 	});*/
-	alert('insertTimeCategory Db');
-	
 		var sql1 = 'CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )';
-		alert('insertTimeCategory Db111');
 		tx.executeSql(sql1,[], function (tx, results) {
 	        //var test =  new Array();
 	        //test[0]='INSERT INTO ORDER (id, status) VALUES (1, "new" )';
@@ -1469,24 +1463,21 @@ function insertTimeCategory(tx) {
 	            tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
 
 	        }*/
-			alert('insertTimeCategory Db3333');
-   	     jQuery.each(time_cats_arr, function(index,value) {
-   	    	alert(value);
-   	    	var jsonObj=value;
-   	    	var id=jsonObj["id"];
-   	    	var timeCats=jsonObj["timeCats"];
-   	    	var title=jsonObj["title"];
-   	    	var sp_jobName=jsonObj["sp_jobName"];
-   	    	var grn_roles_id=jsonObj["grn_roles_id"];
-   	    	var revision=jsonObj["revision"];
-   	    	var status=jsonObj["status"];
-   	    	
-   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
-   		});
+	   	     jQuery.each(time_cats_arr, function(index,value) {
+	   	    	alert(jsonObj["timeCats"]);
+	   	    	var jsonObj=value;
+	   	    	var id=jsonObj["id"];
+	   	    	var timeCats=jsonObj["timeCats"];
+	   	    	var title=jsonObj["title"];
+	   	    	var sp_jobName=jsonObj["sp_jobName"];
+	   	    	var grn_roles_id=jsonObj["grn_roles_id"];
+	   	    	var revision=jsonObj["revision"];
+	   	    	var status=jsonObj["status"];
+	   	    	
+	   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
+	   		});
    	     
 	    });
-		
-		alert('insertTimeCategory Db4444');
 }
 
 
