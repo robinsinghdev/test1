@@ -1478,6 +1478,8 @@ function insertTimeCategory(tx) {
    	    	var status=jsonObj["status"];
    	    	
    	    	alert(timeCats);
+   	    	//tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grn_roles_id,revision,status]);
+   	    	
    	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grn_roles_id,revision,status], function(tx, res) {
 	   	         console.log("insertId: " + res.insertId + " -- probably 1");
 	   	         console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
@@ -1486,7 +1488,8 @@ function insertTimeCategory(tx) {
 		   	        alert("res.rows.length: " + res.rows.length + " -- should be 1");
 		   	        alert("res.rows.item(0).cnt: " + res.rows.item(0).timeCats );
 		   	      });
-   	    	});
+  	    	});
+   		});
      
     });
 }
@@ -1494,7 +1497,7 @@ function insertTimeCategory(tx) {
 
 //Query the database
 function queryDataBase(tx) {
-	tx.executeSql('SELECT * FROM TIMECATEGORY;', [], querySuccess, errorDB);
+	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
 }
 
 // Query the success callback
