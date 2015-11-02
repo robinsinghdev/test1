@@ -424,18 +424,10 @@ function getCategoriesForTimeTracking(){
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
 			   		time_cats_arr=responseJson.time_cats;
-			   		
 			   		alert(time_cats_arr+ JSON.stringify(time_cats_arr));
 			   		
-			   		var db = window.openDatabase("Database", "1.0", "BPMETR", 2000000);	
-			   		db.transaction(insertTimeCategory, errorDB, successDB);// Insert Time Category
-			   		
-			   		
-			   		
-			   		db.transaction(queryDataBase, errorCB);
 			   		getSalesOrders();
 			   		hideModal();
-			   		
 			   		//db.transaction(queryDataBase, errorDB, successDB);// Query Time Category
 				},
 				error:function(data,t,f){
@@ -554,6 +546,9 @@ function getSalesOrders(){
 			   		});
 			   		hideAllTablesData();
 			   		hideModal();
+			   		//var db = window.openDatabase("Database", "1.0", "BPMETR", 2000000);	
+			   		db.transaction(insertTimeCategory, errorDB, successDB);// Insert Time Category
+			   		
 			   		if(salse_orders_arr.length <= 0){
 			   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
 			   		}
@@ -599,6 +594,7 @@ function changeLoginRole(roleId){
 }
 
 function getLogTimeListOfOrder(data){
+	db.transaction(queryDataBase, errorCB);
 	showModal();
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
