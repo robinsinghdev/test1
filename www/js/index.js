@@ -1497,7 +1497,7 @@ function insertTimeCategory(tx) {
 //Query the database
 function queryDataBase(tx) {
 	alert('queryDataBase....');
-	//tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
+	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
 	
 	 tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, results) {
         //alert("res.rows.length: " + res.rows.length + " -- should be 1");
@@ -1505,9 +1505,9 @@ function queryDataBase(tx) {
         
         var len = results.rows.length;
     	alert("DEMO table: " + len + " rows found.");
-    	alert(JSON.stringify(results));
     	//$("#resultList > li").remove();
     	for (var i=0; i<len; i++){
+    		alert(i);
     		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
     		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
     		alert(results.rows.item(i).timeCats);
@@ -1517,10 +1517,9 @@ function queryDataBase(tx) {
 }
 
 // Query the success callback
-function querySuccess(results) {
+function querySuccess(tx,results) {
 	var len = results.rows.length;
 	alert("DEMO table: " + len + " rows found.");
-	alert(JSON.stringify(results));
 	//$("#resultList > li").remove();
 	for (var i=0; i<len; i++){
 		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
