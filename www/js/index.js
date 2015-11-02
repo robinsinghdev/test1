@@ -546,6 +546,8 @@ function getSalesOrders(){
 			   		//var db = window.openDatabase("Database", "1.0", "BPMETR", 2000000);	
 			   		db.transaction(insertTimeCategory, errorDB, successDB);// Insert Time Category
 			   		
+			   		//db.transaction(queryDataBase, errorCB);
+			   		
 			   		if(salse_orders_arr.length <= 0){
 			   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
 			   		}
@@ -1426,7 +1428,7 @@ function initializeDB(tx) {
 
 //Transaction success callback
 function successDB() {
-	db.transaction(queryDataBase, errorCB);
+	//db.transaction(queryDataBase, errorCB);
 }
 
 //Transaction error callback
@@ -1454,30 +1456,32 @@ function insertTimeCategory(tx) {
     	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
     	
 	});*/
-		var sql1 = 'CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )';
-		tx.executeSql(sql1,[], function (tx, results) {
-	        //var test =  new Array();
-	        //test[0]='INSERT INTO ORDER (id, status) VALUES (1, "new" )';
-	        /*for( i in test ) {   
-	            //tx.executeSql(test[i]);
-	            tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
+	
+	var sql1 = 'CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )';
+	tx.executeSql(sql1,[], function (tx, results) {
+        //var test =  new Array();
+        //test[0]='INSERT INTO ORDER (id, status) VALUES (1, "new" )';
+        /*for( i in test ) {   
+            //tx.executeSql(test[i]);
+            tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
 
-	        }*/
-	   	     jQuery.each(time_cats_arr, function(index,value) {
-	   	    	alert(jsonObj["timeCats"]);
-	   	    	var jsonObj=value;
-	   	    	var id=jsonObj["id"];
-	   	    	var timeCats=jsonObj["timeCats"];
-	   	    	var title=jsonObj["title"];
-	   	    	var sp_jobName=jsonObj["sp_jobName"];
-	   	    	var grn_roles_id=jsonObj["grn_roles_id"];
-	   	    	var revision=jsonObj["revision"];
-	   	    	var status=jsonObj["status"];
-	   	    	
-	   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
-	   		});
-   	     
-	    });
+        }*/
+   	     jQuery.each(time_cats_arr, function(index,value) {
+   	    	
+   	    	var jsonObj=value;
+   	    	var id=jsonObj["id"];
+   	    	var timeCats=jsonObj["timeCats"];
+   	    	var title=jsonObj["title"];
+   	    	var sp_jobName=jsonObj["sp_jobName"];
+   	    	var grn_roles_id=jsonObj["grn_roles_id"];
+   	    	var revision=jsonObj["revision"];
+   	    	var status=jsonObj["status"];
+   	    	
+   	    	alert(timeCats);
+   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
+   		});
+     
+    });
 }
 
 
