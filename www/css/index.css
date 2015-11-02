@@ -266,6 +266,7 @@ hr.style {
     padding-left: 20px;
     position: relative;
     text-align: center;
+    font-size: 14px;
 }
 
 .so-color-box {
@@ -287,20 +288,63 @@ hr.style {
 	 position: absolute;
     right: 10px;
     top: 6px;
+    font-size: 12px;
 }
 
 .small-custom-input{
     width: 75px !important;
 }
 
-.current-running-tracker .icon-img, #currRunningTracker .icon-img{
+.running-tracker .running-tracker-info span{
+	vertical-align: top;
+}
+
+.running-tracker #currRunningTracker .ui-block-b,.running-tracker #currRunningTracker .ui-block-c,.running-tracker #currRunningTracker .ui-block-d{
+	padding-left:7%;
+}
+
+.running-tracker .current-running-tracker .icon-img, #currRunningTracker .icon-img{
 	width:22px;
 }
-.current-running-tracker .logging-time, #currRunningTracker .logging-time{
+.running-tracker .current-running-tracker .logging-time, #currRunningTracker .logging-time{
 	font-size: 20px;
 }
 
+.home-page-menu-ul li a{
+	font-size: 14px;
+}
 
+.timer-icon{
+	width: 25px;
+	height: 25px;
+}
+.timer-icon.clock {
+    background: rgba(0, 0, 0, 0) url("../img/icon-clock_25.png") no-repeat scroll 0 0;
+}
 
+.timer-icon.pause {
+    background: rgba(0, 0, 0, 0) url("../img/icon-pause_25.png") no-repeat scroll 0 0;
+}
 
+.timer-icon.play {
+    background: rgba(0, 0, 0, 0) url("../img/icon-play_25.png") no-repeat scroll 0 0;
+}
 
+.timer-icon.delete {
+    background: rgba(0, 0, 0, 0) url("../img/icon-delete_25.png") no-repeat scroll 0 0;
+}
+
+.process-icon img {
+	
+    /*cursor: pointer;
+	     padding: 5px;
+	    text-align: center;
+	    width: 70px;
+	 */
+ }
+.process-icon img.play {
+    background: #00a651 none repeat scroll 0 0;
+}
+.process-icon img.pause {
+    background: #f8c326 none repeat scroll 0 0;
+}

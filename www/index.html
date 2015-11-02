@@ -16,10 +16,11 @@
         <script type="text/javascript" src="libs/jquery.min.js"></script>
         
         <script type="text/javascript" src="libs/jQueryMobile/jquery.mobile-1.4.5.min.js"></script>
-		 <script src="libs/jqm-datebox-1.4.5.js"></script>
-
-        <script type="text/javascript" src="js/index.js"></script>
+		<script src="libs/jqm-datebox-1.4.5.js"></script>
 		<script type="text/javascript" src="js/timer.jquery.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+<!--         <script type="text/javascript" src="js/timeTracker.js"></script> -->
+		
 		
         <script type="text/javascript">
             app.initialize();
@@ -43,13 +44,11 @@
 							<label for="password">Password </label>
 							<input type="password" name="password" id="password" placeholder="Password" autocomplete="off"/>
 							<input type="submit" value="Login" id="submitButton" class="app-link" data-theme="a" >
-							<!-- 
-							<input data-theme="a" type="button" value="Login" id="submitButton" class="app-link" onclick="handleLogin();">  --For Testing
-							 -->
 						</form>
 					</div>
                 </div>
             </div>
+            
             
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -74,10 +73,11 @@
 					 
                 	<div id="menu">
                 		<div>
-                			<h4>Welcome,<span id="userFullName"></span></h4>
+                			<h4>Welcome, <span id="userFullName"></span></h4>
+                			<a id="addNewSalesOrderBtn123" class=""  data-theme="a" data-role="button" href="#" onclick="callAddUpadteLogTime();" >Test</a>
                 		</div>	
                 		<div>
-	                		<ul data-role="listview"  data-divider-theme="a">
+	                		<ul class="home-page-menu-ul" data-role="listview"  data-divider-theme="a">
 	                			<li data-role="list-divider">Sales Order</li> 
 							    <li data-icon="bars"><a href="#" onclick="getCategoriesForTimeTracking();">Your Orders</a></li>
 							    <li data-icon="plus"><a href="#getSOBySONumberDialog" data-rel="dialog">Add New Order</a></li>
@@ -90,7 +90,7 @@
                 	
                 	<!-- 
                 	<div id="timeTrackerInfoDiv">
-                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog">Add New Sales Order</a>
+                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog">Add Sales Order</a>
                     </div>
 					 -->
                 </div>
@@ -113,47 +113,825 @@
                 
                 <div data-role="content" >
                 	<div id="timeTrackerInfoDiv">
-                	    <a href="#getSOBySONumberDialog" class="mini-btn" data-theme="a" data-role="button"  data-rel="dialog">Add New Sales Order</a>
+                	    <a href="#getSOBySONumberDialog" class="mini-btn" data-theme="a" data-role="button"  data-rel="dialog">Add Sales Order</a>
                     </div>
                     <hr class="style">
                     
-                    <div id="running_tracker" class="running-tracker">
-					    <p style="text-align: center;">
-							
-							<span id="logging_detail" class="order-detail" style="background-color: #20B2AA;width: 50px;" class="">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <div id="running_tracker" class="running-tracker display-none">
+					    <p class="running-tracker-info" style="text-align: center;">
+							<span id="logging_order_color_code" class="order-detail" style="background-color: #20B2AA;width: 50px;" class="">&nbsp;&nbsp;&nbsp;&nbsp;</span>
 							<span id="logging_detail" class="order-detail" class="">Dummy Data # </span>
-							<span style="vertical-align: top;" class="" id="logging_proc_icon">
-								<img class="icon-img" src="img/prod_handover.png" id="timer_img_spOrderNoReplace_" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
+							<span class="" id="logging_proc_icon" >
+								<img class="icon-img" src="img/prod_handover.png" id="timer_img_1_" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
 							</span> 
-							
 						</p>
 						 
 					    <div class="ui-grid-c" style="text-align: center;" id="currRunningTracker" class="current-running-tracker" >
 					    
-						  <div id="logging_time" class="ui-block-a logging-time" >00:00:00</div>
+						  	<div id="logging_time" class="ui-block-a logging-time" >00:00</div>
 						  
-						  <div class="ui-block-b"  >
-						  		<div class="timer timer-icon play">
-						  				<img id="logging_play" class="icon-img" src="img/icon-play.png" data-timecat="1" data-action="resume" onclick="logTimer(this);return false;">
-						  		</div>
-						  		<div class="timer timer-icon pause display-none">
-						  			<img id="logging_pause" class="icon-img" src="img/icon-pause.png" data-timecat="1" data-action="pause" onclick="logTimer(this);return false;">
-						  		</div>
-						  </div>
-						  
-						  <div id="logging_clock" class="ui-block-c timer timer-icon clock" data-action="logtime" >
-								<img class="icon-img" src="img/icon-clock.png" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
-						  </div>
-						  
-						  <div id="logging_delete" class="ui-block-d timer timer-icon delete" data-action="delete" >
-						  		<img class="icon-img" src="img/icon-delete.png" id="timer_img_spOrderNoReplace_" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
-						  </div>
+						  	<div class="ui-block-b">
+						  		<div id="logging_play" class="timer timer-icon play" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;"></div>
+						  		<div id="logging_pause" class="timer timer-icon pause display-none" data-timecat="1" data-action="pause" onclick="logTimer(this);return false;"></div>
+						  	</div>
+							<div class="ui-block-c">
+							  	<div id="logging_clock" class="timer timer-icon clock" data-action="logtime" data-order="1" data-timecat="1" onclick="logTimer(this);return false;" >
+								</div>
+							</div>
+							<div class="ui-block-d">
+								  <div id="logging_delete" class="timer timer-icon delete" data-action="delete" id="timer_img_1_" data-order="1" data-timecat="1" onclick="logTimer(this);return false;">
+								  </div>
+							</div>	  
 						</div>
 					    <hr class="style">  
 					</div>    
                     
                     <div id="salesOrderMainDiv">
-                    	<div class="sales-table-div" id="sales-table-div_1"><table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_1"><thead onclick="showHideTable(this);"><tr><th id="sp_order_name_1" colspan="3" class="sp-order "><div style="border-color: #87CEEB;" class="so-details-box" id="so_details_box"><div style="background-color: #87CEEB;" class="so-color-box"><span style="">&nbsp;</span></div><div class="so-name-box"><span id="so_name" class="">Jackson #1001</span><a data-hexcolor="#87CEEB" data-oname="Jackson #1001" data-order="1" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div></div></th></tr></thead><tbody style="display: none;"><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" id="timer_img_1_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_materials" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" id="timer_img_spOrderIdReplace_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_setup" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" id="timer_img_spOrderIdReplace_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_unload" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" id="timer_img_spOrderIdReplace_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_rodding" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" id="timer_img_spOrderIdReplace_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_prod_handover" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" id="timer_img_spOrderIdReplace_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_maint_scheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr><tr><td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" id="timer_img_spOrderIdReplace_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td><td><span class="timer" id="orderId_spOrderIdReplace">--:-- hrs</span></td><td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" data-icon="flat-time" id="timer_spOrderIdReplace_maint_unscheduled" class="timer timer-icon clock"> &nbsp;<img src="img/icon-clock.png" class="icon-img"></a></td></tr></tbody><tfoot style="display: none;"><tr><td class="td-danger" colspan="3"><a class="order-close" href="#"><span>CLOSE</span></a></td></tr></tfoot></table></div>
+                    	   <div class="sales-table-div" id="sales-table-div_1">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_1">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_1" colspan="3" class="sp-order ">
+							                  <div style="border-color: #87CEEB;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #87CEEB;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Jackson #1001</span><a data-hexcolor="#87CEEB" data-oname="Jackson #1001" data-order="1" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" id="timer_img_1_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_1">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="1" data-icon="flat-time" id="timer_1_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" id="timer_img_1_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_1">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="1" data-icon="flat-time" id="timer_1_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" id="timer_img_1_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_1">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="1" data-icon="flat-time" id="timer_1_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" id="timer_img_1_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_1">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="1" data-icon="flat-time" id="timer_1_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" id="timer_img_1_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_1">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="1" data-icon="flat-time" id="timer_1_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" id="timer_img_1_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_1">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="1" data-icon="flat-time" id="timer_1_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" id="timer_img_1_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_1">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="1" data-icon="flat-time" id="timer_1_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="1" data-order="1001" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_2">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_2">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_2" colspan="3" class="sp-order ">
+							                  <div style="border-color: #40E0D0;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #40E0D0;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Jayden #1005</span><a data-hexcolor="#40E0D0" data-oname="Jayden #1005" data-order="2" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="2" id="timer_img_2_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_2">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="2" data-icon="flat-time" id="timer_2_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="2" id="timer_img_2_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_2">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="2" data-icon="flat-time" id="timer_2_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="2" id="timer_img_2_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_2">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="2" data-icon="flat-time" id="timer_2_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="2" id="timer_img_2_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_2">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="2" data-icon="flat-time" id="timer_2_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="2" id="timer_img_2_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_2">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="2" data-icon="flat-time" id="timer_2_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="2" id="timer_img_2_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_2">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="2" data-icon="flat-time" id="timer_2_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="2" id="timer_img_2_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_2">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="2" data-icon="flat-time" id="timer_2_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="2" data-order="1005" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_5">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_5">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_5" colspan="3" class="sp-order ">
+							                  <div style="border-color: #C0C0C0;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #C0C0C0;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Fyfe #152</span><a data-hexcolor="#C0C0C0" data-oname="Fyfe #152" data-order="5" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="5" id="timer_img_5_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_5">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="5" data-icon="flat-time" id="timer_5_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="5" id="timer_img_5_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_5">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="5" data-icon="flat-time" id="timer_5_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="5" id="timer_img_5_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_5">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="5" data-icon="flat-time" id="timer_5_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="5" id="timer_img_5_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_5">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="5" data-icon="flat-time" id="timer_5_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="5" id="timer_img_5_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_5">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="5" data-icon="flat-time" id="timer_5_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="5" id="timer_img_5_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_5">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="5" data-icon="flat-time" id="timer_5_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="5" id="timer_img_5_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_5">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="5" data-icon="flat-time" id="timer_5_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="5" data-order="152" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_7">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_7">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_7" colspan="3" class="sp-order ">
+							                  <div style="border-color: #9932CC;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #9932CC;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Benson, Ian &amp; Jocelyn #120</span><a data-hexcolor="#9932CC" data-oname="Benson, Ian &amp; Jocelyn #120" data-order="7" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="7" id="timer_img_7_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_7">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="7" data-icon="flat-time" id="timer_7_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="7" id="timer_img_7_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_7">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="7" data-icon="flat-time" id="timer_7_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="7" id="timer_img_7_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_7">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="7" data-icon="flat-time" id="timer_7_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="7" id="timer_img_7_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_7">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="7" data-icon="flat-time" id="timer_7_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="7" id="timer_img_7_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_7">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="7" data-icon="flat-time" id="timer_7_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="7" id="timer_img_7_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_7">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="7" data-icon="flat-time" id="timer_7_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="7" id="timer_img_7_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_7">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="7" data-icon="flat-time" id="timer_7_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="7" data-order="120" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_8">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_8">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_8" colspan="3" class="sp-order ">
+							                  <div style="border-color: #6A5ACD;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #6A5ACD;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Benson, Ian &amp; Jocelyn #120</span><a data-hexcolor="#6A5ACD" data-oname="Benson, Ian &amp; Jocelyn #120" data-order="8" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="8" id="timer_img_8_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_8">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="8" data-icon="flat-time" id="timer_8_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="8" id="timer_img_8_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_8">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="8" data-icon="flat-time" id="timer_8_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="8" id="timer_img_8_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_8">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="8" data-icon="flat-time" id="timer_8_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="8" id="timer_img_8_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_8">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="8" data-icon="flat-time" id="timer_8_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="8" id="timer_img_8_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_8">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="8" data-icon="flat-time" id="timer_8_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="8" id="timer_img_8_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_8">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="8" data-icon="flat-time" id="timer_8_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="8" id="timer_img_8_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_8">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="8" data-icon="flat-time" id="timer_8_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="8" data-order="120" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_9">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_9">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_9" colspan="3" class="sp-order ">
+							                  <div style="border-color: #6A5ACD;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #6A5ACD;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Benson, Ian &amp; Jocelyn #120</span><a data-hexcolor="#6A5ACD" data-oname="Benson, Ian &amp; Jocelyn #120" data-order="9" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="9" id="timer_img_9_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_9">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="9" data-icon="flat-time" id="timer_9_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="9" id="timer_img_9_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_9">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="9" data-icon="flat-time" id="timer_9_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="9" id="timer_img_9_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_9">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="9" data-icon="flat-time" id="timer_9_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="9" id="timer_img_9_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_9">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="9" data-icon="flat-time" id="timer_9_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="9" id="timer_img_9_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_9">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="9" data-icon="flat-time" id="timer_9_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="9" id="timer_img_9_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_9">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="9" data-icon="flat-time" id="timer_9_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="9" id="timer_img_9_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_9">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="9" data-icon="flat-time" id="timer_9_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="9" data-order="120" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_10">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_10">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_10" colspan="3" class="sp-order ">
+							                  <div style="border-color: #D3D3D3;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #D3D3D3;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Tyler Kostiuk #129</span><a data-hexcolor="#D3D3D3" data-oname="Tyler Kostiuk #129" data-order="10" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="10" id="timer_img_10_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_10">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="10" data-icon="flat-time" id="timer_10_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="10" id="timer_img_10_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_10">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="10" data-icon="flat-time" id="timer_10_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="10" id="timer_img_10_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_10">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="10" data-icon="flat-time" id="timer_10_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="10" id="timer_img_10_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_10">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="10" data-icon="flat-time" id="timer_10_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="10" id="timer_img_10_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_10">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="10" data-icon="flat-time" id="timer_10_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="10" id="timer_img_10_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_10">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="10" data-icon="flat-time" id="timer_10_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="10" id="timer_img_10_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_10">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="10" data-icon="flat-time" id="timer_10_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="10" data-order="129" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_11">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_11">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_11" colspan="3" class="sp-order ">
+							                  <div style="border-color: #FF1493;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #FF1493;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Cheryl &amp; Marvin Fisher #192</span><a data-hexcolor="#FF1493" data-oname="Cheryl &amp; Marvin Fisher #192" data-order="11" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="11" id="timer_img_11_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_11">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="11" data-icon="flat-time" id="timer_11_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="11" id="timer_img_11_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_11">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="11" data-icon="flat-time" id="timer_11_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="11" id="timer_img_11_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_11">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="11" data-icon="flat-time" id="timer_11_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="11" id="timer_img_11_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_11">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="11" data-icon="flat-time" id="timer_11_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="11" id="timer_img_11_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_11">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="11" data-icon="flat-time" id="timer_11_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="11" id="timer_img_11_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_11">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="11" data-icon="flat-time" id="timer_11_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="11" id="timer_img_11_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_11">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="11" data-icon="flat-time" id="timer_11_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="11" data-order="192" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_12">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_12">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_12" colspan="3" class="sp-order ">
+							                  <div style="border-color: #20B2AA;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #20B2AA;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">1 time Customer #123</span><a data-hexcolor="#20B2AA" data-oname="1 time Customer #123" data-order="12" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="12" id="timer_img_12_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_12">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="12" data-icon="flat-time" id="timer_12_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="12" id="timer_img_12_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_12">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="12" data-icon="flat-time" id="timer_12_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="12" id="timer_img_12_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_12">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="12" data-icon="flat-time" id="timer_12_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="12" id="timer_img_12_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_12">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="12" data-icon="flat-time" id="timer_12_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="12" id="timer_img_12_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_12">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="12" data-icon="flat-time" id="timer_12_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="12" id="timer_img_12_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_12">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="12" data-icon="flat-time" id="timer_12_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="12" id="timer_img_12_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_12">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="12" data-icon="flat-time" id="timer_12_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="12" data-order="123" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_13">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_13">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_13" colspan="3" class="sp-order ">
+							                  <div style="border-color: #D2B48C;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #D2B48C;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">not yet specified #81</span><a data-hexcolor="#D2B48C" data-oname="not yet specified #81" data-order="13" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="13" id="timer_img_13_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_13">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="13" data-icon="flat-time" id="timer_13_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="13" id="timer_img_13_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_13">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="13" data-icon="flat-time" id="timer_13_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="13" id="timer_img_13_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_13">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="13" data-icon="flat-time" id="timer_13_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="13" id="timer_img_13_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_13">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="13" data-icon="flat-time" id="timer_13_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="13" id="timer_img_13_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_13">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="13" data-icon="flat-time" id="timer_13_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="13" id="timer_img_13_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_13">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="13" data-icon="flat-time" id="timer_13_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="13" id="timer_img_13_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_13">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="13" data-icon="flat-time" id="timer_13_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="13" data-order="81" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_14">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_14">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_14" colspan="3" class="sp-order ">
+							                  <div style="border-color: #FFD700;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #FFD700;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">not yet specified #72</span><a data-hexcolor="#FFD700" data-oname="not yet specified #72" data-order="14" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="14" id="timer_img_14_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_14">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="14" data-icon="flat-time" id="timer_14_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="14" id="timer_img_14_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_14">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="14" data-icon="flat-time" id="timer_14_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="14" id="timer_img_14_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_14">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="14" data-icon="flat-time" id="timer_14_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="14" id="timer_img_14_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_14">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="14" data-icon="flat-time" id="timer_14_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="14" id="timer_img_14_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_14">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="14" data-icon="flat-time" id="timer_14_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="14" id="timer_img_14_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_14">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="14" data-icon="flat-time" id="timer_14_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="14" id="timer_img_14_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_14">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="14" data-icon="flat-time" id="timer_14_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="14" data-order="72" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_15">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_15">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_15" colspan="3" class="sp-order ">
+							                  <div style="border-color: #FFD700;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #FFD700;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Brent &amp; Teresa Petrick #71</span><a data-hexcolor="#FFD700" data-oname="Brent &amp; Teresa Petrick #71" data-order="15" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="15" id="timer_img_15_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_15">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="15" data-icon="flat-time" id="timer_15_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="15" id="timer_img_15_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_15">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="15" data-icon="flat-time" id="timer_15_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="15" id="timer_img_15_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_15">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="15" data-icon="flat-time" id="timer_15_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="15" id="timer_img_15_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_15">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="15" data-icon="flat-time" id="timer_15_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="15" id="timer_img_15_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_15">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="15" data-icon="flat-time" id="timer_15_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="15" id="timer_img_15_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_15">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="15" data-icon="flat-time" id="timer_15_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="15" id="timer_img_15_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_15">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="15" data-icon="flat-time" id="timer_15_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="15" data-order="71" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_16">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_16">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_16" colspan="3" class="sp-order ">
+							                  <div style="border-color: #FFD700;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #FFD700;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Order65 #65</span><a data-hexcolor="#FFD700" data-oname="Order65 #65" data-order="16" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="16" id="timer_img_16_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_16">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="16" data-icon="flat-time" id="timer_16_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="16" id="timer_img_16_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_16">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="16" data-icon="flat-time" id="timer_16_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="16" id="timer_img_16_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_16">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="16" data-icon="flat-time" id="timer_16_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="16" id="timer_img_16_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_16">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="16" data-icon="flat-time" id="timer_16_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="16" id="timer_img_16_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_16">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="16" data-icon="flat-time" id="timer_16_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="16" id="timer_img_16_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_16">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="16" data-icon="flat-time" id="timer_16_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="16" id="timer_img_16_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_16">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="16" data-icon="flat-time" id="timer_16_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="16" data-order="65" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+							   <div class="sales-table-div" id="sales-table-div_17">
+							      <table data-mode="" data-role="table" style="border: 1px solid #EEE8E8;" class="order-box ui-table" id="sp_order_17">
+							         <thead onclick="showHideTable(this);">
+							            <tr>
+							               <th id="sp_order_name_17" colspan="3" class="sp-order ">
+							                  <div style="border-color: #FFA07A;" class="so-details-box" id="so_details_box">
+							                     <div style="background-color: #FFA07A;" class="so-color-box"><span style="">&nbsp;</span></div>
+							                     <div class="so-name-box"><span id="so_name" class="">Marchi, Dawn &amp; Al #1095</span><a data-hexcolor="#FFA07A" data-oname="Marchi, Dawn &amp; Al #1095" data-order="17" class="process-report pull-right" onclick="getLogTimeListOfOrder(this); return false;" href="#">Report</a></div>
+							                  </div>
+							               </th>
+							            </tr>
+							         </thead>
+							         <tbody style="display: none;">
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="17" id="timer_img_17_prod_materials" src="img/prod_materials.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_17">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_materials" data-order="17" data-icon="flat-time" id="timer_17_prod_materials" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="17" id="timer_img_17_prod_setup" src="img/prod_setup.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_17">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_setup" data-order="17" data-icon="flat-time" id="timer_17_prod_setup" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="17" id="timer_img_17_prod_unload" src="img/prod_unload.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_17">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_unload" data-order="17" data-icon="flat-time" id="timer_17_prod_unload" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="17" id="timer_img_17_prod_rodding" src="img/prod_rodding.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_17">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_rodding" data-order="17" data-icon="flat-time" id="timer_17_prod_rodding" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="17" id="timer_img_17_prod_handover" src="img/prod_handover.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_17">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="prod_handover" data-order="17" data-icon="flat-time" id="timer_17_prod_handover" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="17" id="timer_img_17_maint_scheduled" src="img/maint_scheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_17">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_scheduled" data-order="17" data-icon="flat-time" id="timer_17_maint_scheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							            <tr>
+							               <td class="order-p-icon"><span class="process-icon cm-10"><img onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="17" id="timer_img_17_maint_unscheduled" src="img/maint_unscheduled.png" class="icon-img"></span></td>
+							               <td><span class="timer" id="orderId_17">--:-- hrs</span></td>
+							               <td class="order-t-icon"><a onclick="logTimer(this);return false;" data-action="clock" data-timecat="maint_unscheduled" data-order="17" data-icon="flat-time" id="timer_17_maint_unscheduled" class="timer timer-icon clock"></a></td>
+							            </tr>
+							         </tbody>
+							         <tfoot style="display: none;">
+							            <tr>
+							               <td class="td-danger" colspan="3"><a onclick="closeSalesOrder(this)" data-id="17" data-order="1095" class="order-close" href="#"><span>CLOSE</span></a></td>
+							            </tr>
+							         </tfoot>
+							      </table>
+							   </div>
+                    	
                 	</div>
                 </div>
                 
@@ -187,6 +965,7 @@
 				<div class="ui-grid-a sales-order-btn-group">
 				  <!-- <div class="ui-block-a"><a data-rel="back" data-role="button" href="#view-all-sales-order" >Close</a></div> -->
 				  <div class="ui-block-a" ><a  id="tryAgainBtn" class="display-none" data-theme="a" data-role="button" href="#" onclick="tryAgainSOBySONumber();" >Try Again</a></div>
+				  <div class="ui-block-a display-none" ><a  id="showOrderBtn" class="" data-theme="a" data-role="button" href="#" onclick="showOrderSOBySONumber();" >Show Order</a></div>
 				  <div class="ui-block-b"><a id="getSOBySONumberBtn" data-theme="a" data-role="button" href="#" onclick="getSOBySONumber();" >Submit</a></div>
 				  <div class="ui-block-b"><a id="addNewSalesOrderBtn" class="display-none"  data-theme="a" data-role="button" href="#" onclick="createNewSO();" >Create</a></div>
 				</div><!-- /grid-a -->
@@ -216,7 +995,9 @@
                         </div>
                     </div>
                     
-                    <div id="logTimeHistoryDiv"></div>
+                    <div id="logTimeHistoryDiv">
+                    	<div class="log-time-entry-div logTimeDiv1" id="logTimeDiv"><div class="date-time-details">Date:<span class="">2015-10-13</span><span class="pull-right">1:03 hrs</span></div><div class="process-details"><div class="ui-grid-a my-breakpoint"><div class="ui-block-a"><div class="process-img"><img src="img/prog_production.png"></div><div class="process-name">Programming Production</div></div><div class="ui-block-b text-align-right"><span class="link-custom-spam"><a data-category="prog_production" data-crewsize="3" data-time="1:03" data-date="2015-10-13" data-id="11" data-sotimeid="1" data-comment="dsfdsfdxfdsg dfgdfgd dfgdf" href="#" onclick="editLogTime(this);">Edit</a></span></div></div><div class="more-process-details-main "><div class="text-align-right"><a class="link" href="#" onclick="moreProcessDetails(this);">Show Details</a></div><div style="display: none;" class="more-process-details moreDetailsDiv12"><p class="process-comment">Revision: <span class="text-purple" style="vertical-align: top;">Work</span></p><p class="process-comment">Comment: <span>No Comments Yet.</span></p></div></div></div></div>
+                    </div>
                 	
                 </div>
                 
@@ -250,6 +1031,10 @@
                     	
                     <div id="addLogTimeMainDiv">
                     	<form id="addLogTimeForm">
+                    		<div class="display-none">
+                    			<input type="hidden" id="staffTimeId" value="">
+                    			<input type="hidden" id="soTimeId" value="">
+                    		</div>
 		                   	<div class="ui-field-contain">
 							    <label for="select-native-2">
 							    	Process: <span class="" id="process-img" style="vertical-align: top;">
@@ -267,7 +1052,7 @@
 							<h4> Modify time logged: </h4>
 		                    <div class="ui-field-contain">
 							    <label for="Date:">Date: </label>
-							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
+							    <input type="text" data-mini="true" data-role="datebox" id="logDate" name="logDate" readonly="readonly"
 							    	data-options='{"mode": "calbox", "overrideDateFormat": "%Y-%m-%d"}' >
 							    <!-- 	
 							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
@@ -277,18 +1062,18 @@
 		                    
 		                     <div class="ui-field-contain">	
 								<label for="Time:">Time</label>
-		                    	<input onchange="calcTotalCrewTime();" type="text" data-mini="true" data-role="datebox" id="timeDuration" name="timeDuration" readonly="readonly"
+		                    	<input onchange="getDataForTotalTimeCalc();" type="text" data-mini="true" data-role="datebox" id="logTime" name="logTime" readonly="readonly"
 							    	data-options='{"mode": "durationflipbox","overrideDurationOrder":["h","i"] ,"overrideDurationFormat": " %Dl:%DM "}' >
 		                    </div> 
 		                    
 		                    <div class="ui-field-contain">
 							    <label for="Add a description:">Add a description: </label>
-							    <textarea cols="40" rows="4" name="textarea" id="textarea"></textarea>
+							    <textarea cols="40" rows="4" name="logComment" id="logComment"></textarea>
 		                    </div>     
 		                    
 		                    <div class="ui-field-contain">
 		                    	<label for="Crew Size">Crew Size: </label>
-		                    	<select onchange="calcTotalCrewTime();" name="crewSize" id="crewSize" data-mini="true" >                    
+		                    	<select onchange="getDataForTotalTimeCalc();" name="crewSize" id="crewSize" data-mini="true" >                    
 		                    		<option value="1">1</option>
 		                            <option value="2">2</option>
 		                            <option value="3">3</option>
@@ -313,8 +1098,8 @@
 		                    </div> 
 		                    
 		                    <div class="ui-grid-a">
-						      <div class="ui-block-a" ><input type="button" value="Log Time " /></div>
-						      <div class="ui-block-b" ><input type="button" value="Revision Log Time"></div>
+						      <div class="ui-block-a" ><input type="button" id="logTimeSubmitBtn" value="Log Time" data-flag="add" onclick="callAddUpadteLogTime(this);" /></div>
+						      <div class="ui-block-b" ><input type="button" id="logTimeRevisionSubmitBtn" value="Revision Log Time" data-flag="update" /></div>
 						    </div>
 						</form>	    
                 	</div>

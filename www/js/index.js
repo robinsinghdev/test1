@@ -1,21 +1,10 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+/*$(document).ready(function() {
+    //checkTimeTracker(); 
+	$("a.process-report").on("click", function(event){
+		  event.stopPropagation();
+		  console.log( "I was clicked, but my parent will not be." );
+		});
+});*/
 
 $( document ).on( "mobileinit", function() {
     // Make your jQuery Mobile framework configuration changes here!
@@ -29,10 +18,14 @@ $( document ).on( "mobileinit", function() {
      jQuery.mobile.loader.prototype.options.text = "loading";
      jQuery.mobile.loader.prototype.options.textVisible = true;
      jQuery.mobile.loader.prototype.options.theme = "a";
+     
 });
 
+var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This app requires an active WiFi connection.';
-var currDataHexcolor,currDataOname;
+var serverBusyMsg='Server is busy, please try again later.';
+var currDataHexcolor,currDataOname,currDataOrder;
+var globalLogTimeObj={};
 
 var app = {
     SOME_CONSTANTS : false,  // some constant
@@ -66,8 +59,10 @@ var app = {
 		db.transaction(initializeDB, errorCB, successCB);
 		*/
         
-        //checkPreAuth();
+        checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
+		
+		
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -92,7 +87,7 @@ function onBackKeyDown() {
        $.mobile.changePage('#home-page','slide');
    }
 	else{
-	   
+		window.history.back();
    }
 }
 
@@ -206,7 +201,7 @@ function handleLogin() {
 			showModal();
 			$.ajax({
 				type : 'POST',
-			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   url:appUrl,
 			   //cache : false,
 			   //async: false,
 			   data:{action:'userLogin',email:u,password:p,check:'1'},
@@ -293,8 +288,8 @@ function getSOBySONumber(){
 	
 	if(grnUserObj != '') {
 		
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -308,7 +303,7 @@ function getSOBySONumber(){
 			else{
 				$.ajax({
 					type : 'POST',
-				   url:'https://dev.bpmetrics.com/grn/m_app/',
+				   url:appUrl,
 				   data:{action:'checkSOonSP',grn_user:grnUserObj,sp_salesorderNumber :sp_salesOrderNumber},
 				   success:function(data){
 				   		hideModal();
@@ -328,12 +323,20 @@ function getSOBySONumber(){
 					   		$('a#tryAgainBtn').removeClass('display-none');
 					   		$('a#addNewSalesOrderBtn').removeClass('display-none');
 					   		$('a#getSOBySONumberBtn').addClass('display-none');
+					   		$('a#showOrderBtn').parent().hide();
+					   		//$('a#showOrderBtn').addClass('display-none');
+					   		
 					   		
 					   		$(".sales-order-msg").html('');
 				   		}
+				   		else if(responseJson.status=="exist"){
+				   			$sp_details_div.hide();
+				   			$(".sales-order-msg").html("Sales order already exist.");
+				   			//, click on show button to show in your sales order list
+				   			$('a#showOrderBtn').parent().show();
+				   		} 
 				   		else if(responseJson.status=="fail"){
 				   			$sp_details_div.hide();
-				   			//alert(responseJson.msg);
 				   			$(".sales-order-msg").html(responseJson.msg);
 				   		} 
 					},
@@ -363,6 +366,7 @@ function tryAgainSOBySONumber(){
 	$sp_details_div.hide();
 	$('a#tryAgainBtn').addClass('display-none');
 	$('a#addNewSalesOrderBtn').addClass('display-none');
+	$('a#showOrderBtn').parent().hide();
 	$('a#getSOBySONumberBtn').removeClass('display-none');
 	$(".sales-order-msg").html('');
 }
@@ -383,8 +387,8 @@ function createNewSO(){
 	
 	if(grnUserObj != '') {
 		
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -397,7 +401,7 @@ function createNewSO(){
 			var grn_colors_id=getRandomColor();
 			$.ajax({
 				type : 'POST',
-			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   url:appUrl,
 			   data:{action:'addSaleOrderTime',grn_user:grnUserObj,grn_colors_id :grn_colors_id,sp_jobName:spJobName,sp_salesorderNumber:spSalesorderNumber},
 			   success:function(data){
 			   		hideModal();
@@ -425,13 +429,13 @@ function createNewSO(){
 var time_cats_arr;
 function getCategoriesForTimeTracking(){
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -440,7 +444,7 @@ function getCategoriesForTimeTracking(){
 			showModal();
 			$.ajax({
 				type : 'POST',
-			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   url:appUrl,
 			   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
@@ -464,13 +468,13 @@ function getCategoriesForTimeTracking(){
 
 function getSalesOrders(){
 
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -479,7 +483,7 @@ function getSalesOrders(){
 			showModal();
 			$.ajax({
 				type : 'POST',
-			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   url:appUrl,
 			   data:{action:'getSalesOrders',grn_user:grnUserObj},
 			   success:function(data){
 			   		
@@ -499,22 +503,21 @@ function getSalesOrders(){
 			        	tbodyObj+='<tr>'+
 					                 '<td class="order-p-icon">'+
 					                     '<span class="process-icon cm-10">'+
-					                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+					                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 					                     '</span>'+
 					                 '</td>'+
 					                 '<td>'+
 					                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
 					                 '</td>'+
 					                 '<td class="order-t-icon">'+
-					                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="1" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-										 ' &nbsp;<img class="icon-img" src="img/icon-clock.png" >'+
+					                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 										 '</a>'+
 					                 '</td>'+
 					             '</tr>';
 			   		});
 			   		tbodyObj+='</tbody>';
 			   		
-			   		var salse_orders_arr=responseJson.salse_orders;
+			   		var salse_orders_arr=responseJson.sales_orders;
 			   		jQuery.each(salse_orders_arr, function(index,value) {
 			        	var jsonObj=value;
 			        	var id=jsonObj["id"];
@@ -526,8 +529,9 @@ function getSalesOrders(){
 			        	var time_running_status=jsonObj["time_running_status"];
 			        	var grn_status_id=jsonObj["grn_status_id"];
 			        	var HexColor=jsonObj["HexColor"];
+			        	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
+			        	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
 			        	
-			        	var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
 			        	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
 				                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
 									     '<thead onclick="showHideTable(this);">'+
@@ -552,7 +556,8 @@ function getSalesOrders(){
 									     '</tbody>'+
 									     '<tfoot>'+
 									         '<tr>'+
-									             '<td colspan="3" class="td-danger"><a href="#" class="order-close"><span>CLOSE</span></a>'+
+									             '<td colspan="3" class="td-danger">'+
+									             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrder(this)"><span>CLOSE</span></a>'+
 									             '</td>'+ 
 									         '</tr>'+
 									     '</tfoot>'+
@@ -605,7 +610,7 @@ function  hideAllTablesData(){
 	 $('table').find('tfoot').hide();
 }
 
-function logTimer(){
+function logTimer1(){
 	navigator.notification.alert("Time Tracker will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
 }
 
@@ -615,17 +620,18 @@ function changeLoginRole(roleId){
 
 function getLogTimeListOfOrder(data){
 	showModal();
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		var $thisData=$(data);
 		currDataHexcolor=$thisData.attr("data-hexcolor");
 		currDataOname=$thisData.attr("data-oname");
+		currDataOrder=$thisData.attr("data-order");
 		
    		var $so_name_box = $('#viewLogTimeHistoryContent').find('.so-details-box');
    		$so_name_box.css('border-color',currDataHexcolor);
@@ -640,7 +646,7 @@ function getLogTimeListOfOrder(data){
 			
 			$.ajax({
 				type : 'POST',
-			   url:'https://dev.bpmetrics.com/grn/m_app/',
+			   url:appUrl,
 			   data:{action:'getLogTimeListOfOrder',grn_user:grnUserObj,orderId:oid},
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
@@ -653,7 +659,6 @@ function getLogTimeListOfOrder(data){
 												'<div class="process-name">This order has no previous logged time history.</div>'+
 										'</div>';
 			   			$('#logTimeHistoryDiv').append(logTimeDiv);
-			   			hideModal();
 			   		}
 			   		else{
 				   		jQuery.each(records_arr, function(index,value) {
@@ -665,13 +670,15 @@ function getLogTimeListOfOrder(data){
 				   			var timer_flag =value.timer_flag;
 				   			var crew_size =value.crew_size;
 				   			var grn_timeCat =value.grn_timeCat;
-				   			var comments =value.comments;				   			
+				   			var commentsData =value.comments;				   			
 				   			var title =value.title;
 				   			var grn_timeCat_img = grn_timeCat;
 				   			var grn_timeCat_trimmed=value.grn_timeCat;
 				   			grn_timeCat_trimmed=grn_timeCat_trimmed.replace("_revision", "");
 				   			
 				   			var timeInHours=convertDecimalTimeToHours(decimalTime);
+				   			var totalCrewTimeData = calcTotalCrewTimeBackend(crew_size,timeInHours);
+				   			
 				   			grn_timeCat_img=grn_timeCat_img.replace("_revision", "");
 				   			var revisionSpan;
 				   			if (grn_timeCat.toLowerCase().indexOf("revision") >= 0){
@@ -679,14 +686,14 @@ function getLogTimeListOfOrder(data){
 				   			}else{
 				   				revisionSpan='<span style="vertical-align: top;" class="text-purple">Work</span>';
 				   			}
-				   				
-				   			if(comments==""){
+				   			var comments="";	
+				   			if(commentsData==""){
 				   				comments="No Comments Yet.";
 				   			}
 				   			
 					   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
 										   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
-												'<span class="pull-right">'+timeInHours+' hrs</span>'+
+												'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
 											'</div>'+
 											'<div class="process-details">'+
 												'<div class="ui-grid-a my-breakpoint">'+
@@ -698,7 +705,8 @@ function getLogTimeListOfOrder(data){
 												  '</div>'+
 												  '<div class="ui-block-b text-align-right">'+
 														'<span class="link-custom-spam">'+
-															'<a onclick="editLogTime(1,12);" href="#" >Edit</a>'+
+															'<a onclick="editLogTime(this);" href="#" data-sotimeid="'+grn_salesorderTime_id+'" data-comment="'+commentsData+'"  '+
+															' data-id="'+id+'" data-date="'+date+'" data-time="'+timeInHours+'" data-crewSize="'+crew_size+'"  data-category="'+grn_timeCat_trimmed+'" >Edit</a>'+
 														'</span>'+	
 												  '</div>'+
 												'</div>'+
@@ -715,8 +723,10 @@ function getLogTimeListOfOrder(data){
 										'</div>';
 					   		$('#logTimeHistoryDiv').append(logTimeDiv);
 				   		});
-				   		hideModal();
+				   		
 			   		}
+			   		hideModal();
+			   		$.mobile.changePage('#view-log-time-history','slide');
 				},
 				error:function(data,t,f){
 					hideModal();
@@ -725,7 +735,7 @@ function getLogTimeListOfOrder(data){
 				}
 			});
 		}
-		$.mobile.changePage('#view-log-time-history','slide');
+		
 	}
 	else{
 		logout();
@@ -739,16 +749,267 @@ function addLogTime(){
 	$so_name_box.find('.so-color-box').css('background-color',currDataHexcolor);
 	$so_name_box.find(".so-name-box").html(currDataOname);
 	
+	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
+	
+	$addUpdateLogTimeForm.find('#staffTimeId').val('');
+	$addUpdateLogTimeForm.find('#soTimeId').val(currDataOrder);
+	
+	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add');
+	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','add');
+	
 	$.mobile.changePage('#add-log-time','slide');
 }
-function editLogTime(oid,cid){
+
+function editLogTime(dataObj){
 	var $so_name_box = $('#addLogTimeContent').find('.so-details-box');
 	$so_name_box.css('border-color',currDataHexcolor);
 	$so_name_box.find('.so-color-box').css('background-color',currDataHexcolor);
 	$so_name_box.find(".so-name-box").html(currDataOname);
-		
+	
+	var $dataObj=$(dataObj);
+	var id=$dataObj.data('id');
+	var soTimeId=$dataObj.data('sotimeid');
+	var date=$dataObj.data('date');
+	var time=$dataObj.data('time');
+	var crewSize=$dataObj.data('crewsize');
+	var category=$dataObj.data('category'); //'prod_materials';
+	var comment=$dataObj.data('comment');
+	
+	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
+	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','update'); 
+	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','update');
+	
+	//staffTimeId , soTimeId
+	alert(soTimeId+"..."+id);
+	$addUpdateLogTimeForm.find('#staffTimeId').val(id);
+	$addUpdateLogTimeForm.find('#soTimeId').val(soTimeId);
+	
+	$addUpdateLogTimeForm.find('#logDate').val(date);
+	$addUpdateLogTimeForm.find('#logTime').val(time);
+	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
+	$addUpdateLogTimeForm.find('#logComment').val(comment);
+	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
+	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
+	calcTotalCrewTime(crewSize,time);
+	
 	$.mobile.changePage('#add-log-time','slide');
 }
+
+function refreshSelect(ele,currentValue){
+	// Grabbing a select field
+	var el = $(ele);
+	// Select the relevant option, de-select any others
+	el.val(currentValue).attr('selected', true).siblings('option').removeAttr('selected');
+	// Initialize the selectmenu
+	el.selectmenu();
+	// jQM refresh
+	el.selectmenu("refresh", true);
+}
+
+function callAddUpadteLogTime(obj){
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {
+		
+		/*data:{
+			action:'addLogTime',
+			grn_user:grnUserObj,
+			grn_salesorderTime_id:'1',
+			grn_timeCat: 'prog_production',
+			grn_staffTime_id: '',
+			date: '2015-10-31',
+			hours: 1,
+			minutes: 08,
+			crew_size: 3,
+			comments: 'Test Commentss'
+		},*/
+		
+		var dataObj={};
+		dataObj.action='addLogTime';
+		dataObj.grn_user=grnUserObj;
+		
+		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
+		
+		if($(obj).attr('data-flag')=='add'){
+			dataObj.grn_staffTime_id= '';
+		}else if($(obj).attr('data-flag')=='update'){
+			dataObj.grn_staffTime_id= $addUpdateLogTimeForm.find('#staffTimeId').val();
+		}
+		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
+		dataObj.grn_timeCat= $addUpdateLogTimeForm.find('#timeCat option:selected').val();
+		dataObj.date= $addUpdateLogTimeForm.find('#logDate').val();
+		var time=$addUpdateLogTimeForm.find('#logTime').val();
+		var timeArr=time.split(":");
+		dataObj.hours= timeArr[0];
+		dataObj.minutes= timeArr[1];
+		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
+		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
+	
+		addUpadteLogTime(dataObj);
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
+//function addUpadteLogTime(){
+function addUpadteLogTime(dataObj){
+	showModal();
+	
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	//var connectionType=checkConnection();
+	var connectionType="WiFi connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		navigator.notification.alert(appRequiresWiFi, function() {});
+	}
+	else if(connectionType=="WiFi connection"){
+		
+		$.ajax({
+			type : 'POST',
+		   url:appUrl,
+		   data:dataObj,
+		   success:function(data){
+		   		var responseJson = $.parseJSON(data);
+		   		console.log(responseJson);
+		   		if(responseJson.status=='success') {
+		   			$.mobile.changePage('#view-all-sales-order','slide');
+		   			navigator.notification.alert(responseJson.msg, function() {});
+		   		}
+		   		else if(responseJson.status=='fail') {
+		   			navigator.notification.alert(serverBusyMsg, function() {});
+		   		}
+		   		hideModal();
+		   		//$.mobile.changePage('#view-log-time-history','slide');
+			},
+			error:function(data,t,f){
+				hideModal();
+				console.log(data+' '+t+' '+f);
+				navigator.notification.alert(appRequiresWiFi, function() {});
+			}
+		});
+	}
+}
+
+function closeSalesOrder(dataObj){
+	showModal();
+	
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {
+		
+		var salesorderId='#'+$(dataObj).data('order');
+		salesorderId=salesorderId.replace("#","");
+		var salesId=$(dataObj).data('id');
+		console.log("salesorderId...."+salesorderId+">>>."+salesId);
+		
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
+		
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert(appRequiresWiFi, function() {});
+		}
+		else if(connectionType=="WiFi connection"){
+			
+			$.ajax({
+				type : 'POST',
+			   url:appUrl,
+			   data:{
+					action:'closeSalseOrder',
+					grn_user:grnUserObj ,
+					salesorder:salesorderId ,
+				},
+			   success:function(data){
+			   		var responseJson = $.parseJSON(data);
+			   		console.log(responseJson);
+			   		if(responseJson.status=='success') {
+			   			console.log('Successfully closed the "Sales Order" for you, you can again add this in ');
+			   			$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
+			   		}
+			   		else if(responseJson.status=='fail') {
+			   			navigator.notification.alert(serverBusyMsg, function() {});
+			   		}
+			   		hideModal();
+				},
+				error:function(data,t,f){
+					hideModal();
+					console.log(data+' '+t+' '+f);
+					navigator.notification.alert(appRequiresWiFi, function() {});
+				}
+			});
+		}
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
+function showOrderSOBySONumber(){
+	showModal();
+	
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {
+		//var salesorderId=$(dataObj).data('order');
+		//console.log("salesorderId...."+salesorderId);
+		var salesorderId=$('#sp_salesOrderNumber').val();
+		
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
+		
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert(appRequiresWiFi, function() {});
+		}
+		else if(connectionType=="WiFi connection"){
+			
+			$.ajax({
+				type : 'POST',
+			   url:appUrl,
+			   data:{
+					action:'showSalseOrder',
+					grn_user:grnUserObj ,
+					salesorder:salesorderId ,
+				},
+			   success:function(data){
+			   		var responseJson = $.parseJSON(data);
+			   		console.log(responseJson);
+			   		if(responseJson.status=='success') {
+			   			getCategoriesForTimeTracking();
+			   			console.log('Successfully add the "Sales Order" for you.');
+			   		}
+			   		else if(responseJson.status=='fail') {
+			   			$sp_details_div.hide();
+			   			$(".sales-order-msg").html(responseJson.msg);
+			   			//navigator.notification.alert(serverBusyMsg, function() {});
+			   		}
+			   		hideModal();
+			   		//$.mobile.changePage('#view-log-time-history','slide');
+				},
+				error:function(data,t,f){
+					hideModal();
+					console.log(data+' '+t+' '+f);
+					navigator.notification.alert(appRequiresWiFi, function() {});
+				}
+			});
+		}
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
 
 function moreProcessDetails(currObj){
 	var $parentDiv = $(currObj).parents(".more-process-details-main");
@@ -764,24 +1025,11 @@ function moreProcessDetails(currObj){
 }
 
 function convertDecimalTimeToHours(decimalTimeVal) {
-	/*
-    2.88 hours can be broken down to 2 hours plus 0.88 hours - 2 hours
-    0.88 hours * 60 minutes/hour = 52.8 minutes - 52 minutes
-    0.8 minutes * 60 seconds/minute = 48 seconds - 48 seconds
-    02:52:48
-	*/
-	
 	var decimalTime=""+decimalTimeVal+"";
 	var splitDecimalTime=decimalTime.split(".");
 	var hours=splitDecimalTime[0];
 	var minutes=(decimalTime % 1).toFixed(4);
-	//console.log("minutes..."+minutes);
 	minutes=minutes*60;
-	//console.log("minutes..."+minutes);
-	
-	//minutes=Math.round(minutes);
-	
-	//console.log("minutes..+++."+minutes);
 	if(minutes<1){
 		minutesString="00";
 	} 
@@ -791,9 +1039,7 @@ function convertDecimalTimeToHours(decimalTimeVal) {
 		minutesString=Math.round(minutes);
 	}
 	var convertedHours=hours+":"+minutesString;
-	//console.log(convertedHours);
 	return convertedHours;
-	
 }
 
 function changeTimeCatImage(obj){
@@ -801,23 +1047,21 @@ function changeTimeCatImage(obj){
 	$('#changeTimeCatImageId').attr('src','img/'+imgName+'.png');
 }
 
-function  calcTotalCrewTime(obj){
+function getDataForTotalTimeCalc(){
 	var $addLogTimeForm=$('form#addLogTimeForm');
-	
 	var crewSize = $addLogTimeForm.find("#crewSize option:selected").val();
-	//var inputHours=$addLogTimeForm.find('#log-hours').val();
-	//var inputMinutes=$addLogTimeForm.find('#log-minutes').val();
-	
-	var timeDuration=$addLogTimeForm.find('#timeDuration').val();
-	
+	var timeDuration=$addLogTimeForm.find('#logTime').val();
+	calcTotalCrewTime(crewSize,timeDuration);
+}
+
+function  calcTotalCrewTime(crewSize,timeDuration){
+	console.log(crewSize+"...."+timeDuration);
 	if(timeDuration !=''){
 		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
 		var tempSplitVar = timeDuration.split(':'); // split it at the colons
 		var currentLoggedMinutes = (+tempSplitVar[0]) * 60 + (+tempSplitVar[1]);
 		currentLoggedMinutes=currentLoggedMinutes*crewSize;
 		var currentLoggedHours;
-		//console.log("currentLoggedMinutes......"+currentLoggedMinutes);
-		
 		//Convert minutes to hh:mm format
 		var hours = Math.floor( currentLoggedMinutes / 60);          
 	    var minutes = currentLoggedMinutes % 60;
@@ -831,8 +1075,394 @@ function  calcTotalCrewTime(obj){
 	else{
 		console.log('Empty');
 	}
+}
+
+function  calcTotalCrewTimeBackend(crewSize,timeDuration){
+	console.log(crewSize+"...."+timeDuration);
+	if(timeDuration !=''){
+		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
+		var tempSplitVar = timeDuration.split(':'); // split it at the colons
+		var currentLoggedMinutes = (+tempSplitVar[0]) * 60 + (+tempSplitVar[1]);
+		currentLoggedMinutes=currentLoggedMinutes*crewSize;
+		var currentLoggedHours;
+		//Convert minutes to hh:mm format
+		var hours = Math.floor( currentLoggedMinutes / 60);          
+	    var minutes = currentLoggedMinutes % 60;
+	    if(minutes < 10){
+	    	minutes="0"+minutes;
+	    }
+	    var totalCrewTime=hours+":"+minutes;
+	    console.log("hh:mm......"+totalCrewTime);
+		return totalCrewTime;
+	}
+	else{
+		console.log('Empty');
+	}
+}
+
+/* ----------------  Time Tracker Code Starts -------------------------  */
+
+var TimerFlag = 0;
+var order = 0;
+var timecat = 0;
+var timerId = 0;
+var date = 0000-00-00;
+baseGrnUrl="";
+
+function logTimer(obj) {
+	//var action = $(obj).data('action');
+	var action=$(obj).attr('data-action');
+	
+	console.log("action..."+action+">>>"+$(obj).attr('data-action'));
+    if (!timerId) {
+        if (action == 'clock') {
+            order = $(obj).attr('data-order');
+            timecat = $(obj).attr('data-timeCat');
+            startTimer();
+        }
+    }
+	else {
+        if (action === 'pause') {
+            pauseTimer();
+        }else if (action === 'resume') {
+            resumeTimer();
+        }else if (action === 'logtime') {
+            logtimeTimer();
+        }else if (action === 'delete') {
+            deleteTimer();
+        }else  if (action === 'logpauseOption') {
+            logpauseOption();
+        }else  if (action === 'clock') {
+            //$('#log_option_popup').modal();
+        	alert('log_option_popup');
+        	saveRunningTimer();
+        }
+    }
+}
+
+function startTimer() {
+	//var connectionType=checkConnection();
+	var connectionType="Unknown connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+        TimerFlag = 1;
+        $('#logging_time').timer('remove');
+        $('#logging_time').timer();
+        $('#running_tracker').show();
+       
+        var curr_sp_order_name=$('#sp_order_name_' + order).text();
+        curr_sp_order_name=curr_sp_order_name.replace("Report","");
+        $('#logging_detail').html(curr_sp_order_name);
+        $('#logging_order_color_code').attr('style', $('#sp_order_name_' + order).find(".so-color-box").attr('style'));
+        
+        //$('[id="'+'timer_' + order + '_' + timecat+'"]').removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
+        //$('[id="'+'timer_img_' + order + '_' + timecat+'"]').addClass('play').attr('data-action', 'logpauseOption');
+        
+        $('#timer_' + order + '_' + timecat).removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
+        $('#timer_img_' + order + '_' + timecat).addClass('play').attr('data-action', 'logpauseOption');
+        
+        $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
+        
+        //timerId = data.timerId;
+        //date = data.date;
+        timerId=2;
+        $('#logging_play').hide();
+        $('#logging_pause').show();
+    }
+	else if(connectionType=="WiFi connection"){
+		 $.ajax({
+		        type: "POST",
+		        url: baseGrnUrl + "timetracker/ajax.php",
+		        data: "order_id=" + order + "&timecat=" + timecat + "&timerFlag=" + TimerFlag + "&action=startTimer",
+		        dataType: "json",
+		        success: function(data) {
+		            if (data.status == 'success') {
+		                TimerFlag = 1;
+		                $('#logging_time').timer('remove');
+		                $('#logging_time').timer();
+		                $('#running_tracker').show();
+		               
+		                var curr_sp_order_name=$('#sp_order_name_' + order).text();
+		                curr_sp_order_name=curr_sp_order_name.replace("Report","");
+		                $('#logging_detail').html(curr_sp_order_name);
+		                $('#logging_order_color_code').attr('style', $('#sp_order_name_' + order).find(".so-color-box").attr('style'));
+		                $('#timer_' + order + '_' + timecat).removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
+		                $('#timer_img_' + order + '_' + timecat).addClass('play').attr('data-action', 'logpauseOption');
+		                $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
+		                
+		                //timerId = data.timerId;
+		                //date = data.date;
+		                $('#logging_play').hide();
+		                $('#logging_pause').show();
+		            }
+		            if (data.action == 'fail') {
+		                $('#msg.msg').html(data.msg);
+		            }
+		            //hideNotification('#msg.msg');
+		        }
+		 });
+	}
 	
 }
+
+function pauseTimer() {
+    console.log('Order: ' + order + ' TimeCat: ' + timecat + ' TimerId: ' + timerId);
+    
+    //var connectionType=checkConnection();
+	var connectionType="Unknown connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		$('#logging_time').timer('pause');
+        //take current time
+		
+		$('#timer_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
+		$('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
+        
+        $('#logging_pause').hide();
+        $('#logging_play').show();//.attr('data-action', 'resume');;
+	}
+	else if(connectionType=="WiFi connection"){
+		$.ajax({
+	        type: "POST",
+	        url: baseGrnUrl + "timetracker/ajax.php",
+	        data: "timerId=" + timerId + "&action=pauseTimer",
+	        dataType: "json",
+	        success: function(data) {
+	            if (data.status == 'success') {
+	                $('#logging_time').timer('pause');
+	                $('#logging_pause').hide();
+	                $('#logging_play').show();
+	                $('#timer_' + order + '_' + timecat).removeClass('play').addClass('pause');
+	                $('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause');
+	                $('#timer_' + order + '_' + timecat).attr('data-action', 'resume');
+	                $('#timer_img_' + order + '_' + timecat).attr('data-action', 'resume');
+	            }
+	            if (data.action == 'fail') {
+	                $('#msg.msg').html(data.msg);
+	            }
+	            hideNotification('#msg.msg');
+	        }
+	    });
+	}
+}
+
+function resumeTimer() {
+	//var connectionType=checkConnection();
+	var connectionType="Unknown connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		$('#logging_time').timer('remove');
+        $('#logging_time').timer({
+            seconds: 200
+        });
+        // $('[id="a"]');
+        $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
+        $('#timer_img_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
+        
+        $('#logging_pause').show();
+        $('#logging_play').hide();
+	}
+	else if(connectionType=="WiFi connection"){
+		 $.ajax({
+		        type: "POST",
+		        url: baseGrnUrl + "timetracker/ajax.php",
+		        data: "timerId=" + timerId + "&action=resumeTimer",
+		        dataType: "json",
+		        success: function(data) {
+		            if (data.status == 'success') {
+		                $('#logging_time').timer('remove');
+		                $('#logging_time').timer({
+		                    seconds: data.time
+		                });
+		                $('#logging_pause').show();
+		                $('#logging_play').hide();
+		                $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play');
+		                $('#timer_img_' + order + '_' + timecat).removeClass('pause').addClass('play');
+		                $('#timer_' + order + '_' + timecat).attr('data-action', 'logpauseOption');
+		                $('#timer_img_' + order + '_' + timecat).attr('data-action', 'logpauseOption');
+		            }
+		            if (data.action == 'fail') {
+		                $('#msg.msg').html(data.msg);
+		            }
+		            hideNotification('#msg.msg');
+		        }
+		    });
+	}
+}
+
+function logtimeTimer() {
+    //$('#logtime_popup #so_process_name').html(timecat + '&nbsp;&nbsp;<img src="img/' + timecat + '.png" width="25px" />');
+   
+    var order_name = $('#sp_order_name_' + order).text();
+    //$('#logtime_popup #so_name').parent().attr('style', $('#sp_order_name_' + order).find('.so-color-box').attr('style'));
+    //$('#logtime_popup #so_name').html(order_name);
+    
+    var currDataHexcolorVal = $('#sp_order_name_' + order).find('.so-color-box').css('background-color')
+    
+    console.log("timecat..."+timecat+"....currDataHexcolor---"+currDataHexcolorVal);
+    
+	var $so_name_box = $('#addLogTimeContent').find('.so-details-box');
+	$so_name_box.css('border-color',currDataHexcolorVal);
+	$so_name_box.find('.so-color-box').css('background-color',currDataHexcolorVal);
+	$so_name_box.find(".so-name-box").html(order_name);
+	
+	var id="";
+	//$('#is_revision').attr('data-timecat', timecat);
+	var soTimeId=order;// done
+	var date=date;// done
+	var time = $('#logging_time').text()// done
+	
+	if (time.indexOf("sec") >= 0){
+		var timeTemp=time.split(" ");
+		time=timeTemp[0];
+		if(time<10){
+			time="00:0"+time;
+		}else{
+			time="00:"+time;
+		}
+	}else if (time.indexOf("min") >= 0){
+		var timeTemp=time.split(" ");
+		time=timeTemp[0];
+	}
+	
+	var crewSize=1;// done
+	// $('#grn_staffTime_id').val(timerId);
+	var grnStaffTimeId=timerId;
+	
+	var category=timecat;
+	var comment="";// done
+	
+	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
+	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add'); 
+	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','add');
+	
+	$addUpdateLogTimeForm.find('#staffTimeId').val('');
+	$addUpdateLogTimeForm.find('#soTimeId').val(soTimeId);
+	
+	$addUpdateLogTimeForm.find('#logDate').val(date);
+	$addUpdateLogTimeForm.find('#logTime').val(time);
+	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
+	$addUpdateLogTimeForm.find('#logComment').val(comment);
+	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
+	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
+	calcTotalCrewTime(crewSize,time);
+	
+	$.mobile.changePage('#add-log-time','slide');
+}
+
+
+function deleteTimer() {
+	console.log('Order: ' + order + ' TimeCat: ' + timecat + ' TimerId: ' + timerId);
+	
+	//var connectionType=checkConnection();
+	var connectionType="Unknown connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		showDeleteTrackerDialog();
+	}
+	else if(connectionType=="Unknown connection"){
+		type = '<i class="fa fa-exclamation-triangle fa-5x text-danger"></i><br><br>';
+	    bootbox.confirm({
+	        size: 'small', closeButton: false,
+	        message: type + "Confirm delete?",
+	        buttons: {
+	            'cancel': {label: 'Cancel', className: 'btn-default pull-left'},
+	            'confirm': {label: 'Delete', className: 'btn-warning pull-right'}
+	        },
+	        callback: function(result) {
+	            if (result) {
+	                $.ajax({
+	                    type: "POST",
+	                    url: baseGrnUrl + "timetracker/ajax.php",
+	                    data: "timerId=" + timerId + "&action=deleteLogTime",
+	                    dataType: "json",
+	                    success: function(data) {
+	                        if (data.status == 'success') {
+	                            $('#msg.msg').html('<div class="alert alert-success span6"><button data-dismiss="alert" class="close" type="button">×</button>' + data.msg + '</div>');
+	                            resetTracker();
+	                        }
+	                        if (data.action == 'already') {
+	                            $('#msg.msg').html(data.msg);
+	                        }
+	                        hideNotification('#msg.msg');
+	                    }
+	                });
+
+	            }
+	        }
+	    });
+	}
+}
+
+function showDeleteTrackerDialog() {
+    navigator.notification.confirm(
+            ("Are you sure to delete this time ?"), // message
+            deleteTrackerAction, // callback
+            'Time Tracker ', // title
+            'Cancel,Delete' // buttonName
+    );
+}
+
+//Call exit function
+function deleteTrackerAction(button){
+	if(button=="2" || button==2){
+    	alert("2 pressed");
+    	deleteTimer();
+	}
+}
+
+
+function logpauseOption() {
+    //$('#logpause_option_popup').modal();
+	showLogPauseOptionsDialog();
+}
+
+function showLogPauseOptionsDialog() {
+    navigator.notification.confirm(
+            ("What to do with the running timer ?"), // message
+            logPauseAction, // callback
+            'Time Tracker ', // title
+            'Cancel,Log Time,Pause' // buttonName
+    );
+}
+
+//Call exit function
+function logPauseAction(button){
+    if(button=="2" || button==2){
+    	alert("2 pressed");
+    	logtimeTimer();
+    }
+    else if(button=="3" || button==3){
+    	alert("3 pressed");
+    	pauseTimer();
+    }
+}
+
+function saveRunningTimer() {
+    //$('#logpause_option_popup').modal();
+	showSaveRunningTimerDialog();
+}
+
+function showSaveRunningTimerDialog() {
+    navigator.notification.confirm(
+            ("What to do with the running timer ?"), // message
+            saveRunningTimerAction, // callback
+            'Time Tracker ', // title
+            'Cancel,Edit/Log Time' // buttonName
+    );
+}
+
+//Call exit function
+function saveRunningTimerAction(button){
+   
+    if(button=="2" || button==2){
+    	logtimeTimer();
+    }
+}
+
+
+
+/* ----------------  Time Tracker Code Ends   -------------------------  */
 
 /* ----------------  Code Reusable -------------------------  */
 
