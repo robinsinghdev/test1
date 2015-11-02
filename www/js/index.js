@@ -713,7 +713,7 @@ function getLogTimeListOfOrder(data){
 		logout();
 		navigator.notification.alert("Please login again.", function() {});
 	}
-	db.transaction(queryDataBase, errorCB);
+	db.transaction(queryDataBase, errorDB);
 }
 
 function addLogTime(){
@@ -1477,27 +1477,42 @@ function insertTimeCategory(tx) {
    	    	var revision=jsonObj["revision"];
    	    	var status=jsonObj["status"];
    	    	
-   	    	alert(timeCats);
+   	    	//alert(timeCats);
    	    	//tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grn_roles_id,revision,status]);
    	    	
    	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grn_roles_id,revision,status], function(tx, res) {
 	   	         console.log("insertId: " + res.insertId + " -- probably 1");
 	   	         console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
 	
-		   	      tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, res) {
+		   	      /*tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, res) {
 		   	        alert("res.rows.length: " + res.rows.length + " -- should be 1");
 		   	        alert("res.rows.item(0).cnt: " + res.rows.item(0).timeCats );
-		   	      });
+		   	      });*/
   	    	});
    		});
-     
     });
 }
 
 
 //Query the database
 function queryDataBase(tx) {
-	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
+	//tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
+	
+	 tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, res) {
+        //alert("res.rows.length: " + res.rows.length + " -- should be 1");
+        //alert("res.rows.item(0).cnt: " + res.rows.item(0).timeCats );
+        
+        var len = results.rows.length;
+    	alert("DEMO table: " + len + " rows found.");
+    	alert(JSON.stringify(results));
+    	//$("#resultList > li").remove();
+    	for (var i=0; i<len; i++){
+    		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+    		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+    		alert(results.rows.item(i).timeCats);
+    		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).timeCats+'</a></li>').listview('refresh');
+    	}
+      });
 }
 
 // Query the success callback
