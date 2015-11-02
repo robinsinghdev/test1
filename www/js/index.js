@@ -26,7 +26,7 @@ var appRequiresWiFi='This app requires an active WiFi connection.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
 var globalLogTimeObj={};
-
+var db;
 var app = {
     SOME_CONSTANTS : false,  // some constant
 
@@ -61,8 +61,8 @@ var app = {
         
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
-		
-		
+		db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);		
+		openDatabase();
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -179,7 +179,6 @@ function logout() {
 
 function handleLogin() {
 	//checkConnection();
-	//alert('handle login called');
 	console.log('handle login called');
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
@@ -202,17 +201,9 @@ function handleLogin() {
 			$.ajax({
 				type : 'POST',
 			   url:appUrl,
-			   //cache : false,
-			   //async: false,
 			   data:{action:'userLogin',email:u,password:p,check:'1'},
-			   //dataType: 'json',
-			   //contentType: "application/json; charset=utf-8",		   
 			   success:function(data,t,f){
-				//alert(data+' '+t+' '+f);
-				console.log("Logging In...");
 				var responseJson=jQuery.parseJSON(data);
-				//var jsonString = JSON.stringify(data);
-				//alert(jsonString);
 				if(responseJson.status == "success" ){
 					//$.mobile.changePage('#home-page','slide');					
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
@@ -258,9 +249,7 @@ function handleLogin() {
 				   navigator.notification.alert(appRequiresWiFi, function() {});
 				 var responseJson = $.parseJSON(data);
 				 alert(w+' '+t+' '+f);
-				 console.log(data+' '+t+' '+f);
-				 alert(JSON.stringify(data));
-				 alert(responseJson.status);
+				 //console.log(data+' '+t+' '+f);
 				 if(responseJson.status==404){
 					 navigator.notification.alert(appRequiresWiFi, function() {});
 				 }
@@ -309,30 +298,22 @@ function getSOBySONumber(){
 				   		hideModal();
 				   		var responseJson = $.parseJSON(data);
 				   		//{"status":"success","soInfo":{"SO#":"192","Job":"Cheryl & Marvin Fisher"}}
-				   		//alert(responseJson.soInfo);
 				   		var $sp_details_div=$('#sp_details_div');
 				   		if(responseJson.status=="success"){
 				   			var soInfo=responseJson.soInfo;
-					   		//alert(soInfo["SO#"]+"-----"+soInfo.Job);
 					   		$sp_details_div.find('#sp_jobName').val(soInfo["Job"]);
 					   		$sp_details_div.find('#chooseColorForSalesOrder').val(getRandomColor());
-					   		
 					   		$sp_details_div.show();
-					   		//createNewSO(soInfo["Job"],soInfo["SO#"]);
 					   		
 					   		$('a#tryAgainBtn').removeClass('display-none');
 					   		$('a#addNewSalesOrderBtn').removeClass('display-none');
 					   		$('a#getSOBySONumberBtn').addClass('display-none');
 					   		$('a#showOrderBtn').parent().hide();
-					   		//$('a#showOrderBtn').addClass('display-none');
-					   		
-					   		
 					   		$(".sales-order-msg").html('');
 				   		}
 				   		else if(responseJson.status=="exist"){
 				   			$sp_details_div.hide();
 				   			$(".sales-order-msg").html("Sales order already exist.");
-				   			//, click on show button to show in your sales order list
 				   			$('a#showOrderBtn').parent().show();
 				   		} 
 				   		else if(responseJson.status=="fail"){
@@ -342,7 +323,6 @@ function getSOBySONumber(){
 					},
 					error:function(data,t,f){
 						hideModal();
-						console.log(data+' '+t+' '+f);
 						navigator.notification.alert(appRequiresWiFi, function() {});
 					}
 				});
@@ -379,8 +359,6 @@ function getRandomColor(){
 }
 
 function createNewSO(){
-	//var grnUserObj=window.localStorage.getItem("grnUser");
-	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData)
@@ -406,11 +384,8 @@ function createNewSO(){
 			   success:function(data){
 			   		hideModal();
 			   		var responseJson = $.parseJSON(data);
-			   		//alert(responseJson.status);
-			   		//alert(responseJson.msg);
 			   		tryAgainSOBySONumber();
 			   		$(".sales-order-msg").html(responseJson.msg);
-			   		//$.mobile.changePage('#view-all-sales-order','slide');
 				},
 				error:function(data,t,f){
 					hideModal();
@@ -429,8 +404,8 @@ function createNewSO(){
 var time_cats_arr;
 function getCategoriesForTimeTracking(){
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
@@ -449,8 +424,11 @@ function getCategoriesForTimeTracking(){
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
 			   		time_cats_arr=responseJson.time_cats;
+			   		db.transaction(insertTimeCategory, errorDB, successDB);// Insert Time Category
 			   		getSalesOrders();
 			   		hideModal();
+			   		
+			   		//db.transaction(queryDataBase, errorDB, successDB);// Query Time Category
 				},
 				error:function(data,t,f){
 					hideModal();
@@ -468,8 +446,8 @@ function getCategoriesForTimeTracking(){
 
 function getSalesOrders(){
 
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -526,8 +504,8 @@ function getSalesOrders(){
 			        	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
 			        	var sp_jobName=jsonObj["sp_jobName"];
 			        	var grn_colors_id=jsonObj["grn_colors_id"];
-			        	var time_running_status=jsonObj["time_running_status"];
-			        	var grn_status_id=jsonObj["grn_status_id"];
+			        	//var time_running_status=jsonObj["time_running_status"];
+			        	//var grn_status_id=jsonObj["grn_status_id"];
 			        	var HexColor=jsonObj["HexColor"];
 			        	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
 			        	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
@@ -575,8 +553,6 @@ function getSalesOrders(){
 				error:function(data,t,f){
 					hideModal();
 					navigator.notification.alert(appRequiresWiFi, function() {});	
-					alert(data+' '+t+' '+f);
-					console.log(data+' '+t+' '+f);
 				}
 			});
 		}
@@ -610,18 +586,14 @@ function  hideAllTablesData(){
 	 $('table').find('tfoot').hide();
 }
 
-function logTimer1(){
-	navigator.notification.alert("Time Tracker will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
-}
-
 function changeLoginRole(roleId){
-	navigator.notification.alert("Change Login Role will be coming soon, we are working hard to give it to you as soon as possible.", function() {});
+	navigator.notification.alert("For now default role is 7.", function() {});
 }
 
 function getLogTimeListOfOrder(data){
 	showModal();
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -730,12 +702,10 @@ function getLogTimeListOfOrder(data){
 				},
 				error:function(data,t,f){
 					hideModal();
-					console.log(data+' '+t+' '+f);
 					navigator.notification.alert(appRequiresWiFi, function() {});
 				}
 			});
 		}
-		
 	}
 	else{
 		logout();
@@ -779,8 +749,6 @@ function editLogTime(dataObj){
 	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','update'); 
 	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','update');
 	
-	//staffTimeId , soTimeId
-	alert(soTimeId+"..."+id);
 	$addUpdateLogTimeForm.find('#staffTimeId').val(id);
 	$addUpdateLogTimeForm.find('#soTimeId').val(soTimeId);
 	
@@ -807,25 +775,11 @@ function refreshSelect(ele,currentValue){
 }
 
 function callAddUpadteLogTime(obj){
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		
-		/*data:{
-			action:'addLogTime',
-			grn_user:grnUserObj,
-			grn_salesorderTime_id:'1',
-			grn_timeCat: 'prog_production',
-			grn_staffTime_id: '',
-			date: '2015-10-31',
-			hours: 1,
-			minutes: 08,
-			crew_size: 3,
-			comments: 'Test Commentss'
-		},*/
-		
 		var dataObj={};
 		dataObj.action='addLogTime';
 		dataObj.grn_user=grnUserObj;
@@ -855,12 +809,11 @@ function callAddUpadteLogTime(obj){
 	}
 }
 
-//function addUpadteLogTime(){
 function addUpadteLogTime(dataObj){
 	showModal();
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	//var connectionType=checkConnection();
@@ -886,7 +839,6 @@ function addUpadteLogTime(dataObj){
 		   			navigator.notification.alert(serverBusyMsg, function() {});
 		   		}
 		   		hideModal();
-		   		//$.mobile.changePage('#view-log-time-history','slide');
 			},
 			error:function(data,t,f){
 				hideModal();
@@ -900,16 +852,14 @@ function addUpadteLogTime(dataObj){
 function closeSalesOrder(dataObj){
 	showModal();
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		
 		var salesorderId='#'+$(dataObj).data('order');
 		salesorderId=salesorderId.replace("#","");
 		var salesId=$(dataObj).data('id');
-		console.log("salesorderId...."+salesorderId+">>>."+salesId);
 		
 		//var connectionType=checkConnection();
 		var connectionType="WiFi connection";//For Testing
@@ -918,7 +868,6 @@ function closeSalesOrder(dataObj){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
 		else if(connectionType=="WiFi connection"){
-			
 			$.ajax({
 				type : 'POST',
 			   url:appUrl,
@@ -929,10 +878,9 @@ function closeSalesOrder(dataObj){
 				},
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
-			   		console.log(responseJson);
 			   		if(responseJson.status=='success') {
-			   			console.log('Successfully closed the "Sales Order" for you, you can again add this in ');
 			   			$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
+			   			navigator.notification.alert(responseJson.msg, function() {});
 			   		}
 			   		else if(responseJson.status=='fail') {
 			   			navigator.notification.alert(serverBusyMsg, function() {});
@@ -961,6 +909,7 @@ function showOrderSOBySONumber(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
+		
 		//var salesorderId=$(dataObj).data('order');
 		//console.log("salesorderId...."+salesorderId);
 		var salesorderId=$('#sp_salesOrderNumber').val();
@@ -983,13 +932,10 @@ function showOrderSOBySONumber(){
 				},
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
-			   		console.log(responseJson);
 			   		if(responseJson.status=='success') {
 			   			getCategoriesForTimeTracking();
-			   			console.log('Successfully add the "Sales Order" for you.');
 			   		}
 			   		else if(responseJson.status=='fail') {
-			   			$sp_details_div.hide();
 			   			$(".sales-order-msg").html(responseJson.msg);
 			   			//navigator.notification.alert(serverBusyMsg, function() {});
 			   		}
@@ -1055,7 +1001,6 @@ function getDataForTotalTimeCalc(){
 }
 
 function  calcTotalCrewTime(crewSize,timeDuration){
-	console.log(crewSize+"...."+timeDuration);
 	if(timeDuration !=''){
 		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
 		var tempSplitVar = timeDuration.split(':'); // split it at the colons
@@ -1069,7 +1014,6 @@ function  calcTotalCrewTime(crewSize,timeDuration){
 	    	minutes="0"+minutes;
 	    }
 	    var totalCrewTime=hours+":"+minutes;
-	    console.log("hh:mm......"+totalCrewTime);
 		$('#totalCrewTime').html(totalCrewTime);
 	}
 	else{
@@ -1078,7 +1022,6 @@ function  calcTotalCrewTime(crewSize,timeDuration){
 }
 
 function  calcTotalCrewTimeBackend(crewSize,timeDuration){
-	console.log(crewSize+"...."+timeDuration);
 	if(timeDuration !=''){
 		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
 		var tempSplitVar = timeDuration.split(':'); // split it at the colons
@@ -1092,7 +1035,6 @@ function  calcTotalCrewTimeBackend(crewSize,timeDuration){
 	    	minutes="0"+minutes;
 	    }
 	    var totalCrewTime=hours+":"+minutes;
-	    console.log("hh:mm......"+totalCrewTime);
 		return totalCrewTime;
 	}
 	else{
@@ -1110,10 +1052,8 @@ var date = 0000-00-00;
 baseGrnUrl="";
 
 function logTimer(obj) {
-	//var action = $(obj).data('action');
 	var action=$(obj).attr('data-action');
-	
-	console.log("action..."+action+">>>"+$(obj).attr('data-action'));
+	//console.log("action..."+action+">>>"+$(obj).attr('data-action'));
     if (!timerId) {
         if (action == 'clock') {
             order = $(obj).attr('data-order');
@@ -1129,12 +1069,10 @@ function logTimer(obj) {
         }else if (action === 'logtime') {
             logtimeTimer();
         }else if (action === 'delete') {
-            deleteTimer();
+            showDeleteTrackerDialog();
         }else  if (action === 'logpauseOption') {
             logpauseOption();
         }else  if (action === 'clock') {
-            //$('#log_option_popup').modal();
-        	alert('log_option_popup');
         	saveRunningTimer();
         }
     }
@@ -1154,9 +1092,6 @@ function startTimer() {
         curr_sp_order_name=curr_sp_order_name.replace("Report","");
         $('#logging_detail').html(curr_sp_order_name);
         $('#logging_order_color_code').attr('style', $('#sp_order_name_' + order).find(".so-color-box").attr('style'));
-        
-        //$('[id="'+'timer_' + order + '_' + timecat+'"]').removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
-        //$('[id="'+'timer_img_' + order + '_' + timecat+'"]').addClass('play').attr('data-action', 'logpauseOption');
         
         $('#timer_' + order + '_' + timecat).removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
         $('#timer_img_' + order + '_' + timecat).addClass('play').attr('data-action', 'logpauseOption');
@@ -1294,12 +1229,7 @@ function logtimeTimer() {
     //$('#logtime_popup #so_process_name').html(timecat + '&nbsp;&nbsp;<img src="img/' + timecat + '.png" width="25px" />');
    
     var order_name = $('#sp_order_name_' + order).text();
-    //$('#logtime_popup #so_name').parent().attr('style', $('#sp_order_name_' + order).find('.so-color-box').attr('style'));
-    //$('#logtime_popup #so_name').html(order_name);
-    
     var currDataHexcolorVal = $('#sp_order_name_' + order).find('.so-color-box').css('background-color')
-    
-    console.log("timecat..."+timecat+"....currDataHexcolor---"+currDataHexcolorVal);
     
 	var $so_name_box = $('#addLogTimeContent').find('.so-details-box');
 	$so_name_box.css('border-color',currDataHexcolorVal);
@@ -1348,6 +1278,7 @@ function logtimeTimer() {
 	calcTotalCrewTime(crewSize,time);
 	
 	$.mobile.changePage('#add-log-time','slide');
+	resetTracker();
 }
 
 
@@ -1358,7 +1289,7 @@ function deleteTimer() {
 	var connectionType="Unknown connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		showDeleteTrackerDialog();
+		resetTracker();
 	}
 	else if(connectionType=="Unknown connection"){
 		type = '<i class="fa fa-exclamation-triangle fa-5x text-danger"></i><br><br>';
@@ -1394,6 +1325,22 @@ function deleteTimer() {
 	}
 }
 
+function resetTracker() {
+	TimerFlag = 0;
+    order = 0;
+    timecat = 0;
+    timerId = 0;
+    
+    $('#logging_time').timer('remove');
+    $('#logging_time').html('00:00');
+    $('#timer_' + order + '_' + timecat).removeClass('pause').removeClass('play').addClass('clock').attr('data-action', 'clock');
+    $('#timer_img_' + order + '_' + timecat).removeClass('pause').removeClass('play').attr('data-action', 'clock');
+    
+    $('#running_tracker').hide();
+    $('#logging_pause').hide();
+    $('#logging_play').show();
+}
+
 function showDeleteTrackerDialog() {
     navigator.notification.confirm(
             ("Are you sure to delete this time ?"), // message
@@ -1406,14 +1353,12 @@ function showDeleteTrackerDialog() {
 //Call exit function
 function deleteTrackerAction(button){
 	if(button=="2" || button==2){
-    	alert("2 pressed");
     	deleteTimer();
 	}
 }
 
 
 function logpauseOption() {
-    //$('#logpause_option_popup').modal();
 	showLogPauseOptionsDialog();
 }
 
@@ -1426,20 +1371,16 @@ function showLogPauseOptionsDialog() {
     );
 }
 
-//Call exit function
 function logPauseAction(button){
     if(button=="2" || button==2){
-    	alert("2 pressed");
     	logtimeTimer();
     }
     else if(button=="3" || button==3){
-    	alert("3 pressed");
     	pauseTimer();
     }
 }
 
 function saveRunningTimer() {
-    //$('#logpause_option_popup').modal();
 	showSaveRunningTimerDialog();
 }
 
@@ -1452,19 +1393,130 @@ function showSaveRunningTimerDialog() {
     );
 }
 
-//Call exit function
 function saveRunningTimerAction(button){
-   
     if(button=="2" || button==2){
     	logtimeTimer();
     }
 }
 
 
-
 /* ----------------  Time Tracker Code Ends   -------------------------  */
 
-/* ----------------  Code Reusable -------------------------  */
+/* ************* Database Code Ends   -------------------------  */
+
+// Open Database
+function openDatabase() {
+   //db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);
+   db.transaction(initializeDB, errorDB, successDB);
+   alert(JSON.stringify(db));
+}
+
+//Populate the database 
+function initializeDB(tx) {
+	tx.executeSql('CREATE TABLE IF NOT EXISTS SALES_ORDER ('+
+			'id integer primary key autoincrement,'+
+			'grn_companies_id integer,'+
+			'sp_manager text,'+
+			'sp_salesorderNumber integer,'+
+			'sp_jobName text,'+
+			'grn_colors_id integer,'+
+			'HexColor text )');
+	
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIME_CATEGORY ('+
+			'id integer primary key autoincrement,'+
+			'pid integer,'+
+			'timeCats text,'+
+			'title text,'+
+			'sp_jobName text,'+
+			'grn_roles_id integer,'+
+			'revision integer,'+
+			'status integer )');
+	
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIME_TRACKER ('+
+			'id integer primary key autoincrement,'+
+			'soTimeId integer,'+
+			'date text,'+
+			'time text,'+
+			'crewSize integer,'+
+			'grnStaffTimeId integer,'+
+			'timecat text,'+
+			'comment text )');
+	
+}
+
+//Transaction success callback
+function successDB() {
+	db.transaction(queryDataBase, errorCB);
+}
+
+//Transaction error callback
+function errorDB(err) {
+	console.log("Error processing SQL: "+err.code);
+}
+
+//db.transaction(insertTimeCategory, errorCB, successCB);
+function insertTimeCategory(tx) {
+	//tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id integer primary key autoincrement, data text,tracker_date text)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIME_CATEGORY ('+
+			'id integer primary key autoincrement,'+
+			'timeCats text,'+
+			'title text,'+
+			'sp_jobName text,'+
+			'grn_roles_id integer,'+
+			'revision integer,'+
+			'status integer )');
+	
+	jQuery.each(time_cats_arr, function(index,value) {
+    	var jsonObj=value;
+    	var id=jsonObj["id"];
+    	var timeCats=jsonObj["timeCats"];
+    	var title=jsonObj["title"];
+    	var sp_jobName=jsonObj["sp_jobName"];
+    	var grn_roles_id=jsonObj["grn_roles_id"];
+    	var revision=jsonObj["revision"];
+    	var status=jsonObj["status"];
+    	
+    	tx.executeSql('INSERT INTO TIME_CATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',
+    			[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
+    	
+	});
+}
+
+
+//Query the database
+function queryDataBase(tx) {
+	tx.executeSql('SELECT * FROM TIME_CATEGORY', [], querySuccess, errorDB);
+}
+
+// Query the success callback
+function querySuccess(tx, results) {
+	console.log("Returned rows = " + results.rows.length);
+	
+	var len = results.rows.length;
+	console.log("DEMO table: " + len + " rows found.");
+	//$("#resultList > li").remove();
+	for (var i=0; i<len; i++){
+		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).sp_jobName+'</a></li>').listview('refresh');
+	}
+
+	//alert("Returned rows = " + results.rows.length);
+	// this will be true since it was a select statement and so rowsAffected was 0
+	if (!results.rowsAffected) {
+		console.log('No rows affected!');
+		return false;
+	}
+	// for an insert statement, this property will return the ID of the last inserted row
+	console.log("Last inserted row ID = " + results.insertId);
+}
+
+
+
+/* ************* Database Code Ends   -------------------------  */
+
+
+/* ===============  Code Reusable ========================  */
 
 function getTodayDate(){
 	var today = new Date();
@@ -1479,15 +1531,6 @@ function getTodayDate(){
 }
 
 function startTracker() {
-   //$('#timeTrackerDiv').timer();
-   $('#timeTrackerDiv').timer({
-		seconds: 200 //Specify start time in seconds
-	});
-	
-	var startTimerDiv = document.getElementById("startTimerDiv");
-	startTimerDiv.setAttribute('style', 'display:none;');
-	var endTimerDiv = document.getElementById("endTimerDiv");
-	endTimerDiv.setAttribute('style', 'display:block;');
 	
 	var currtimetrackerid; 
 	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
@@ -1524,16 +1567,11 @@ function stopTracker() {
 	});
 	window.localStorage.removeItem("trackerkey");
 	$('#timeTrackerDiv').timer('remove');
-	
-	var startTimerDiv = document.getElementById("startTimerDiv");
-	startTimerDiv.setAttribute('style', 'display:block;');
-	var endTimerDiv = document.getElementById("endTimerDiv");
-	endTimerDiv.setAttribute('style', 'display:none;');
 }
 			
 function AddValueToDB() {
    //alert('Databases are nowwww supported in this browser.');
-   var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
+   var db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);
    db.transaction(initializeDB, errorCB, successCB);
 } 
 
@@ -1544,7 +1582,7 @@ function GetValueToDB() {
 } 
 
 // Populate the database 
-function initializeDB(tx) {
+function initializeDB123(tx) {
 	//tx.executeSql('DROP TABLE IF EXISTS DEMO');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id integer primary key autoincrement, data text,tracker_date text)');
 	//tx.executeSql('INSERT INTO DEMO (id, data, tracker_date) VALUES (1, "15Sep2015 row", "15Sep2015")');
@@ -1560,16 +1598,16 @@ function insertValueInDB(tx) {
 }
 
 // Query the database
-function queryDB(tx) {
+/*function queryDB(tx) {
 	tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
 }
 
 function queryDBData(tx) {
 	tx.executeSql('SELECT * FROM DEMO', [], querySuccessData, errorCB);
-}
+}*/
 
 // Query the success callback
-function querySuccess(tx, results) {
+/*function querySuccess(tx, results) {
 	console.log("Returned rows = " + results.rows.length);
 	alert("Returned rows = " + results.rows.length);
 	// this will be true since it was a select statement and so rowsAffected was 0
@@ -1579,7 +1617,7 @@ function querySuccess(tx, results) {
 	}
 	// for an insert statement, this property will return the ID of the last inserted row
 	console.log("Last inserted row ID = " + results.insertId);
-}
+}*/
 
 function querySuccessData(tx, results) {
 	console.log("Returned rows = " + results.rows.length);
