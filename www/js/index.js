@@ -54,9 +54,10 @@ var app = {
         document.addEventListener("backbutton", onBackKeyDown, false);
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
-		
-		db = window.openDatabase("Database", "1.0", "BPMETR", 2000000);
+		/*
+		var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
 		db.transaction(initializeDB, errorCB, successCB);
+		*/
         
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
@@ -276,8 +277,8 @@ function getSOBySONumber(){
 	
 	if(grnUserObj != '') {
 		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -403,9 +404,8 @@ function createNewSO(){
 var time_cats_arr;
 function getCategoriesForTimeTracking(){
 	
-	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
@@ -424,19 +424,8 @@ function getCategoriesForTimeTracking(){
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
 			   		time_cats_arr=responseJson.time_cats;
-			   		
-			   		alert(time_cats_arr+ JSON.stringify(time_cats_arr));
-			   		
-			   		var db = window.openDatabase("Database", "1.0", "BPMETR", 2000000);	
-			   		db.transaction(insertTimeCategory, errorDB, successDB);// Insert Time Category
-			   		
-			   		
-			   		
-			   		db.transaction(queryDataBase, errorCB);
 			   		getSalesOrders();
 			   		hideModal();
-			   		
-			   		//db.transaction(queryDataBase, errorDB, successDB);// Query Time Category
 				},
 				error:function(data,t,f){
 					hideModal();
@@ -783,8 +772,8 @@ function refreshSelect(ele,currentValue){
 }
 
 function callAddUpadteLogTime(obj){
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -820,8 +809,8 @@ function callAddUpadteLogTime(obj){
 function addUpadteLogTime(dataObj){
 	showModal();
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	//var connectionType=checkConnection();
@@ -860,8 +849,8 @@ function addUpadteLogTime(dataObj){
 function closeSalesOrder(dataObj){
 	showModal();
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -912,8 +901,8 @@ function closeSalesOrder(dataObj){
 function showOrderSOBySONumber(){
 	showModal();
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -1414,26 +1403,46 @@ function saveRunningTimerAction(button){
 
 // Open Database
 function openDatabase() {
-   alert('opening Db');
-	//db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);
+   //db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);
    db.transaction(initializeDB, errorDB, successDB);
-   //alert(JSON.stringify(db));
-   alert('opening Db ends');
+   alert(JSON.stringify(db));
 }
 
 //Populate the database 
 function initializeDB(tx) {
-	//tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
-	 alert('initializeDB Db');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )');
-	 alert('initializeDB Db ends');
-	//tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS SALES_ORDER ('+
+			'id integer primary key autoincrement,'+
+			'grn_companies_id integer,'+
+			'sp_manager text,'+
+			'sp_salesorderNumber integer,'+
+			'sp_jobName text,'+
+			'grn_colors_id integer,'+
+			'HexColor text )');
+	
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIME_CATEGORY ('+
+			'id integer primary key autoincrement,'+
+			'timeCats text,'+
+			'title text,'+
+			'sp_jobName text,'+
+			'grn_roles_id integer,'+
+			'revision integer,'+
+			'status integer )');
+	
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIME_TRACKER ('+
+			'id integer primary key autoincrement,'+
+			'soTimeId integer,'+
+			'date text,'+
+			'time text,'+
+			'crewSize integer,'+
+			'grnStaffTimeId integer,'+
+			'timecat text,'+
+			'comment text )');
 	
 }
 
 //Transaction success callback
 function successDB() {
-	//db.transaction(queryDataBase, errorCB);
+	db.transaction(queryDataBase, errorCB);
 }
 
 //Transaction error callback
@@ -1441,62 +1450,26 @@ function errorDB(err) {
 	console.log("Error processing SQL: "+err.code);
 }
 
-//db.transaction(insertTimeCategory, errorCB, successCB);
+
 function insertTimeCategory(tx) {
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id integer primary key autoincrement, data text,tracker_date text)');
-	/*tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIME_CATEGORY ('+
+			'id integer primary key autoincrement,'+
+			'timeCats text,'+
+			'title text,'+
+			'sp_jobName text,'+
+			'grn_roles_id integer,'+
+			'revision integer,'+
+			'status integer )');
 	
-	jQuery.each(time_cats_arr, function(index,value) {
-    	var jsonObj=value;
-    	var id=jsonObj["id"];
-    	var timeCats=jsonObj["timeCats"];
-    	var title=jsonObj["title"];
-    	var sp_jobName=jsonObj["sp_jobName"];
-    	var grn_roles_id=jsonObj["grn_roles_id"];
-    	var revision=jsonObj["revision"];
-    	var status=jsonObj["status"];
-    	
-    	alert(timeCats);
-    	
-    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
-    	
-	});*/
-	alert('insertTimeCategory Db');
-	
-		var sql1 = 'CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )';
-		alert('insertTimeCategory Db111');
-		tx.executeSql(sql1,[], function (tx, results) {
-	        //var test =  new Array();
-	        //test[0]='INSERT INTO ORDER (id, status) VALUES (1, "new" )';
-	        /*for( i in test ) {   
-	            //tx.executeSql(test[i]);
-	            tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
-
-	        }*/
-			alert('insertTimeCategory Db3333');
-   	     jQuery.each(time_cats_arr, function(index,value) {
-   	    	alert(value);
-   	    	var jsonObj=value;
-   	    	var id=jsonObj["id"];
-   	    	var timeCats=jsonObj["timeCats"];
-   	    	var title=jsonObj["title"];
-   	    	var sp_jobName=jsonObj["sp_jobName"];
-   	    	var grn_roles_id=jsonObj["grn_roles_id"];
-   	    	var revision=jsonObj["revision"];
-   	    	var status=jsonObj["status"];
-   	    	
-   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
-   		});
-   	     
-	    });
-		
-		alert('insertTimeCategory Db4444');
+	tx.executeSql('INSERT INTO TIME_CATEGORY(timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?)',
+			["15Sep2015","15Sep2015","15Sep2015","15Sep2015","15Sep2015","15Sep2015"]);
 }
 
 
 //Query the database
 function queryDataBase(tx) {
-	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
+	tx.executeSql('SELECT * FROM TIME_CATEGORY', [], querySuccess, errorCB);
 }
 
 // Query the success callback
