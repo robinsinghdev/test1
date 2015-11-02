@@ -1420,7 +1420,7 @@ function openDatabase() {
 function initializeDB(tx) {
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
 	 //alert('initializeDB Db');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spJobName text,grn_roles_id integer,revision integer,status integer )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key ,pid integer,timeCats text,title text,spJobName text,grn_roles_id integer,revision integer,status integer )');
 	 //alert('initializeDB Db ends');
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
 	
@@ -1472,14 +1472,21 @@ function insertTimeCategory(tx) {
    	    	var id=jsonObj["id"];
    	    	var timeCats=jsonObj["timeCats"];
    	    	var title=jsonObj["title"];
-   	    	var sp_jobName=jsonObj["sp_jobName"];
+   	    	var spJobName=jsonObj["sp_jobName"];
    	    	var grn_roles_id=jsonObj["grn_roles_id"];
    	    	var revision=jsonObj["revision"];
    	    	var status=jsonObj["status"];
    	    	
    	    	alert(timeCats);
-   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
-   		});
+   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grn_roles_id,revision,status], function(tx, res) {
+	   	         console.log("insertId: " + res.insertId + " -- probably 1");
+	   	         console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
+	
+		   	      tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, res) {
+		   	        alert("res.rows.length: " + res.rows.length + " -- should be 1");
+		   	        alert("res.rows.item(0).cnt: " + res.rows.item(0).timeCats );
+		   	      });
+   	    	});
      
     });
 }
@@ -1487,7 +1494,7 @@ function insertTimeCategory(tx) {
 
 //Query the database
 function queryDataBase(tx) {
-	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
+	tx.executeSql('SELECT * FROM TIMECATEGORY;', [], querySuccess, errorDB);
 }
 
 // Query the success callback
