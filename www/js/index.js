@@ -1420,7 +1420,7 @@ function openDatabase() {
 function initializeDB(tx) {
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
 	 //alert('initializeDB Db');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spJobName text,grn_roles_id integer,revision integer,status integer )');
 	 //alert('initializeDB Db ends');
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
 	
@@ -1457,7 +1457,7 @@ function insertTimeCategory(tx) {
     	
 	});*/
 	
-	var sql1 = 'CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )';
+	var sql1 = 'CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spJobName text,grn_roles_id integer,revision integer,status integer )';
 	tx.executeSql(sql1,[], function (tx, results) {
         //var test =  new Array();
         //test[0]='INSERT INTO ORDER (id, status) VALUES (1, "new" )';
@@ -1478,7 +1478,7 @@ function insertTimeCategory(tx) {
    	    	var status=jsonObj["status"];
    	    	
    	    	alert(timeCats);
-   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
+   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
    		});
      
     });
@@ -1492,15 +1492,14 @@ function queryDataBase(tx) {
 
 // Query the success callback
 function querySuccess(tx, results) {
-	console.log("Returned rows = " + results.rows.length);
-	
 	var len = results.rows.length;
-	console.log("DEMO table: " + len + " rows found.");
+	alert("DEMO table: " + len + " rows found.");
 	//$("#resultList > li").remove();
 	for (var i=0; i<len; i++){
 		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
 		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
-		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).sp_jobName+'</a></li>').listview('refresh');
+		alert(results.rows.item(i).timeCats);
+		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).timeCats+'</a></li>').listview('refresh');
 	}
 
 	//alert("Returned rows = " + results.rows.length);
