@@ -32,6 +32,7 @@
 		
         <div id="app">
         
+        <!-- 
         	<div  id="login-page" data-role="page">
                 <div data-role="content">
 					<div  class="login-box">
@@ -48,6 +49,7 @@
 					</div>
                 </div>
             </div>
+             -->
             
             
 			<div id="home-page" data-role="page">
@@ -72,6 +74,8 @@
 					 </div> 
 					 
                 	<div id="menu">
+                		<a href="#" class="mini-btn" data-theme="a" data-role="button" onclick="getTotalTimeForCategory();">getTotalTimeForCategory</a>
+                		
                 		<div>
                 			<h4>Welcome, <span id="userFullName"></span></h4>
                 		</div>	
@@ -140,7 +144,7 @@
 						  		<div id="logging_pause" class="timer timer-icon pause display-none" data-timecat="1" data-action="pause" onclick="logTimer(this);return false;"></div>
 						  	</div>
 							<div class="ui-block-c">
-							  	<div id="logging_clock" class="timer timer-icon clock" data-action="logtime" data-order="1" data-timecat="1" onclick="logTimer(this);return false;" >
+							  	<div id="logging_clock" class="timer timer-icon clock" data-action="logtime" data-order="1" data-timecat="1" onclick="logTimer(this);updateTrackerVariable()" >
 								</div>
 							</div>
 							<div class="ui-block-d">

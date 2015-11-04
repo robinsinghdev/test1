@@ -1356,6 +1356,7 @@ function logtimeTimer() {
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
 	
+	alert(window.localStorage.getItem("trackerValueSave"));
 	$.mobile.changePage('#add-log-time','slide');	
 }
 
@@ -1553,7 +1554,7 @@ function getTimeTrackerList(){
   db.transaction
   (
        function (tx){
-            tx.executeSql('SELECT time FROM TIMETRACKER',[],function(tx,results){
+            tx.executeSql('SELECT id,time FROM TIMETRACKER',[],function(tx,results){
                     var len = results.rows.length;
                     if(len>0){
                         for (var i = 0; i < len; i++) {
