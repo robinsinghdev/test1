@@ -717,7 +717,7 @@ function getLogTimeListOfOrder(data){
 	//db.transaction(querySuccess, errorCB, successCB);
 	getTimeCategoryList();
 	getTimeTrackerList();
-	getSingleRow(1);
+	//getSingleRow(1);
 }
 
 function addLogTime(){
@@ -1118,7 +1118,7 @@ function startTimer() {
     		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment) VALUES (?,?)'
     				,[1,getTodayDate().toString(),"00:00",0,0,"prod_","comments test"]
     			,function(tx, results){
-    					//alert('Returned ID: ' + results.insertId);
+    					alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
     					window.localStorage.setItem("trackerkey", ""+currTimeTrackerId+"");
     			 }
@@ -1181,6 +1181,7 @@ function pauseTimer() {
         //var timeTracked=$('#logging_time').text();
         var currtimetrackerid = window.localStorage.getItem("trackerkey");
     	db.transaction(function(tx) {
+    		alert(currtimetrackerid+"----"+timeTracked);
     		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
     	});
     	window.localStorage.removeItem("trackerkey");
@@ -1520,8 +1521,8 @@ function getTimeCategoryList(){
                     if(len>0){
                         for (var i = 0; i < len; i++) {
                             //alert(results.rows.item(i)['timeCats']);
-                            $('#resultList').append('<li><a href="#"><h3 class="ui-li-heading">' + results.rows.item(i)['timeCats'] 
-                            + '</h3><p class="ui-li-desc">Club ' + results.rows.item(i)['pid'] + '</p></a></li>');
+                            $('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats'] 
+                            + results.rows.item(i)['pid'] + '</a></li>');
                         }
                         $('#resultList').listview();
                     }
@@ -1541,7 +1542,7 @@ function getTimeTrackerList(){
                         for (var i = 0; i < len; i++) {
                             //alert(results.rows.item(i)['timeCats']);
                             $('#resultList').append('<li><a href="#">' + results.rows.item(i)['time'] 
-                            + '<p class="ui-li-desc">Club ' + results.rows.item(i)['time'] + '</p></a></li>');
+                            + results.rows.item(i)['time'] + '</a></li>');
                         }
                         $('#resultList').listview();
                     }
