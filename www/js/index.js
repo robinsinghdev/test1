@@ -470,6 +470,7 @@ function getRandomColor(){
 }
 
 function createNewSO(){
+	getTimeTrackerList();
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData)
@@ -828,7 +829,16 @@ function getLogTimeListOfOrder(data){
    		
 		var oid=$thisData.attr("data-order");
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi, function() {});
+			$('#logTimeHistoryDiv').html('');
+			
+			var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">'+
+									'<div class="process-name">'+appRequiresWiFi+'.</div>'+
+							'</div>';
+			$('#logTimeHistoryDiv').append(logTimeDiv);
+			
+			hideModal();
+	   		$.mobile.changePage('#view-log-time-history','slide');
+	   		
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
@@ -1353,8 +1363,8 @@ function startTimer() {
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment) VALUES (?,?,?,?,?,?,?)'
-    				,[1,getTodayDate().toString(),"00:00",1,1,"prod_","comments test"]
+    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus) VALUES (?,?,?,?,?,?,?,?)'
+    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start"]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
@@ -1386,7 +1396,7 @@ function pauseTimer() {
     var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	db.transaction(function(tx) {
 		alert(currtimetrackerid+"----"+timeTracked);
-		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
+		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "',localStatus='pause'  WHERE id=' "+currtimetrackerid+" '");
 	});
 	//window.localStorage["trackerkey"] = '';
 	//window.localStorage.removeItem("trackerkey");
@@ -1484,7 +1494,7 @@ function deleteTimer() {
 	alert("currtimetrackerid..."+currtimetrackerid);
 	db.transaction(function(tx) {
 		alert(currtimetrackerid+"----"+timeTracked);
-		tx.executeSql("DELETE TIMETRACKER WHERE id=' "+currtimetrackerid+" '");
+		tx.executeSql("DELETE FROM TIMETRACKER WHERE id=' "+currtimetrackerid+" '");
 	});
 	//window.localStorage.removeItem("trackerkey");
 	window.localStorage["trackerkey"] = '';
@@ -1583,9 +1593,9 @@ function closeDatabase() {
 function initializeDB(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,pid integer,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
 	
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer)');
 	
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text  )');
 }
 
 //Transaction success callback
@@ -1764,7 +1774,7 @@ function insertTrackerValue() {
 	db.transaction(function(tx) {
 		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
 		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment) VALUES (?,?)'
+		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus) VALUES (?,?)'
 				,[1,getTodayDate().toString(),"01:06",5,,"prod_","comments test"]
 			,function(tx, results){
 					//alert('Returned ID: ' + results.insertId);
