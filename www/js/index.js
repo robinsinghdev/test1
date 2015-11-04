@@ -116,11 +116,15 @@ function callSyncWithServer() {
 	db.transaction
 	  (
 	       function (tx){
-	            tx.executeSql('SELECT localStatus,time FROM TIMETRACKER WHERE localStatus="complete"',[],function(tx,results){
+	            tx.executeSql('SELECT localStatus,time FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
+	                    alert("length.."+len);
 	                    if(len>0){
 	                        for (var i = 0; i < len; i++) {
 	                            //alert(results.rows.item(i)['timeCats']);
+	                        	if(results.rows.item(i)['localStatus']=='complete'){
+	                        		
+	                        	}
 	                            $('#resultList').append('<li><a href="#">' + results.rows.item(i)['localStatus']+"--"+ results.rows.item(i)['time'] + '</a></li>');
 	                        }
 	                        $('#resultList').listview();
@@ -1052,13 +1056,13 @@ function callAddUpadteLogTime(obj){
 		
 		var currtimetrackerid = window.localStorage.getItem("trackerkey");
 		var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,commen='"+dataObj.comments+"' ,localStatus='complete' WHERE id=' "+currtimetrackerid+" '";
-	
+		alert("updateQuery.."+updateQuery);
 		var result=addUpadteLogTime(dataObj,updateQuery);
-		/*if(connectionType=="appSave" || connectionType=="No network connection"){
+		if(result=="appSave" || connectionType=="No network connection"){
 			resetTracker();
 		}else{
 			
-		}*/	
+		}	
 	}
 	else{
 		logout();
