@@ -1055,7 +1055,7 @@ function callAddUpadteLogTime(obj){
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
 		
 		var currtimetrackerid = window.localStorage.getItem("trackerkey");
-		var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,commen='"+dataObj.comments+"' ,localStatus='complete' WHERE id=' "+currtimetrackerid+" '";
+		var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' WHERE id=' "+currtimetrackerid+" '";
 		alert("updateQuery.."+updateQuery);
 		var result=addUpadteLogTime(dataObj,updateQuery);
 		if(result=="appSave" || connectionType=="No network connection"){
