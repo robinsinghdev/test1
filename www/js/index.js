@@ -21,7 +21,7 @@ $( document ).on( "mobileinit", function() {
 });
 
 var appUrl='https://dev.bpmetrics.com/grn/m_app/';
-var appRequiresWiFi='This app requires an active internet connection.';
+var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
 var globalLogTimeObj={};
@@ -179,6 +179,9 @@ function logout() {
 	
 	window.localStorage["email"] = '';
 	window.localStorage["datasync"] = 0;
+	window.localStorage["solocal"] = 0;
+	window.localStorage["tclocal"] = 0;
+	window.localStorage["ttsync"] = 0;
 	
 	var form = $("#loginForm");
 	$("#username", form).val(window.localStorage["username"]);
@@ -236,6 +239,9 @@ function handleLogin() {
 					window.localStorage["email"] = grnUser["email"];
 					
 					window.localStorage["trackerValueSave"]=0;
+					window.localStorage["solocal"] = 0;
+					window.localStorage["tclocal"] = 0;
+					window.localStorage["ttsync"] = 0;
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
@@ -249,6 +255,11 @@ function handleLogin() {
 					window.localStorage["permissions"] = '';
 					
 					window.localStorage["email"] = '';
+					
+					window.localStorage["trackerValueSave"]=0;
+					window.localStorage["solocal"] = 0;
+					window.localStorage["tclocal"] = 0;
+					window.localStorage["ttsync"] = 0;
 					
 					var form = $("#loginForm");
 					$("#username", form).val(window.localStorage["username"]);
@@ -423,31 +434,46 @@ function getCategoriesForTimeTracking(){
 	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	if(grnUserObj != '') {		
+	if(grnUserObj != '') {
 		//var connectionType=checkConnection();
 		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi, function() {});
+			if(window.localStorage["tclocal"] == 1){
+				getSalesOrders();
+			}
+			else if(window.localStorage["tclocal"] == 0){
+				navigator.notification.alert(appRequiresWiFi, function() {});
+			}
+			
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
-			$.ajax({
-				type : 'POST',
-			   url:appUrl,
-			   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
-			   success:function(data){
-			   		var responseJson = $.parseJSON(data);
-			   		time_cats_arr=responseJson.time_cats;
-			   		getSalesOrders();
-			   		hideModal();
-				},
-				error:function(data,t,f){
-					hideModal();
-					console.log(data+' '+t+' '+f);
-					navigator.notification.alert(appRequiresWiFi, function() {});
-				}
-			});
+			
+			if(window.localStorage["tclocal"] == 1){
+				getSalesOrders();
+		   		hideModal();
+			}
+			else if(window.localStorage["tclocal"] == 0){
+				$.ajax({
+					type : 'POST',
+				   url:appUrl,
+				   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
+				   success:function(data){
+				   		var responseJson = $.parseJSON(data);
+				   		time_cats_arr=responseJson.time_cats;
+				   		getSalesOrders();
+				   		
+				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+				   		hideModal();
+					},
+					error:function(data,t,f){
+						hideModal();
+						console.log(data+' '+t+' '+f);
+						navigator.notification.alert(appRequiresWiFi, function() {});
+					}
+				});
+			}
 		}
 	}
 	else{
@@ -505,113 +531,125 @@ function getSalesOrders(){
 		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi, function() {});
+			if(window.localStorage["solocal"] == 1){
+				$.mobile.changePage('#view-all-sales-order','slide');
+			}
+			else if(window.localStorage["solocal"] == 0){
+				navigator.notification.alert(appRequiresWiFi, function() {});
+			}
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
-			$.ajax({
-				type : 'POST',
-			   url:appUrl,
-			   data:{action:'getSalesOrders',grn_user:grnUserObj},
-			   success:function(data){
-			   		
-			   		var responseJson = $.parseJSON(data);
-			   		$('#salesOrderMainDiv').html('');
-			   		
-			   		var tbodyObj='<tbody>';
-			   		jQuery.each(time_cats_arr, function(index,value) {
-			        	var jsonObj=value;
-			        	var id=jsonObj["id"];
-			        	var timeCats=jsonObj["timeCats"];
-			        	var title=jsonObj["title"];
-			        	var grn_roles_id=jsonObj["grn_roles_id"];
-			        	var revision=jsonObj["revision"];
-			        	var status=jsonObj["status"];
-			        	
-			        	tbodyObj+='<tr>'+
-					                 '<td class="order-p-icon">'+
-					                     '<span class="process-icon cm-10">'+
-					                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-					                     '</span>'+
-					                 '</td>'+
-					                 '<td>'+
-					                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
-					                 '</td>'+
-					                 '<td class="order-t-icon">'+
-					                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-										 '</a>'+
-					                 '</td>'+
-					             '</tr>';
-			   		});
-			   		tbodyObj+='</tbody>';
-			   		
-			   		var salse_orders_arr=responseJson.sales_orders;
-			   		jQuery.each(salse_orders_arr, function(index,value) {
-			        	var jsonObj=value;
-			        	var id=jsonObj["id"];
-			        	var grn_companies_id=jsonObj["grn_companies_id"];
-			        	var sp_manager=jsonObj["sp_manager"];
-			        	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
-			        	var sp_jobName=jsonObj["sp_jobName"];
-			        	var grn_colors_id=jsonObj["grn_colors_id"];
-			        	//var time_running_status=jsonObj["time_running_status"];
-			        	//var grn_status_id=jsonObj["grn_status_id"];
-			        	var HexColor=jsonObj["HexColor"];
-			        	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
-			        	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
-			        	
-			        	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
-				                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
-									     '<thead onclick="showHideTable(this);">'+
-									         '<tr>'+
-									             '<th class="sp-order " colspan="3" id="sp_order_name_'+id+'">'+
-									             		
-									             	'<div id="so_details_box" class="so-details-box" style="border-color: #'+HexColor+';">'+
-								                    	'<div class="so-color-box" style="background-color: #'+HexColor+';">'+
-								                    		'<span style="">&nbsp;</span>'+
-								                        '</div>'+
-								                        '<div class="so-name-box" >'+
-								                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
-								                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
-								                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
-											                 '</a>'+
-								                        '</div>'+
-								                    '</div>'+	
-									             '</th>'+
-									         '</tr>'+
-									     '</thead>'+
-									     tbodyObjCurr+
-									     '</tbody>'+
-									     '<tfoot>'+
-									         '<tr>'+
-									             '<td colspan="3" class="td-danger">'+
-									             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrder(this)"><span>CLOSE</span></a>'+
-									             '</td>'+ 
-									         '</tr>'+
-									     '</tfoot>'+
-									 '</table>'+
-								 '</div>';
-			        	
-			        	$('#salesOrderMainDiv').append(divObj);
-			   		});
-			   		hideAllTablesData();
-			   		hideModal();
-			   		//var db = window.openDatabase("Database", "1.0", "BPMETR", 2000000);	
-			   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
-			   		
-			   		//db.transaction(querySuccess, errorCB);
-			   		
-			   		if(salse_orders_arr.length <= 0){
-			   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
-			   		}
-				},
-				error:function(data,t,f){
-					hideModal();
-					navigator.notification.alert(appRequiresWiFi, function() {});	
-				}
-			});
+			
+			if(window.localStorage["solocal"] == 1){
+				//getSalesOrders();
+				$.mobile.changePage('#view-all-sales-order','slide');
+			}
+			else if(window.localStorage["solocal"] == 0){
+			
+				$.ajax({
+					type : 'POST',
+				   url:appUrl,
+				   data:{action:'getSalesOrders',grn_user:grnUserObj},
+				   success:function(data){
+				   		
+				   		var responseJson = $.parseJSON(data);
+				   		$('#salesOrderMainDiv').html('');
+				   		
+				   		var tbodyObj='<tbody>';
+				   		jQuery.each(time_cats_arr, function(index,value) {
+				        	var jsonObj=value;
+				        	var id=jsonObj["id"];
+				        	var timeCats=jsonObj["timeCats"];
+				        	var title=jsonObj["title"];
+				        	var grn_roles_id=jsonObj["grn_roles_id"];
+				        	var revision=jsonObj["revision"];
+				        	var status=jsonObj["status"];
+				        	
+				        	tbodyObj+='<tr>'+
+						                 '<td class="order-p-icon">'+
+						                     '<span class="process-icon cm-10">'+
+						                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+						                     '</span>'+
+						                 '</td>'+
+						                 '<td>'+
+						                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+						                 '</td>'+
+						                 '<td class="order-t-icon">'+
+						                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+											 '</a>'+
+						                 '</td>'+
+						             '</tr>';
+				   		});
+				   		tbodyObj+='</tbody>';
+				   		
+				   		var salse_orders_arr=responseJson.sales_orders;
+				   		jQuery.each(salse_orders_arr, function(index,value) {
+				        	var jsonObj=value;
+				        	var id=jsonObj["id"];
+				        	var grn_companies_id=jsonObj["grn_companies_id"];
+				        	var sp_manager=jsonObj["sp_manager"];
+				        	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
+				        	var sp_jobName=jsonObj["sp_jobName"];
+				        	var grn_colors_id=jsonObj["grn_colors_id"];
+				        	//var time_running_status=jsonObj["time_running_status"];
+				        	//var grn_status_id=jsonObj["grn_status_id"];
+				        	var HexColor=jsonObj["HexColor"];
+				        	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
+				        	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
+				        	
+				        	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
+					                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
+										     '<thead onclick="showHideTable(this);">'+
+										         '<tr>'+
+										             '<th class="sp-order " colspan="3" id="sp_order_name_'+id+'">'+
+										             		
+										             	'<div id="so_details_box" class="so-details-box" style="border-color: #'+HexColor+';">'+
+									                    	'<div class="so-color-box" style="background-color: #'+HexColor+';">'+
+									                    		'<span style="">&nbsp;</span>'+
+									                        '</div>'+
+									                        '<div class="so-name-box" >'+
+									                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
+									                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
+									                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
+												                 '</a>'+
+									                        '</div>'+
+									                    '</div>'+	
+										             '</th>'+
+										         '</tr>'+
+										     '</thead>'+
+										     tbodyObjCurr+
+										     '</tbody>'+
+										     '<tfoot>'+
+										         '<tr>'+
+										             '<td colspan="3" class="td-danger">'+
+										             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrder(this)"><span>CLOSE</span></a>'+
+										             '</td>'+ 
+										         '</tr>'+
+										     '</tfoot>'+
+										 '</table>'+
+									 '</div>';
+				        	
+				        	$('#salesOrderMainDiv').append(divObj);
+				   		});
+				   		hideAllTablesData();
+				   		hideModal();
+				   		
+				   		if(salse_orders_arr.length <= 0){
+				   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
+				   		}
+				   		window.localStorage["solocal"] = 1;
+				   		$.mobile.changePage('#view-all-sales-order','slide');
+					},
+					error:function(data,t,f){
+						hideModal();
+						navigator.notification.alert(appRequiresWiFi, function() {});	
+					}
+				});
+			
+			}
 		}
-		$.mobile.changePage('#view-all-sales-order','slide');
+		
 	}
 	else{
 		logout();
