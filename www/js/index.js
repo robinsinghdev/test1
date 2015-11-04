@@ -1494,9 +1494,7 @@ function insertTimeCategory(tx) {
 //Query the database
 function queryDataBase(tx) {
 	alert('queryDataBase....');
-	tx.executeSql('SELECT * FROM TIMECATEGORY', [], errorDB, querySuccess);
-	
-	//tx.executeSql('SELECT Name,Club FROM SoccerPlayer', [], querySuccess,errorCB);
+	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
 	/*
 	 tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, results) {
         //alert("res.rows.length: " + res.rows.length + " -- should be 1");
@@ -1511,8 +1509,7 @@ function queryDataBase(tx) {
     		alert(i+"---"+results.rows.item(i).timeCats);
     		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).timeCats+'</a></li>').listview('refresh');
     	};
-      });
-	 */
+      });*/
 }
 
 // Query the success callback
@@ -1520,17 +1517,26 @@ function querySuccess(tx,results) {
 	var len = results.rows.length;
 	alert("table: " + len + " rows found.");
 	//$("#resultList > li").remove();
+	
+	 $('#resultList').empty();
+     $.each(result.rows, function (index) {
+         var row = result.rows.item(index);
+         $('#resultList').append('<li><a href="#"><h3 class="ui-li-heading">' + row['timeCats'] + '</h3><p class="ui-li-desc">Club ' + row['pid'] + '</p></a></li>');
+     });
+
+     $('#resultList').listview();
+	/*
 	for (var i=0; i<len; i++){
 		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
 		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
 		alert(results.rows.item(i).timeCats);
 		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).timeCats+'</a></li>').listview('refresh');
 	}
-
+*/
 	//alert("Returned rows = " + results.rows.length);
 	// this will be true since it was a select statement and so rowsAffected was 0
 	if (!results.rowsAffected) {
-		console.log('No rows affected!');
+		alert('No rows affected!');
 		return false;
 	}
 	// for an insert statement, this property will return the ID of the last inserted row
