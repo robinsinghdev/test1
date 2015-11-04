@@ -94,9 +94,11 @@ var app = {
 		$("#loginForm").on("submit",handleLogin);
 		//db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);		
 		//openDatabase();
-		var connCheck = setInterval(function() {
+		/*var connCheck = setInterval(function() {
 	        checkConnection();
-	    }, 3000);
+	    }, 3000);*/
+		
+		setInterval(checkConnection, 3000);
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
