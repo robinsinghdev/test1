@@ -1494,7 +1494,7 @@ function insertTimeCategory(tx) {
 //Query the database
 function queryDataBase(tx) {
 	alert('queryDataBase....');
-	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
+	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess);
 	/*
 	 tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, results) {
         //alert("res.rows.length: " + res.rows.length + " -- should be 1");
