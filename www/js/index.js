@@ -4,6 +4,10 @@
 		  event.stopPropagation();
 		  console.log( "I was clicked, but my parent will not be." );
 		});
+	
+	var connCheck = setInterval(function() {
+        checkConnection();
+    }, 3000);
 });*/
 
 $( document ).on( "mobileinit", function() {
@@ -24,8 +28,36 @@ var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
+var salse_orders_arr;
 var globalLogTimeObj={};
 var db;
+
+var colorArray=[{"id":"1","HexColor":"FFD700"},{"id":"2","HexColor":"FFC0CB"},{"id":"3","HexColor":"FFA500"},{"id":"4","HexColor":"FFA07A"},
+                {"id":"5","HexColor":"FF69B4"},{"id":"6","HexColor":"FF1493"},{"id":"7","HexColor":"FF0000"},
+                {"id":"8","HexColor":"F08080"},{"id":"9","HexColor":"EE82EE"},{"id":"10","HexColor":"E9967A"},
+                {"id":"11","HexColor":"DC143C"},{"id":"12","HexColor":"DAA520"},{"id":"13","HexColor":"DA70D6"},
+                {"id":"14","HexColor":"D87093"},{"id":"15","HexColor":"D3D3D3"},{"id":"16","HexColor":"D2B48C"},
+                {"id":"17","HexColor":"D2691E"},{"id":"18","HexColor":"CD5C5C"},{"id":"19","HexColor":"C71585"},
+                {"id":"20","HexColor":"C0C0C0"},{"id":"21","HexColor":"BDB76B"},{"id":"22","HexColor":"BC8F8F"},
+                {"id":"23","HexColor":"BA55D3"},{"id":"24","HexColor":"B8860B"},{"id":"25","HexColor":"B22222"},
+                {"id":"26","HexColor":"B0C4DE"},{"id":"27","HexColor":"ADFF2F"},{"id":"28","HexColor":"ADD8E6"},
+                {"id":"29","HexColor":"A9A9A9"},{"id":"30","HexColor":"A52A2A"},{"id":"31","HexColor":"A0522D"},
+                {"id":"32","HexColor":"9ACD32"},{"id":"33","HexColor":"9932CC"},{"id":"34","HexColor":"98FB98"},
+                {"id":"35","HexColor":"9400D3"},{"id":"36","HexColor":"90EE90"},{"id":"37","HexColor":"8FBC8F"},
+                {"id":"38","HexColor":"8B008B"},{"id":"39","HexColor":"8B0000"},{"id":"40","HexColor":"8A2BE2"},
+                {"id":"41","HexColor":"87CEEB"},{"id":"42","HexColor":"808000"},{"id":"43","HexColor":"800080"},
+                {"id":"44","HexColor":"800000"},{"id":"45","HexColor":"7FFFD4"},{"id":"46","HexColor":"7CFC00"},
+                {"id":"47","HexColor":"7B68EE"},{"id":"48","HexColor":"708090"},{"id":"49","HexColor":"6B8E23"},
+                {"id":"50","HexColor":"6A5ACD"},{"id":"51","HexColor":"696969"},{"id":"52","HexColor":"66CDAA"},
+                {"id":"53","HexColor":"6495ED"},{"id":"54","HexColor":"5F9EA0"},{"id":"55","HexColor":"556B2F"},
+                {"id":"56","HexColor":"4B0082"},{"id":"57","HexColor":"48D1CC"},{"id":"58","HexColor":"483D8B"},
+                {"id":"59","HexColor":"4169E1"},{"id":"60","HexColor":"40E0D0"},{"id":"61","HexColor":"3CB371"},
+                {"id":"62","HexColor":"32CD32"},{"id":"63","HexColor":"2E8B57"},{"id":"64","HexColor":"228B22"},
+                {"id":"65","HexColor":"20B2AA"},{"id":"66","HexColor":"1E90FF"},{"id":"67","HexColor":"191970"},
+                {"id":"68","HexColor":"00FF7F"},{"id":"69","HexColor":"00FF00"},{"id":"70","HexColor":"00FA9A"},
+                {"id":"71","HexColor":"00BFFF"},{"id":"72","HexColor":"008080"},{"id":"73","HexColor":"006400"},{"id":"74","HexColor":"0000CD"}
+               ];
+
 var app = {
     SOME_CONSTANTS : false,  // some constant
 
@@ -62,12 +94,57 @@ var app = {
 		$("#loginForm").on("submit",handleLogin);
 		//db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);		
 		//openDatabase();
+		var connCheck = setInterval(function() {
+	        checkConnection();
+	    }, 3000);
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
 		
     }
 };
+
+function checkConnection() {
+    var objConnection = navigator.connection.type;;
+    var connectionInfo = getConnectionType(objConnection);
+    if (connectionInfo.value >= 3) {
+    	alert('fdghdfgkjh');
+    	//call sync here
+    }
+}
+
+function getConnectionType(type) {
+    var connTypes = {};
+    connTypes[Connection.NONE] = {
+        message: 'No network connection',
+        value: 0
+    };
+    connTypes[Connection.UNKNOWN] = {
+        message: 'Unknown connection',
+        value: 1
+    };
+    connTypes[Connection.ETHERNET] = {
+        message: 'Ethernet connection',
+        value: 2
+    };
+    connTypes[Connection.CELL_2G] = {
+        message: 'Cell 2G connection',
+        value: 3
+    };
+    connTypes[Connection.CELL_3G] = {
+        message: 'Cell 3G connection',
+        value: 4
+    };
+    connTypes[Connection.CELL_4G] = {
+        message: 'Cell 4G connection',
+        value: 5
+    };
+    connTypes[Connection.WIFI] = {
+        message: 'WiFi connection',
+        value: 6
+    };
+    return connTypes[type];
+}
 
 function onBackKeyDown() {
 	if($.mobile.activePage.is('#login-page')){
@@ -108,8 +185,8 @@ function alertexit(button){
 }
 
 function doLogout() {
-	//var connectionType=checkConnection();
-	var connectionType="Unknown connection";//For Testing
+	var connectionType=checkConnection();
+	//var connectionType="Unknown connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		navigator.notification.alert("Logout requires active internet connection.", function() {});
@@ -203,7 +280,7 @@ function handleLogin() {
 		
 		var connectionType=checkConnection();
 		//var connectionType="WiFi connection";//For Testing
-		
+		alert("user_logged_in...."+window.localStorage["user_logged_in"]+"---"+connectionType);
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			
 			if(window.localStorage["user_logged_in"] ==1) {
@@ -297,14 +374,14 @@ function handleLogin() {
 function getSOBySONumber(){
 	//var grnUserObj=window.localStorage.getItem("grnUser");
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData)
 	
 	if(grnUserObj != '') {
 		
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -328,7 +405,12 @@ function getSOBySONumber(){
 				   		if(responseJson.status=="success"){
 				   			var soInfo=responseJson.soInfo;
 					   		$sp_details_div.find('#sp_jobName').val(soInfo["Job"]);
-					   		$sp_details_div.find('#chooseColorForSalesOrder').val(getRandomColor());
+					   		var randomNumber=getRandomColor();
+					   		var randomColorCode=colorArray[randomNumber-1]["HexColor"];
+					   		$sp_details_div.find('#chooseColorForSalesOrder').val(randomColorCode);
+					   		$sp_details_div.find('#colorForSO').css('background','#'+randomColorCode);
+					   		
+					   		
 					   		$sp_details_div.show();
 					   		
 					   		$('a#tryAgainBtn').removeClass('display-none');
@@ -381,7 +463,7 @@ function getRandomColor(){
 	var minimumColor=1;
 	var maximumColor=74;
 	var randomColor = Math.floor(Math.random() * (maximumColor - minimumColor + 1)) + minimumColor;
-	return randomColor;
+	return (randomColor-1);
 }
 
 function createNewSO(){
@@ -391,8 +473,8 @@ function createNewSO(){
 	
 	if(grnUserObj != '') {
 		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -437,7 +519,7 @@ function getCategoriesForTimeTracking(){
 	if(grnUserObj != '') {
 		var connectionType=checkConnection();
 		//var connectionType="WiFi connection";//For Testing
-		alert(window.localStorage["tclocal"]);
+		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
 				getSalesOrders();
@@ -489,8 +571,8 @@ function getTotalTimeForCategory(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -520,6 +602,41 @@ function getTotalTimeForCategory(){
 	}
 }
 
+function getAllColorsForSO(){
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {		
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
+		
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert(appRequiresWiFi, function() {});
+		}
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+			$.ajax({
+				type : 'POST',
+			   url:appUrl,
+			   data:{action:'getColors'},
+			   success:function(data){
+			   		var responseJson = $.parseJSON(data);
+			   		console.log(responseJson);
+				},
+				error:function(data,t,f){
+					hideModal();
+					console.log(data+' '+t+' '+f);
+					navigator.notification.alert(appRequiresWiFi, function() {});
+				}
+			});
+		}
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
 function getSalesOrders(){
 
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
@@ -530,7 +647,6 @@ function getSalesOrders(){
 		var connectionType=checkConnection();
 		//var connectionType="WiFi connection";//For Testing
 		
-		alert(window.localStorage["solocal"]);
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
 				$.mobile.changePage('#view-all-sales-order','slide');
@@ -584,7 +700,7 @@ function getSalesOrders(){
 				   		});
 				   		tbodyObj+='</tbody>';
 				   		
-				   		var salse_orders_arr=responseJson.sales_orders;
+				   		salse_orders_arr=responseJson.sales_orders;
 				   		jQuery.each(salse_orders_arr, function(index,value) {
 				        	var jsonObj=value;
 				        	var id=jsonObj["id"];
@@ -639,7 +755,10 @@ function getSalesOrders(){
 				   		if(salse_orders_arr.length <= 0){
 				   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
 				   		}
-				   		window.localStorage["solocal"] = 1;
+				   		
+				   		//window.localStorage["solocal"] = 1;
+				   		db.transaction(insertSalesOrder, errorCB, successCB);// Insert Time Category
+				   		getSalesOrderList();
 				   		$.mobile.changePage('#view-all-sales-order','slide');
 					},
 					error:function(data,t,f){
@@ -691,8 +810,8 @@ function getLogTimeListOfOrder(data){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		var $thisData=$(data);
 		currDataHexcolor=$thisData.attr("data-hexcolor");
@@ -805,11 +924,6 @@ function getLogTimeListOfOrder(data){
 		logout();
 		navigator.notification.alert("Please login again.", function() {});
 	}
-	
-	//db.transaction(querySuccess, errorCB, successCB);
-	getTimeCategoryList();
-	getTimeTrackerList();
-	//getSingleRow(1);
 }
 
 function addLogTime(){
@@ -928,8 +1042,8 @@ function addUpadteLogTime(dataObj){
 	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	//var connectionType=checkConnection();
-	var connectionType="WiFi connection";//For Testing
+	var connectionType=checkConnection();
+	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		
@@ -990,8 +1104,8 @@ function closeSalesOrder(dataObj){
 		salesorderId=salesorderId.replace("#","");
 		var salesId=$(dataObj).data('id');
 		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -1043,8 +1157,8 @@ function showOrderSOBySONumber(){
 		//console.log("salesorderId...."+salesorderId);
 		var salesorderId=$('#sp_salesOrderNumber').val();
 		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -1208,10 +1322,9 @@ function logTimer(obj) {
 }
 
 function startTimer() {
-	//var connectionType=checkConnection();
-	var connectionType="Unknown connection";//For Testing
+	var connectionType=checkConnection();
+	//var connectionType="Unknown connection";//For Testing
 	
-	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
         TimerFlag = 1;
         $('#logging_time').timer('remove');
         $('#logging_time').timer();
@@ -1246,59 +1359,60 @@ function startTimer() {
     			 }
     		);
     	});
-    }
-	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		
-	}
+    	
+    	if(connectionType=="Unknown connection" || connectionType=="No network connection"){	
+	    }
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+			
+		}
 	
 }
 
 function pauseTimer() {
-    console.log('Order: ' + order + ' TimeCat: ' + timecat + ' TimerId: ' + timerId);
-    
-    //var connectionType=checkConnection();
-	var connectionType="Unknown connection";//For Testing
+	var timeTracked=$('#logging_time').text();
+	$('#logging_time').timer('pause');
+    //take current time
 	
+	$('#timer_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
+	$('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
+    
+    $('#logging_pause').hide();
+    $('#logging_play').show();//.attr('data-action', 'resume');;
+    
+    //var timeTracked=$('#logging_time').text();
+    var currtimetrackerid = window.localStorage.getItem("trackerkey");
+	db.transaction(function(tx) {
+		alert(currtimetrackerid+"----"+timeTracked);
+		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
+	});
+	//window.localStorage["trackerkey"] = '';
+	//window.localStorage.removeItem("trackerkey");
+	
+	var connectionType=checkConnection();
+	//var connectionType="Unknown connection";//For Testing
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		var timeTracked=$('#logging_time').text();
-		$('#logging_time').timer('pause');
-        //take current time
-		
-		$('#timer_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
-		$('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
-        
-        $('#logging_pause').hide();
-        $('#logging_play').show();//.attr('data-action', 'resume');;
-        
-        //var timeTracked=$('#logging_time').text();
-        var currtimetrackerid = window.localStorage.getItem("trackerkey");
-    	db.transaction(function(tx) {
-    		alert(currtimetrackerid+"----"+timeTracked);
-    		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
-    	});
-    	//window.localStorage["trackerkey"] = '';
-    	//window.localStorage.removeItem("trackerkey");
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		
 	}
+	
 }
 
 function resumeTimer() {
-	//var connectionType=checkConnection();
+	
+	$('#logging_time').timer('remove');
+    $('#logging_time').timer({
+        seconds: 200
+    });
+    // $('[id="a"]');
+    $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
+    $('#timer_img_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
+    
+    $('#logging_pause').show();
+    $('#logging_play').hide();
+  //var connectionType=checkConnection();
 	var connectionType="Unknown connection";//For Testing
 	
-	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		$('#logging_time').timer('remove');
-        $('#logging_time').timer({
-            seconds: 200
-        });
-        // $('[id="a"]');
-        $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
-        $('#timer_img_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
-        
-        $('#logging_pause').show();
-        $('#logging_play').hide();
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){    
 	}
 	else if(connectionType=="WiFi connection"){
 		
@@ -1363,23 +1477,15 @@ function logtimeTimer() {
 
 
 function deleteTimer() {
-	console.log('Order: ' + order + ' TimeCat: ' + timecat + ' TimerId: ' + timerId);
-	
-	//var connectionType=checkConnection();
-	var connectionType="Unknown connection";//For Testing
-	
-	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		var currtimetrackerid = window.localStorage.getItem("trackerkey");
-		alert("currtimetrackerid..."+currtimetrackerid);
-    	db.transaction(function(tx) {
-    		alert(currtimetrackerid+"----"+timeTracked);
-    		tx.executeSql("DELETE TIMETRACKER WHERE id=' "+currtimetrackerid+" '");
-    	});
-    	//window.localStorage.removeItem("trackerkey");
-    	window.localStorage["trackerkey"] = '';
-		resetTracker();
-	}
-	
+	var currtimetrackerid = window.localStorage.getItem("trackerkey");
+	alert("currtimetrackerid..."+currtimetrackerid);
+	db.transaction(function(tx) {
+		alert(currtimetrackerid+"----"+timeTracked);
+		tx.executeSql("DELETE TIMETRACKER WHERE id=' "+currtimetrackerid+" '");
+	});
+	//window.localStorage.removeItem("trackerkey");
+	window.localStorage["trackerkey"] = '';
+	resetTracker();
 }
 
 function resetTracker() {
@@ -1472,16 +1578,16 @@ function closeDatabase() {
 
 //Populate the database 
 function initializeDB(tx) {
-	tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
-	 //alert('initializeDB Db');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,pid integer,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
+	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer )');
-	 //alert('initializeDB Db ends');
+	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
 }
 
 //Transaction success callback
 function successCB() {
-	alert('db transcation success');
+	//alert('db transcation success');
 }
 
 //Transaction error callback
@@ -1511,6 +1617,34 @@ function insertTimeCategory(tx) {
   	    	});
    		});
    	  window.localStorage["tclocal"]=1;
+    });
+}
+
+function insertSalesOrder(tx) {
+	var insertSalesOrderSql = 'CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,pid integer,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )';
+		
+	tx.executeSql(insertSalesOrderSql,[], function (tx, results) {
+       
+   		jQuery.each(salse_orders_arr, function(index,value) {
+        	var jsonObj=value;
+        	var id=jsonObj["id"];
+        	var grn_companies_id=jsonObj["grn_companies_id"];
+        	var sp_manager=jsonObj["sp_manager"];
+        	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
+        	var sp_jobName=jsonObj["sp_jobName"];
+        	var grn_colors_id=jsonObj["grn_colors_id"];
+        	//var time_running_status=jsonObj["time_running_status"];
+        	//var grn_status_id=jsonObj["grn_status_id"];
+        	var HexColor=jsonObj["HexColor"];
+        	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
+        	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
+   	    	
+   	    	tx.executeSql('INSERT INTO SALESORDER(pid,grn_companies_id,sp_manager,sp_salesorderNumber,sp_jobName,grn_colors_id,HexColor) VALUES (?,?,?,?,?,?,?)',
+   	    			[id,grn_companies_id,sp_manager,sp_salesorderNumber,sp_jobName,grn_colors_id,HexColor], function(tx, res) {
+	   	         	//alert("insertId: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
+  	    	});
+   		});
+   		window.localStorage["solocal"] = 1;
     });
 }
 
@@ -1551,6 +1685,36 @@ function getTimeCategoryList(){
        },errorCB,successCB
    );
 }
+       
+ //Multiple Sales Order
+   function getSalesOrderList(){
+     db.transaction
+     (
+          function (tx){
+               tx.executeSql('SELECT pid,grn_companies_id,sp_manager,sp_salesorderNumber,sp_jobName,grn_colors_id,HexColor FROM SALESORDER',[],function(tx,results){
+                       var len = results.rows.length;
+                       salse_orders_arr=[];
+                       if(len>0){
+                    	   
+                           for (var i = 0; i < len; i++) {
+                               //alert(results.rows.item(i)['pid']);
+	                           	var jsonObj={};
+	                           	jsonObj["id"]=results.rows.item(i)["pid"];
+	                           	jsonObj["grn_companies_id"]=results.rows.item(i)["grn_companies_id"];
+	                           	jsonObj["sp_manager"]=results.rows.item(i)["sp_manager"];
+	                           	jsonObj["sp_salesorderNumber"]=results.rows.item(i)["sp_salesorderNumber"];
+	                           	jsonObj["sp_jobName"]=results.rows.item(i)["sp_jobName"];
+	                           	jsonObj["grn_colors_id"]=results.rows.item(i)["grn_colors_id"];
+	                           	jsonObj["HexColor"]=results.rows.item(i)["HexColor"];
+	                           	salse_orders_arr.push(jsonObj);
+                           }
+                           alert("sales order tabel list count "+len+"---"+salse_orders_arr.length);
+                       }
+                   }, errorCB
+               );
+          },errorCB,successCB
+      );
+   }
 
 function getTimeTrackerList(){
   db.transaction
