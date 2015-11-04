@@ -92,13 +92,8 @@ var app = {
         
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
-		//db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);		
-		//openDatabase();
-		/*var connCheck = setInterval(function() {
-	        checkConnection();
-	    }, 3000);*/
 		
-		setInterval(checkConnectionForSync, 3000);
+		//setInterval(checkConnectionForSync, 900000);
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -114,6 +109,13 @@ function checkConnectionForSync() {
     	alert('fdghdfgkjh');
     	//call sync here
     }
+}
+
+function callSyncWithServer() {
+	window.localStorage["solocal"] = 0;
+	window.localStorage["tclocal"] = 0;
+	window.localStorage["ttsync"] = 0;
+	
 }
 
 function getConnectionType(type) {
@@ -1620,6 +1622,7 @@ function insertTimeCategory(tx) {
   	    	});
    		});
    	  window.localStorage["tclocal"]=1;
+   	  alert("timeCategoryCreateSql");
     });
 }
 
@@ -1630,12 +1633,12 @@ function insertSalesOrder(tx) {
        
    		jQuery.each(salse_orders_arr, function(index,value) {
         	var jsonObj=value;
-        	var id=jsonObj["id"];
-        	var grn_companies_id=jsonObj["grn_companies_id"];
+        	var id=parseInt(jsonObj["id"]);
+        	var grn_companies_id=parseInt( jsonObj["grn_companies_id"]);
         	var sp_manager=jsonObj["sp_manager"];
-        	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
+        	var sp_salesorderNumber= parseInt( jsonObj["sp_salesorderNumber"] );
         	var sp_jobName=jsonObj["sp_jobName"];
-        	var grn_colors_id=jsonObj["grn_colors_id"];
+        	var grn_colors_id=parseInt( jsonObj["grn_colors_id"] );
         	//var time_running_status=jsonObj["time_running_status"];
         	//var grn_status_id=jsonObj["grn_status_id"];
         	var HexColor=jsonObj["HexColor"];
@@ -1647,6 +1650,7 @@ function insertSalesOrder(tx) {
 	   	         	//alert("insertId: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
   	    	});
    		});
+   	 alert("insertSalesOrderSql");
    		window.localStorage["solocal"] = 1;
     });
 }
