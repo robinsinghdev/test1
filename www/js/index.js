@@ -714,7 +714,8 @@ function getLogTimeListOfOrder(data){
 		navigator.notification.alert("Please login again.", function() {});
 	}
 	
-	db.transaction(querySuccess, errorCB, successCB);
+	//db.transaction(querySuccess, errorCB, successCB);
+	getMultipleRows();
 }
 
 function addLogTime(){
@@ -1491,6 +1492,56 @@ function insertTimeCategory(tx) {
     });
 }
 
+//Single row
+function getSingleRow(id)
+{
+  db.transaction
+  (
+       function (tx)
+       {
+            tx.executeSql
+            (
+                'SELECT timeCats FROM TIMECATEGORY WHERE id=1',
+                [id],
+                function(tx,results)
+                {
+                    var len = results.rows.length;
+                    if(len>0)
+                    {
+                        alert(results.rows.item(0)['timeCats']);
+                    }
+                }, errorCB
+            );
+       },errorCB,successCB
+   );
+}
+
+//Multiple records
+function getMultipleRows()
+{
+  db.transaction
+  (
+       function (tx)
+       {
+            tx.executeSql
+            (
+                'SELECT timeCats FROM TIMECATEGORY',
+                [],
+                function(tx,results)
+                {
+                    var len = results.rows.length;
+                    if(len>0)
+                    {
+                        for (var i = 0; i < len; i++) 
+                        {
+                            alert(results.rows.item(i)['timeCats']);
+                        }
+                    }
+                }, errorCB
+            );
+       },errorCB,successCB
+   );
+}
 
 //Query the database
 function querySuccess(tx) {
