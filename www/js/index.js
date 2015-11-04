@@ -130,6 +130,7 @@ function callSyncWithServer() {
 	                            //alert(results.rows.item(i)['timeCats']);
 	                        	if(results.rows.item(i)['localStatus']=='complete'){
 	                        		alert("id"+results.rows.item(i)['id']);
+	                        		var currid=results.rows.item(i)['id'];
 	                        		var dataObj={};
 	                        		dataObj.action='addLogTime';
 	                        		dataObj.grn_user=grnUserObj;
@@ -147,7 +148,9 @@ function callSyncWithServer() {
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
 	                        			//db.transaction(function(tx) {
-	                        				ctx.executeSql('DELETE FROM TIMETRACKER WHERE id='+results.rows.item(i)['id']+'',errorCB);
+	                        				//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id='+results.rows.item(i)['id']+'',errorCB);
+	                        			ctx.executeSql('DELETE FROM TIMETRACKER WHERE id = ?', [ currid ],errorCB);
+	                        				 
 	                        			//});
 	                        		}
 	                        		else{
