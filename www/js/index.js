@@ -17,11 +17,11 @@ $( document ).on( "mobileinit", function() {
       
      jQuery.mobile.loader.prototype.options.text = "loading";
      jQuery.mobile.loader.prototype.options.textVisible = true;
-     jQuery.mobile.loader.prototype.options.theme = "a";     
+     jQuery.mobile.loader.prototype.options.theme = "a";
 });
 
 var appUrl='https://dev.bpmetrics.com/grn/m_app/';
-var appRequiresWiFi='This app requires an active WiFi connection.';
+var appRequiresWiFi='This app requires an active internet connection.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
 var globalLogTimeObj={};
@@ -108,7 +108,16 @@ function alertexit(button){
 }
 
 function doLogout() {
-	showLogoutDialog();
+	//var connectionType=checkConnection();
+	var connectionType="Unknown connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		navigator.notification.alert("Logout requires active internet connection.", function() {});
+	}
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		showLogoutDialog();
+	}
+	
 }
 
 function showLogoutDialog() {
@@ -169,7 +178,7 @@ function logout() {
 	window.localStorage["permissions"] = '';
 	
 	window.localStorage["email"] = '';
-	window.localStorage["lastActive"] = '';
+	window.localStorage["datasync"] = 0;
 	
 	var form = $("#loginForm");
 	$("#username", form).val(window.localStorage["username"]);
@@ -195,7 +204,7 @@ function handleLogin() {
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
-		else if(connectionType=="WiFi connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			$.ajax({
 				type : 'POST',
@@ -219,7 +228,6 @@ function handleLogin() {
 					window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
 					window.localStorage["permissions"] = grnUser["permissions"];
 					window.localStorage["email"] = grnUser["email"];
-					window.localStorage["lastActive"] = grnUser["lastActive"];
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
@@ -232,7 +240,6 @@ function handleLogin() {
 					window.localStorage["permissions"] = '';
 					
 					window.localStorage["email"] = '';
-					window.localStorage["lastActive"] = '';
 					
 					var form = $("#loginForm");
 					$("#username", form).val(window.localStorage["username"]);
@@ -282,7 +289,7 @@ function getSOBySONumber(){
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
-		else if(connectionType=="WiFi connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			var sp_salesOrderNumber=$('#sp_salesOrderNumber').val();
 			showModal();
 			if(typeof sp_salesOrderNumber === "undefined" || sp_salesOrderNumber==""){
@@ -370,7 +377,7 @@ function createNewSO(){
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
-		else if(connectionType=="WiFi connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			var spJobName=$('#sp_jobName').val();
 			var spSalesorderNumber=$('#sp_salesOrderNumber').val();
 			var grn_colors_id=$('#chooseColorForSalesOrder').val(); 
@@ -415,7 +422,7 @@ function getCategoriesForTimeTracking(){
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
-		else if(connectionType=="WiFi connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			$.ajax({
 				type : 'POST',
@@ -454,7 +461,7 @@ function getSalesOrders(){
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
-		else if(connectionType=="WiFi connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			$.ajax({
 				type : 'POST',
@@ -616,7 +623,7 @@ function getLogTimeListOfOrder(data){
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
-		else if(connectionType=="WiFi connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
 			$.ajax({
 				type : 'POST',
@@ -829,7 +836,7 @@ function addUpadteLogTime(dataObj){
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		navigator.notification.alert(appRequiresWiFi, function() {});
 	}
-	else if(connectionType=="WiFi connection"){
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		
 		$.ajax({
 			type : 'POST',
@@ -874,7 +881,7 @@ function closeSalesOrder(dataObj){
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
-		else if(connectionType=="WiFi connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			$.ajax({
 				type : 'POST',
 			   url:appUrl,
@@ -927,7 +934,7 @@ function showOrderSOBySONumber(){
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
-		else if(connectionType=="WiFi connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
 			$.ajax({
 				type : 'POST',
@@ -1118,45 +1125,15 @@ function startTimer() {
     		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment) VALUES (?,?,?,?,?,?,?)'
     				,[1,getTodayDate().toString(),"00:00",1,1,"prod_","comments test"]
     			,function(tx, results){
-    					alert('Returned ID: ' + results.insertId);
+    					//alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
     					window.localStorage["trackerkey"] = currTimeTrackerId;
     			 }
     		);
     	});
     }
-	else if(connectionType=="WiFi connection"){
-		 $.ajax({
-		        type: "POST",
-		        url: baseGrnUrl + "timetracker/ajax.php",
-		        data: "order_id=" + order + "&timecat=" + timecat + "&timerFlag=" + TimerFlag + "&action=startTimer",
-		        dataType: "json",
-		        success: function(data) {
-		            if (data.status == 'success') {
-		                TimerFlag = 1;
-		                $('#logging_time').timer('remove');
-		                $('#logging_time').timer();
-		                $('#running_tracker').show();
-		               
-		                var curr_sp_order_name=$('#sp_order_name_' + order).text();
-		                curr_sp_order_name=curr_sp_order_name.replace("Report","");
-		                $('#logging_detail').html(curr_sp_order_name);
-		                $('#logging_order_color_code').attr('style', $('#sp_order_name_' + order).find(".so-color-box").attr('style'));
-		                $('#timer_' + order + '_' + timecat).removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
-		                $('#timer_img_' + order + '_' + timecat).addClass('play').attr('data-action', 'logpauseOption');
-		                $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
-		                
-		                //timerId = data.timerId;
-		                //date = data.date;
-		                $('#logging_play').hide();
-		                $('#logging_pause').show();
-		            }
-		            if (data.action == 'fail') {
-		                $('#msg.msg').html(data.msg);
-		            }
-		            //hideNotification('#msg.msg');
-		        }
-		 });
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		
 	}
 	
 }
@@ -1186,28 +1163,8 @@ function pauseTimer() {
     	});
     	window.localStorage.removeItem("trackerkey");
 	}
-	else if(connectionType=="WiFi connection"){
-		$.ajax({
-	        type: "POST",
-	        url: baseGrnUrl + "timetracker/ajax.php",
-	        data: "timerId=" + timerId + "&action=pauseTimer",
-	        dataType: "json",
-	        success: function(data) {
-	            if (data.status == 'success') {
-	                $('#logging_time').timer('pause');
-	                $('#logging_pause').hide();
-	                $('#logging_play').show();
-	                $('#timer_' + order + '_' + timecat).removeClass('play').addClass('pause');
-	                $('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause');
-	                $('#timer_' + order + '_' + timecat).attr('data-action', 'resume');
-	                $('#timer_img_' + order + '_' + timecat).attr('data-action', 'resume');
-	            }
-	            if (data.action == 'fail') {
-	                $('#msg.msg').html(data.msg);
-	            }
-	            hideNotification('#msg.msg');
-	        }
-	    });
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		
 	}
 }
 
@@ -1228,30 +1185,7 @@ function resumeTimer() {
         $('#logging_play').hide();
 	}
 	else if(connectionType=="WiFi connection"){
-		 $.ajax({
-		        type: "POST",
-		        url: baseGrnUrl + "timetracker/ajax.php",
-		        data: "timerId=" + timerId + "&action=resumeTimer",
-		        dataType: "json",
-		        success: function(data) {
-		            if (data.status == 'success') {
-		                $('#logging_time').timer('remove');
-		                $('#logging_time').timer({
-		                    seconds: data.time
-		                });
-		                $('#logging_pause').show();
-		                $('#logging_play').hide();
-		                $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play');
-		                $('#timer_img_' + order + '_' + timecat).removeClass('pause').addClass('play');
-		                $('#timer_' + order + '_' + timecat).attr('data-action', 'logpauseOption');
-		                $('#timer_img_' + order + '_' + timecat).attr('data-action', 'logpauseOption');
-		            }
-		            if (data.action == 'fail') {
-		                $('#msg.msg').html(data.msg);
-		            }
-		            hideNotification('#msg.msg');
-		        }
-		    });
+		
 	}
 }
 
@@ -1326,40 +1260,15 @@ function deleteTimer() {
 	var connectionType="Unknown connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		var currtimetrackerid = window.localStorage.getItem("trackerkey");
+    	db.transaction(function(tx) {
+    		alert(currtimetrackerid+"----"+timeTracked);
+    		tx.executeSql("DELETE TIMETRACKER WHERE id=' "+currtimetrackerid+" '");
+    	});
+    	window.localStorage.removeItem("trackerkey");
 		resetTracker();
 	}
-	else if(connectionType=="Unknown connection"){
-		type = '<i class="fa fa-exclamation-triangle fa-5x text-danger"></i><br><br>';
-	    bootbox.confirm({
-	        size: 'small', closeButton: false,
-	        message: type + "Confirm delete?",
-	        buttons: {
-	            'cancel': {label: 'Cancel', className: 'btn-default pull-left'},
-	            'confirm': {label: 'Delete', className: 'btn-warning pull-right'}
-	        },
-	        callback: function(result) {
-	            if (result) {
-	                $.ajax({
-	                    type: "POST",
-	                    url: baseGrnUrl + "timetracker/ajax.php",
-	                    data: "timerId=" + timerId + "&action=deleteLogTime",
-	                    dataType: "json",
-	                    success: function(data) {
-	                        if (data.status == 'success') {
-	                            $('#msg.msg').html('<div class="alert alert-success span6"><button data-dismiss="alert" class="close" type="button">×</button>' + data.msg + '</div>');
-	                            resetTracker();
-	                        }
-	                        if (data.action == 'already') {
-	                            $('#msg.msg').html(data.msg);
-	                        }
-	                        hideNotification('#msg.msg');
-	                    }
-	                });
-
-	            }
-	        }
-	    });
-	}
+	
 }
 
 function resetTracker() {
@@ -1521,10 +1430,9 @@ function getTimeCategoryList(){
                     if(len>0){
                         for (var i = 0; i < len; i++) {
                             //alert(results.rows.item(i)['timeCats']);
-                            $('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats'] 
-                            + results.rows.item(i)['pid'] + '</a></li>');
+                            //$('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats']+ results.rows.item(i)['pid'] + '</a></li>');
                         }
-                        $('#resultList').listview();
+                        //$('#resultList').listview();
                     }
                 }, errorCB
             );
@@ -1541,8 +1449,7 @@ function getTimeTrackerList(){
                     if(len>0){
                         for (var i = 0; i < len; i++) {
                             //alert(results.rows.item(i)['timeCats']);
-                            $('#resultList').append('<li><a href="#">' + results.rows.item(i)['time'] 
-                            + results.rows.item(i)['time'] + '</a></li>');
+                            $('#resultList').append('<li><a href="#">' + results.rows.item(i)['id']+ results.rows.item(i)['time'] + '</a></li>');
                         }
                         $('#resultList').listview();
                     }
