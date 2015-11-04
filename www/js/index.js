@@ -530,7 +530,7 @@ function getSalesOrders(){
 		var connectionType=checkConnection();
 		//var connectionType="WiFi connection";//For Testing
 		
-		else if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
@@ -538,7 +538,7 @@ function getSalesOrders(){
 				navigator.notification.alert(appRequiresWiFi, function() {});
 			}
 		}
-		if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
 			if(window.localStorage["solocal"] == 1){
