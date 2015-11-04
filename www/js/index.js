@@ -1115,12 +1115,12 @@ function startTimer() {
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment) VALUES (?,?)'
-    				,[1,getTodayDate().toString(),"00:00",0,0,"prod_","comments test"]
+    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment) VALUES (?,?,?,?,?,?,?)'
+    				,[1,getTodayDate().toString(),"00:00",1,1,"prod_","comments test"]
     			,function(tx, results){
     					alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
-    					window.localStorage.setItem("trackerkey", ""+currTimeTrackerId+"");
+    					window.localStorage["trackerkey"] = currTimeTrackerId;
     			 }
     		);
     	});
