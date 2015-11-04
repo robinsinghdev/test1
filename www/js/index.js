@@ -437,7 +437,7 @@ function getCategoriesForTimeTracking(){
 	if(grnUserObj != '') {
 		var connectionType=checkConnection();
 		//var connectionType="WiFi connection";//For Testing
-		
+		alert(window.localStorage["tclocal"]);
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
 				getSalesOrders();
@@ -530,6 +530,7 @@ function getSalesOrders(){
 		var connectionType=checkConnection();
 		//var connectionType="WiFi connection";//For Testing
 		
+		alert(window.localStorage["solocal"]);
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
 				$.mobile.changePage('#view-all-sales-order','slide');
@@ -1509,6 +1510,7 @@ function insertTimeCategory(tx) {
 	   	         //alert("insertId: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
   	    	});
    		});
+   	  window.localStorage["tclocal"]=1;
     });
 }
 
