@@ -17,8 +17,7 @@ $( document ).on( "mobileinit", function() {
       
      jQuery.mobile.loader.prototype.options.text = "loading";
      jQuery.mobile.loader.prototype.options.textVisible = true;
-     jQuery.mobile.loader.prototype.options.theme = "a";
-     
+     jQuery.mobile.loader.prototype.options.theme = "a";     
 });
 
 var appUrl='https://dev.bpmetrics.com/grn/m_app/';
@@ -55,8 +54,9 @@ var app = {
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
 		
-		db = window.sqlitePlugin.openDatabase("Database", "1.0", "BPMETR", 2000000);
-		db.transaction(initializeDB, errorCB, successCB);
+		//db = window.sqlitePlugin.openDatabase("Database", "1.0", "BPMETR", 200000);
+		db = window.sqlitePlugin.openDatabase({name: "bpmetr.db", location: 2});
+		db.transaction(initializeDB, errorDB, successDB);
         
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
@@ -713,7 +713,7 @@ function getLogTimeListOfOrder(data){
 		logout();
 		navigator.notification.alert("Please login again.", function() {});
 	}
-	db.transaction(queryDataBase, errorDB);
+	db.transaction(queryDataBase, errorDB, successDB);
 }
 
 function addLogTime(){
@@ -1405,7 +1405,7 @@ function saveRunningTimerAction(button){
 
 /* ----------------  Time Tracker Code Ends   -------------------------  */
 
-/* ************* Database Code Ends   -------------------------  */
+/* ************* Database Code Starts   -------------------------  */
 
 // Open Database
 function openDatabase() {
@@ -1420,7 +1420,7 @@ function openDatabase() {
 function initializeDB(tx) {
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
 	 //alert('initializeDB Db');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key ,pid integer,timeCats text,title text,spJobName text,grn_roles_id integer,revision integer,status integer )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer )');
 	 //alert('initializeDB Db ends');
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
 	
@@ -1429,18 +1429,20 @@ function initializeDB(tx) {
 //Transaction success callback
 function successDB() {
 	//db.transaction(queryDataBase, errorCB);
+	alert('db transcation success');
 }
+
 
 //Transaction error callback
 function errorDB(err) {
-	console.log("Error processing SQL: "+err.code);
+	alert("Error processing SQL: "+err.code);
+	//console.log("Error processing SQL: "+err.code);
 }
 
 //db.transaction(insertTimeCategory, errorCB, successCB);
 function insertTimeCategory(tx) {
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id integer primary key autoincrement, data text,tracker_date text)');
 	/*tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,sp_jobName text,grn_roles_id integer,revision integer,status integer )');
-	
 	jQuery.each(time_cats_arr, function(index,value) {
     	var jsonObj=value;
     	var id=jsonObj["id"];
@@ -1450,39 +1452,34 @@ function insertTimeCategory(tx) {
     	var grn_roles_id=jsonObj["grn_roles_id"];
     	var revision=jsonObj["revision"];
     	var status=jsonObj["status"];
-    	
-    	alert(timeCats);
-    	
     	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
-    	
 	});*/
 	
-	var sql1 = 'CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spJobName text,grn_roles_id integer,revision integer,status integer )';
-	tx.executeSql(sql1,[], function (tx, results) {
+	var timeCategoryCreateSql ='CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer )';
+	
+	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
         //var test =  new Array();
         //test[0]='INSERT INTO ORDER (id, status) VALUES (1, "new" )';
         /*for( i in test ) {   
             //tx.executeSql(test[i]);
             tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, sp_jobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,sp_jobName,grn_roles_id,revision,status]);
-
         }*/
    	     jQuery.each(time_cats_arr, function(index,value) {
-   	    	
    	    	var jsonObj=value;
    	    	var id=jsonObj["id"];
    	    	var timeCats=jsonObj["timeCats"];
    	    	var title=jsonObj["title"];
    	    	var spJobName=jsonObj["sp_jobName"];
-   	    	var grn_roles_id=jsonObj["grn_roles_id"];
+   	    	var grnRolesId=jsonObj["grn_roles_id"];
    	    	var revision=jsonObj["revision"];
    	    	var status=jsonObj["status"];
    	    	
    	    	//alert(timeCats);
    	    	//tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grn_roles_id,revision,status]);
    	    	
-   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grn_roles_id,revision,status], function(tx, res) {
-	   	         console.log("insertId: " + res.insertId + " -- probably 1");
-	   	         console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
+   	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spjobname, grnrolesid, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grnRolesId,revision,status], function(tx, res) {
+	   	         alert("insertId: " + res.insertId + " -- probably 1");
+	   	         //console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
 	
 		   	      /*tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, res) {
 		   	        alert("res.rows.length: " + res.rows.length + " -- should be 1");
@@ -1507,12 +1504,11 @@ function queryDataBase(tx) {
     	alert("DEMO table: " + len + " rows found.");
     	//$("#resultList > li").remove();
     	for (var i=0; i<len; i++){
-    		alert(i);
     		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
     		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
-    		alert(results.rows.item(i).timeCats);
+    		alert(i+"---"+results.rows.item(i).timeCats);
     		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).timeCats+'</a></li>').listview('refresh');
-    	}
+    	};
       });
 }
 
@@ -1623,64 +1619,3 @@ function insertValueInDB(tx) {
 	//tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id integer primary key unique, data text,tracker_date text)');
 	//tx.executeSql('INSERT INTO DEMO (id, data, tracker_date) VALUES (1, "15Sep2015 row", "15Sep2015")');
 }
-
-// Query the database
-/*function queryDB(tx) {
-	tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
-}
-
-function queryDBData(tx) {
-	tx.executeSql('SELECT * FROM DEMO', [], querySuccessData, errorCB);
-}*/
-
-// Query the success callback
-/*function querySuccess(tx, results) {
-	console.log("Returned rows = " + results.rows.length);
-	alert("Returned rows = " + results.rows.length);
-	// this will be true since it was a select statement and so rowsAffected was 0
-	if (!results.rowsAffected) {
-		console.log('No rows affected!');
-		return false;
-	}
-	// for an insert statement, this property will return the ID of the last inserted row
-	console.log("Last inserted row ID = " + results.insertId);
-}*/
-
-function querySuccessData(tx, results) {
-	console.log("Returned rows = " + results.rows.length);
-	
-		var len = results.rows.length;
-		console.log("DEMO table: " + len + " rows found.");
-		$("#trackerList > li").remove();
-		for (var i=0; i<len; i++){
-			//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
-			//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
-			$('#trackerList').append('<li><a href="#">' + results.rows.item(i).data + '--' +results.rows.item(i).tracker_date+'</a></li>').listview('refresh');
-		}
-	
-	//alert("Returned rows = " + results.rows.length);
-	// this will be true since it was a select statement and so rowsAffected was 0
-	if (!results.rowsAffected) {
-		console.log('No rows affected!');
-		return false;
-	}
-	// for an insert statement, this property will return the ID of the last inserted row
-	console.log("Last inserted row ID = " + results.insertId);
-}
-
-// Transaction error callback
-function errorCB(err) {
-	console.log("Error processing SQL: "+err.code);
-}
-
-// Transaction success callback
-function successCB() {
-	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
-	db.transaction(queryDB, errorCB);
-}
-
-function successCBData() {
-	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
-	db.transaction(queryDBData, errorCB);
-}
-
