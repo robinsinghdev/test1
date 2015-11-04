@@ -435,8 +435,8 @@ function getCategoriesForTimeTracking(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
@@ -527,10 +527,10 @@ function getSalesOrders(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
-		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		else if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
@@ -538,7 +538,7 @@ function getSalesOrders(){
 				navigator.notification.alert(appRequiresWiFi, function() {});
 			}
 		}
-		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
 			if(window.localStorage["solocal"] == 1){
