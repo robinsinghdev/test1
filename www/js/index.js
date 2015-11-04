@@ -1525,17 +1525,20 @@ function getMultipleRows()
        {
             tx.executeSql
             (
-                'SELECT timeCats FROM TIMECATEGORY',
+                'SELECT * FROM TIMECATEGORY',
                 [],
                 function(tx,results)
                 {
                     var len = results.rows.length;
                     if(len>0)
                     {
-                        for (var i = 0; i < len; i++) 
-                        {
-                            alert(results.rows.item(i)['timeCats']);
+                        for (var i = 0; i < len; i++){
+                            
+                            var row = results.rows.item(index);
+                            alert(results.rows.item(i)['timeCats']+"..."+row['timeCats']);
+                            $('#resultList').append('<li><a href="#"><h3 class="ui-li-heading">' + row['timeCats'] + '</h3><p class="ui-li-desc">Club ' + row['pid'] + '</p></a></li>');
                         }
+                        $('#resultList').listview();
                     }
                 }, errorCB
             );
