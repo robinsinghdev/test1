@@ -202,7 +202,13 @@ function handleLogin() {
 		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi, function() {});
+			
+			if(window.localStorage["user_logged_in"] ==1) {
+				$.mobile.changePage('#home-page',{ transition: "slideup"});
+			}
+			else{
+				navigator.notification.alert(appRequiresWiFi, function() {});
+			}	
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
@@ -228,9 +234,12 @@ function handleLogin() {
 					window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
 					window.localStorage["permissions"] = grnUser["permissions"];
 					window.localStorage["email"] = grnUser["email"];
+					
+					window.localStorage["trackerValueSave"]=0;
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
+					window.localStorage["trackerValueSave"]=0;
 					
 					window.localStorage["grnUser"] = '';
 					window.localStorage["ID"] = '';
@@ -283,8 +292,8 @@ function getSOBySONumber(){
 	
 	if(grnUserObj != '') {
 		
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -409,7 +418,6 @@ function createNewSO(){
 
 var time_cats_arr;
 function getCategoriesForTimeTracking(){
-	
 	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
@@ -827,6 +835,10 @@ function refreshSelect(ele,currentValue){
 }
 
 function callAddUpadteLogTime(obj){
+	
+	//var connectionType=checkConnection();
+	var connectionType="WiFi connection";//For Testing
+	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
@@ -854,14 +866,20 @@ function callAddUpadteLogTime(obj){
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
 	
 		var result=addUpadteLogTime(dataObj);
-		if(result){
+		if(connectionType=="appSave" || connectionType=="No network connection"){
 			resetTracker();
-		}
+		}else{
+			
+		}	
 	}
 	else{
 		logout();
 		navigator.notification.alert("Please login again.", function() {});
 	}
+}
+
+function updateTrackerVariable(){
+	window.localStorage["trackerValueSave"] = 1;
 }
 
 function addUpadteLogTime(dataObj){
@@ -882,14 +900,18 @@ function addUpadteLogTime(dataObj){
 	    	db.transaction(function(tx) {
 	    		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
 	    	});
-	    	window.localStorage.removeItem("trackerkey");
+	    	//window.localStorage.removeItem("trackerkey");
+	    	window.localStorage["trackerkey"] = '';
+	    	$.mobile.changePage('#view-all-sales-order','slide');
 	    	navigator.notification.alert("Time Tracker Data Saved in App", function() {});
+	    	return "appSave";
 	    }else{
 	    	navigator.notification.alert("No proper data", function() {});
+	    	return "false";
 	    }
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		
+	//else if(connectionType=="WiFi123 connection"){	
 		$.ajax({
 			type : 'POST',
 		   url:appUrl,
@@ -905,11 +927,11 @@ function addUpadteLogTime(dataObj){
 		   			navigator.notification.alert(serverBusyMsg, function() {});
 		   		}
 		   		hideModal();
-		   		return true;
+		   		return "serverSave";
 			},
 			error:function(data,t,f){
 				hideModal();
-				return false;
+				return "false";
 				console.log(data+' '+t+' '+f);
 				navigator.notification.alert(appRequiresWiFi, function() {});
 			}
@@ -1215,7 +1237,7 @@ function pauseTimer() {
     		alert(currtimetrackerid+"----"+timeTracked);
     		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
     	});
-    	window.localStorage["trackerkey"] = '';
+    	//window.localStorage["trackerkey"] = '';
     	//window.localStorage.removeItem("trackerkey");
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -1308,11 +1330,13 @@ function deleteTimer() {
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		var currtimetrackerid = window.localStorage.getItem("trackerkey");
+		alert("currtimetrackerid..."+currtimetrackerid);
     	db.transaction(function(tx) {
     		alert(currtimetrackerid+"----"+timeTracked);
     		tx.executeSql("DELETE TIMETRACKER WHERE id=' "+currtimetrackerid+" '");
     	});
-    	window.localStorage.removeItem("trackerkey");
+    	//window.localStorage.removeItem("trackerkey");
+    	window.localStorage["trackerkey"] = '';
 		resetTracker();
 	}
 	
@@ -1548,33 +1572,6 @@ function stopTracker() {
 	db.transaction(function(tx) {
 		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
 	});
-	window.localStorage.removeItem("trackerkey");
-}
-			
-function AddValueToDB() {
-   //alert('Databases are nowwww supported in this browser.');
-   var db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);
-   db.transaction(initializeDB, errorCB, successCB);
-} 
-
-function GetValueToDB() {
-   //alert('Databases are nowwww supported in this browser.');
-   var db = window.openDatabase("Database", "1.0", "Cordova Demo", 2000000);
-   db.transaction(successCBData, errorCB);
-} 
-
-// Populate the database 
-function initializeDB123(tx) {
-	//tx.executeSql('DROP TABLE IF EXISTS DEMO');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id integer primary key autoincrement, data text,tracker_date text)');
-	//tx.executeSql('INSERT INTO DEMO (id, data, tracker_date) VALUES (1, "15Sep2015 row", "15Sep2015")');
-	tx.executeSql('INSERT INTO DEMO(data, tracker_date) VALUES (?,?)',["15Sep2015 row","15/09/2015"]);
-	tx.executeSql('INSERT INTO DEMO(data, tracker_date) VALUES (?,?)',["16Sep2015","16/09/2015"]);
-}
-
-// Insert Values in the database 
-function insertValueInDB(tx) {
-	//tx.executeSql('DROP TABLE IF EXISTS DEMO');
-	//tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id integer primary key unique, data text,tracker_date text)');
-	//tx.executeSql('INSERT INTO DEMO (id, data, tracker_date) VALUES (1, "15Sep2015 row", "15Sep2015")');
+	//window.localStorage.removeItem("trackerkey");
+	window.localStorage["trackerkey"] = '';
 }
