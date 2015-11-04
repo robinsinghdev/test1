@@ -105,8 +105,9 @@ var app = {
 };
 
 function checkConnection() {
-    var objConnection = navigator.connection.type;;
-    var connectionInfo = getConnectionType(objConnection);
+	alert('fdghdfgkjh');
+	 var objConnection = navigator.network.connection;
+	 var connectionInfo = getConnectionType(objConnection.type);
     if (connectionInfo.value >= 3) {
     	alert('fdghdfgkjh');
     	//call sync here
