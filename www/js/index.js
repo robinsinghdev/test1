@@ -56,7 +56,7 @@ var app = {
 		
 		//db = window.sqlitePlugin.openDatabase("Database", "1.0", "BPMETR", 200000);
 		db = window.sqlitePlugin.openDatabase({name: "bpmetr.db", location: 2});
-		db.transaction(initializeDB, errorDB, successDB);
+		db.transaction(initializeDB, errorCB, successCB);
         
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
@@ -544,9 +544,9 @@ function getSalesOrders(){
 			   		hideAllTablesData();
 			   		hideModal();
 			   		//var db = window.openDatabase("Database", "1.0", "BPMETR", 2000000);	
-			   		db.transaction(insertTimeCategory, errorDB, successDB);// Insert Time Category
+			   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
 			   		
-			   		//db.transaction(queryDataBase, errorCB);
+			   		//db.transaction(querySuccess, errorCB);
 			   		
 			   		if(salse_orders_arr.length <= 0){
 			   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
@@ -713,7 +713,8 @@ function getLogTimeListOfOrder(data){
 		logout();
 		navigator.notification.alert("Please login again.", function() {});
 	}
-	db.transaction(queryDataBase, errorDB, successDB);
+	
+	db.transaction(querySuccess, errorCB, successCB);
 }
 
 function addLogTime(){
@@ -1411,7 +1412,7 @@ function saveRunningTimerAction(button){
 function openDatabase() {
    //alert('opening Db');
 	//db = window.openDatabase("Database", "1.0", "BP_MET", 2000000);
-   db.transaction(initializeDB, errorDB, successDB);
+   db.transaction(initializeDB, errorCB, successCB);
    //alert(JSON.stringify(db));
    //alert('opening Db ends');
 }
@@ -1427,14 +1428,14 @@ function initializeDB(tx) {
 }
 
 //Transaction success callback
-function successDB() {
-	//db.transaction(queryDataBase, errorCB);
+function successCB() {
+	//db.transaction(querySuccess, errorCB);
 	alert('db transcation success');
 }
 
 
 //Transaction error callback
-function errorDB(err) {
+function errorCB(err) {
 	alert("Error processing SQL: "+err.code);
 	//console.log("Error processing SQL: "+err.code);
 }
@@ -1492,8 +1493,8 @@ function insertTimeCategory(tx) {
 
 
 //Query the database
-function queryDataBase(tx) {
-	alert('queryDataBase....');
+function querySuccess(tx) {
+	alert('querySuccess....');
 	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess);
 	/*
 	 tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, results) {
@@ -1513,8 +1514,8 @@ function queryDataBase(tx) {
 }
 
 // Query the success callback
-function querySuccess(tx,results) {
-	var len = results.rows.length;
+function querySuccess(tx, result) {
+	var len = result.rows.length;
 	alert("table: " + len + " rows found.");
 	//$("#resultList > li").remove();
 	
