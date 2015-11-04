@@ -115,7 +115,6 @@ function callSyncWithServer() {
 	window.localStorage["solocal"] = 0;
 	window.localStorage["tclocal"] = 0;
 	window.localStorage["ttsync"] = 0;
-	
 }
 
 function getConnectionType(type) {
@@ -285,7 +284,6 @@ function handleLogin() {
 		
 		var connectionType=checkConnection();
 		//var connectionType="WiFi connection";//For Testing
-		alert("user_logged_in...."+window.localStorage["user_logged_in"]+"---"+connectionType);
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			
 			if(window.localStorage["user_logged_in"] ==1) {
@@ -761,9 +759,9 @@ function getSalesOrders(){
 				   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
 				   		}
 				   		
-				   		//window.localStorage["solocal"] = 1;
-				   		db.transaction(insertSalesOrder, errorCB, successCB);// Insert Time Category
-				   		getSalesOrderList();
+				   		window.localStorage["solocal"] = 1;
+				   		//db.transaction(insertSalesOrder, errorCB, successCB);// Insert Time Category
+				   		//getSalesOrderList();
 				   		$.mobile.changePage('#view-all-sales-order','slide');
 					},
 					error:function(data,t,f){
