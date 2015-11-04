@@ -448,6 +448,44 @@ function getCategoriesForTimeTracking(){
 	}
 }
 
+
+function getTotalTimeForCategory(){
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {		
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
+		
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			navigator.notification.alert(appRequiresWiFi, function() {});
+		}
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+			showModal();
+			$.ajax({
+				type : 'POST',
+			   url:appUrl,
+			   data:{action:'getTotalTime',grn_user:grnUserObj,grn_salesorderTime_id:"1",grn_timeCat:"prod_materials"},
+			   success:function(data){
+			   		var responseJson = $.parseJSON(data);
+			   		console.log(responseJson);
+			   		hideModal();
+				},
+				error:function(data,t,f){
+					hideModal();
+					console.log(data+' '+t+' '+f);
+					navigator.notification.alert(appRequiresWiFi, function() {});
+				}
+			});
+		}
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
 function getSalesOrders(){
 
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
@@ -815,7 +853,10 @@ function callAddUpadteLogTime(obj){
 		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
 	
-		addUpadteLogTime(dataObj);
+		var result=addUpadteLogTime(dataObj);
+		if(result){
+			resetTracker();
+		}
 	}
 	else{
 		logout();
@@ -834,7 +875,18 @@ function addUpadteLogTime(dataObj){
 	var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		navigator.notification.alert(appRequiresWiFi, function() {});
+		
+	    var currtimetrackerid = window.localStorage.getItem("trackerkey");
+	    if(currtimetrackerid!=''){
+	    	var timeTracked=$('#logging_time').text();
+	    	db.transaction(function(tx) {
+	    		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
+	    	});
+	    	window.localStorage.removeItem("trackerkey");
+	    	navigator.notification.alert("Time Tracker Data Saved in App", function() {});
+	    }else{
+	    	navigator.notification.alert("No proper data", function() {});
+	    }
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		
@@ -853,9 +905,11 @@ function addUpadteLogTime(dataObj){
 		   			navigator.notification.alert(serverBusyMsg, function() {});
 		   		}
 		   		hideModal();
+		   		return true;
 			},
 			error:function(data,t,f){
 				hideModal();
+				return false;
 				console.log(data+' '+t+' '+f);
 				navigator.notification.alert(appRequiresWiFi, function() {});
 			}
@@ -1161,7 +1215,8 @@ function pauseTimer() {
     		alert(currtimetrackerid+"----"+timeTracked);
     		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
     	});
-    	window.localStorage.removeItem("trackerkey");
+    	window.localStorage["trackerkey"] = '';
+    	//window.localStorage.removeItem("trackerkey");
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		
@@ -1241,15 +1296,7 @@ function logtimeTimer() {
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
 	
-	//var timeTracked=$('#logging_time').text();
-    var currtimetrackerid = window.localStorage.getItem("trackerkey");
-	db.transaction(function(tx) {
-		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
-	});
-	window.localStorage.removeItem("trackerkey");
-	
-	$.mobile.changePage('#add-log-time','slide');
-	resetTracker();
+	$.mobile.changePage('#add-log-time','slide');	
 }
 
 
