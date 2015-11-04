@@ -1495,26 +1495,35 @@ function insertTimeCategory(tx) {
 //Query the database
 function querySuccess(tx) {
 	alert('querySuccess....');
-	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess);
-	/*
-	 tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, results) {
+	//tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess);
+	
+	 tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, result) {
         //alert("res.rows.length: " + res.rows.length + " -- should be 1");
         //alert("res.rows.item(0).cnt: " + res.rows.item(0).timeCats );
         
-        var len = results.rows.length;
+        var len = result.rows.length;
     	alert("table: " + len + " rows found.");
+    	
+    	 //$('#resultList').empty();
+         $.each(result.rows, function (index) {
+             var row = result.rows.item(index);
+             $('#resultList').append('<li><a href="#"><h3 class="ui-li-heading">' + row['timeCats'] + '</h3><p class="ui-li-desc">Club ' + row['pid'] + '</p></a></li>');
+         });
+
+         $('#resultList').listview();
+    	
     	//$("#resultList > li").remove();
-    	for (var i=0; i<len; i++){
+    	/*for (var i=0; i<len; i++){
     		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
     		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
-    		alert(i+"---"+results.rows.item(i).timeCats);
-    		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).timeCats+'</a></li>').listview('refresh');
-    	};
-      });*/
+    		alert(i+"---"+result.rows.item(i).timeCats);
+    		$('#resultList').append('<li><a href="#">' + result.rows.item(i).id + '--' +result.rows.item(i).timeCats+'</a></li>');//.listview('refresh');
+    	};*/
+      });
 }
 
 // Query the success callback
-function querySuccess(tx, result) {
+function querySuccess123(tx, result) {
 	var len = result.rows.length;
 	alert("table: " + len + " rows found.");
 	//$("#resultList > li").remove();
