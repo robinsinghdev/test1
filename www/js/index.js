@@ -98,7 +98,7 @@ var app = {
 	        checkConnection();
 	    }, 3000);*/
 		
-		setInterval(checkConnection, 3000);
+		setInterval(checkConnectionForSync, 3000);
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -106,7 +106,7 @@ var app = {
     }
 };
 
-function checkConnection() {
+function checkConnectionForSync() {
 	alert('fdghdfgkjh');
 	 var objConnection = navigator.network.connection;
 	 var connectionInfo = getConnectionType(objConnection.type);
