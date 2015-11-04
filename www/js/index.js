@@ -1478,7 +1478,7 @@ function insertTimeCategory(tx) {
    	    	//tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spJobName, grn_roles_id, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grn_roles_id,revision,status]);
    	    	
    	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spjobname, grnrolesid, revision, status) VALUES (?,?,?,?,?,?,?)',[id,timeCats,title,spJobName,grnRolesId,revision,status], function(tx, res) {
-	   	         alert("insertId: " + res.insertId + " -- probably 1");
+	   	         //alert("insertId: " + res.insertId + " -- probably 1");
 	   	         //console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
 	
 		   	      /*tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, res) {
@@ -1494,14 +1494,16 @@ function insertTimeCategory(tx) {
 //Query the database
 function queryDataBase(tx) {
 	alert('queryDataBase....');
-	tx.executeSql('SELECT * FROM TIMECATEGORY', [], querySuccess, errorDB);
+	tx.executeSql('SELECT * FROM TIMECATEGORY', [], errorDB, querySuccess);
 	
+	//tx.executeSql('SELECT Name,Club FROM SoccerPlayer', [], querySuccess,errorCB);
+	/*
 	 tx.executeSql("SELECT * FROM TIMECATEGORY;", [], function(tx, results) {
         //alert("res.rows.length: " + res.rows.length + " -- should be 1");
         //alert("res.rows.item(0).cnt: " + res.rows.item(0).timeCats );
         
         var len = results.rows.length;
-    	alert("DEMO table: " + len + " rows found.");
+    	alert("table: " + len + " rows found.");
     	//$("#resultList > li").remove();
     	for (var i=0; i<len; i++){
     		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
@@ -1510,12 +1512,13 @@ function queryDataBase(tx) {
     		$('#resultList').append('<li><a href="#">' + results.rows.item(i).id + '--' +results.rows.item(i).timeCats+'</a></li>').listview('refresh');
     	};
       });
+	 */
 }
 
 // Query the success callback
 function querySuccess(tx,results) {
 	var len = results.rows.length;
-	alert("DEMO table: " + len + " rows found.");
+	alert("table: " + len + " rows found.");
 	//$("#resultList > li").remove();
 	for (var i=0; i<len; i++){
 		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
@@ -1531,7 +1534,7 @@ function querySuccess(tx,results) {
 		return false;
 	}
 	// for an insert statement, this property will return the ID of the last inserted row
-	console.log("Last inserted row ID = " + results.insertId);
+	//console.log("Last inserted row ID = " + results.insertId);
 }
 
 
