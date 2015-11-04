@@ -122,7 +122,7 @@ function callSyncWithServer() {
 	  (
 	       function (tx){
 	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus
-	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(tx,results){
+	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(ctx,results){
 	                    var len = results.rows.length;
 	                    alert("length.."+len);
 	                    if(len>0){
@@ -146,10 +146,11 @@ function callSyncWithServer() {
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
-	                        			db.transaction(function(tx) {
-	                        				tx.executeSql("DELETE FROM TIMETRACKER WHERE id=' "+results.rows.item(i)['id']+" '");
-	                        			});
-	                        		}else{
+	                        			//db.transaction(function(tx) {
+	                        				ctx.executeSql('DELETE FROM TIMETRACKER WHERE id='+results.rows.item(i)['id']+'',errorCB);
+	                        			//});
+	                        		}
+	                        		else{
 	                        			
 	                        		}
 	                        	}
@@ -234,6 +235,7 @@ function saveLogTime(dataObj){
 		   		var responseJson = $.parseJSON(data);
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
+		   			alert("data saved sync");
 		   			return true;
 		   		}
 		   		else if(responseJson.status=='fail') {
