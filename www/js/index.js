@@ -113,17 +113,45 @@ function checkConnectionForSync() {
 
 function callSyncWithServer() {
 	alert("callSyncWithServer..");
+	
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
 	db.transaction
 	  (
 	       function (tx){
-	            tx.executeSql('SELECT localStatus,time FROM TIMETRACKER',[],function(tx,results){
+	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus
+	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
 	                    alert("length.."+len);
 	                    if(len>0){
 	                        for (var i = 0; i < len; i++) {
 	                            //alert(results.rows.item(i)['timeCats']);
 	                        	if(results.rows.item(i)['localStatus']=='complete'){
+	                        		alert("id"+results.rows.item(i)['id']);
+	                        		var dataObj={};
+	                        		dataObj.action='addLogTime';
+	                        		dataObj.grn_user=grnUserObj;
+	                        		dataObj.grn_staffTime_id= results.rows.item(i)['grnStaffTimeId'];
+	                        		dataObj.grn_salesorderTime_id= results.rows.item(i)['soTimeId'];
+	                        		dataObj.grn_timeCat= results.rows.item(i)['timecat'];
+	                        		dataObj.date= results.rows.item(i)['date'];
+	                        		var time=results.rows.item(i)['time'];
+	                        		var timeArr=time.split(":");
+	                        		dataObj.hours= timeArr[0];
+	                        		dataObj.minutes= timeArr[1];
+	                        		dataObj.crew_size= results.rows.item(i)['crewSize'];
+	                        		dataObj.comments= results.rows.item(i)['comment'];
 	                        		
+	                        		var response = saveLogTime(dataObj);
+	                        		if(response){
+	                        			db.transaction(function(tx) {
+	                        				tx.executeSql("DELETE FROM TIMETRACKER WHERE id=' "+results.rows.item(i)['id']+" '");
+	                        			});
+	                        		}else{
+	                        			
+	                        		}
 	                        	}
 	                            $('#resultList').append('<li><a href="#">' + results.rows.item(i)['localStatus']+"--"+ results.rows.item(i)['time'] + '</a></li>');
 	                        }
@@ -136,8 +164,92 @@ function callSyncWithServer() {
 	
 	//window.localStorage["solocal"] = 0;
 	//window.localStorage["tclocal"] = 0;
-	window.localStorage["ttsync"] = 0;
+	window.localStorage["ttsync"] = 1;
 }
+
+function callSaveLogTime(obj){
+	
+	//var connectionType=checkConnection();
+	var connectionType="WiFi connection";//For Testing
+	
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {
+		var dataObj={};
+		dataObj.action='addLogTime';
+		dataObj.grn_user=grnUserObj;
+		
+		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
+		
+		dataObj.grn_staffTime_id= '';
+		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
+		dataObj.grn_timeCat= $addUpdateLogTimeForm.find('#timeCat option:selected').val();
+		dataObj.date= $addUpdateLogTimeForm.find('#logDate').val();
+		var time=$addUpdateLogTimeForm.find('#logTime').val();
+		var timeArr=time.split(":");
+		dataObj.hours= timeArr[0];
+		dataObj.minutes= timeArr[1];
+		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
+		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
+		
+		var result=saveLogTime(dataObj,updateQuery);
+		if(result=="serverSave"){
+			//resetTracker();
+			return true;
+		}else{
+			return false;
+		}	
+	}
+	else{
+		logout();
+		navigator.notification.alert("Please login again.", function() {});
+	}
+}
+
+function updateTrackerVariable(){
+	window.localStorage["trackerValueSave"] = 1;
+}
+
+function saveLogTime(dataObj){
+	//showModal();
+	
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	var connectionType=checkConnection();
+	//var connectionType="WiFi connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+	   return false;
+	}
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		$.ajax({
+			type : 'POST',
+		   url:appUrl,
+		   data:dataObj,
+		   success:function(data){
+		   		var responseJson = $.parseJSON(data);
+		   		console.log(responseJson);
+		   		if(responseJson.status=='success') {
+		   			return true;
+		   		}
+		   		else if(responseJson.status=='fail') {
+		   			return false;
+		   		}
+			},
+			error:function(data,t,f){
+				hideModal();
+				return false;
+				console.log(data+' '+t+' '+f);
+				navigator.notification.alert(appRequiresWiFi, function() {});
+			}
+		});
+	}
+}
+
 
 function getConnectionType(type) {
     var connTypes = {};
@@ -1070,10 +1182,6 @@ function callAddUpadteLogTime(obj){
 	}
 }
 
-function updateTrackerVariable(){
-	window.localStorage["trackerValueSave"] = 1;
-}
-
 function addUpadteLogTime(dataObj,updateQuery){
 	showModal();
 	
@@ -1103,34 +1211,6 @@ function addUpadteLogTime(dataObj,updateQuery){
 	    	return "false";
 	    }
 	//}
-	    
-	/*else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-	//else if(connectionType=="WiFi123 connection"){	
-		$.ajax({
-			type : 'POST',
-		   url:appUrl,
-		   data:dataObj,
-		   success:function(data){
-		   		var responseJson = $.parseJSON(data);
-		   		console.log(responseJson);
-		   		if(responseJson.status=='success') {
-		   			$.mobile.changePage('#view-all-sales-order','slide');
-		   			navigator.notification.alert(responseJson.msg, function() {});
-		   		}
-		   		else if(responseJson.status=='fail') {
-		   			navigator.notification.alert(serverBusyMsg, function() {});
-		   		}
-		   		hideModal();
-		   		return "serverSave";
-			},
-			error:function(data,t,f){
-				hideModal();
-				return "false";
-				console.log(data+' '+t+' '+f);
-				navigator.notification.alert(appRequiresWiFi, function() {});
-			}
-		});
-	}*/
 }
 
 function closeSalesOrder(dataObj){
