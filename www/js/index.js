@@ -147,11 +147,7 @@ function callSyncWithServer() {
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
-	                        			//db.transaction(function(tx) {
-	                        				//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id='+results.rows.item(i)['id']+'',errorCB);
-	                        			ctx.executeSql('DELETE FROM TIMETRACKER WHERE id = ?', [ currid ],errorCB);
-	                        				 
-	                        			//});
+	                        			deleteTimeTrackerRow(currid);
 	                        		}
 	                        		else{
 	                        			
@@ -169,6 +165,15 @@ function callSyncWithServer() {
 	//window.localStorage["solocal"] = 0;
 	//window.localStorage["tclocal"] = 0;
 	window.localStorage["ttsync"] = 1;
+}
+
+function deleteTimeTrackerRow(id){
+	db.transaction(function(tx) {
+		alert(id);
+		ctx.executeSql('DELETE FROM TIMETRACKER WHERE id='+id+' ',errorCB);
+		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
+	});
+	
 }
 
 function callSaveLogTime(obj){
