@@ -8,6 +8,8 @@
 	var connCheck = setInterval(function() {
         checkConnection();
     }, 3000);
+	
+	alert(secondsTohhmm(120));
 });*/
 
 $( document ).on( "mobileinit", function() {
@@ -115,21 +117,9 @@ var app = {
 function checkConnectionForSync() {
 	var connectionType=checkConnection();
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		alert('60 Sec Up...found internet');
-		//callSyncWithServer();
+		//alert('60 Sec Up...found internet');
+		callSyncWithServer();
 	}
-	else{
-		alert('60 Sec Up...Noooooooo internet');
-	}
-		
-		
-	//alert('fdghdfgkjh');
-	/* var objConnection = navigator.network.connection;
-	 var connectionInfo = getConnectionType(objConnection.type);
-    if (connectionInfo.value >= 3) {
-    	//alert('fdghdfgkjh');
-    	//call sync here
-    }*/
 }
 
 var successTimeTrackerIdArr=[];
@@ -288,12 +278,9 @@ function saveLogTime(dataObj){
 		   		var responseJson = $.parseJSON(data);
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
-		   			
 		   			//alert(JSON.stringify(dataObj));
 		   			alert("data saved sync..."+dataObj["lid"]+"---"+dataObj.lid+"...");
-		   			
 		   			deleteTimeTrackerRow(dataObj["lid"]);
-		   			
 		   			return true;
 		   		}
 		   		else if(responseJson.status=='fail') {
@@ -466,7 +453,7 @@ function logout() {
 
 function handleLogin() {
 	//checkConnection();
-	console.log('handle login called');
+	//console.log('handle login called');
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
 	$("#submitButton",form).attr("disabled","disabled");
@@ -482,6 +469,7 @@ function handleLogin() {
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			
 			if(window.localStorage["user_logged_in"] ==1) {
+				checkingUserAssignedRoles();
 				$.mobile.changePage('#home-page',{ transition: "slideup"});
 			}
 			else{
@@ -497,8 +485,7 @@ function handleLogin() {
 			   success:function(data,t,f){
 				var responseJson=jQuery.parseJSON(data);
 				if(responseJson.status == "success" ){
-					//$.mobile.changePage('#home-page','slide');					
-					$.mobile.changePage('#home-page',{ transition: "slideup"});
+					
 					
 					var grnUser=responseJson.grn_user;
 					window.localStorage["username"] = u;
@@ -517,6 +504,12 @@ function handleLogin() {
 					window.localStorage["solocal"] = 0;
 					window.localStorage["tclocal"] = 0;
 					window.localStorage["ttsync"] = 0;
+					
+					checkingUserAssignedRoles();
+					checkConnectionForSync();
+					
+					//$.mobile.changePage('#home-page','slide');					
+					$.mobile.changePage('#home-page',{ transition: "slideup"});
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
@@ -567,6 +560,24 @@ function handleLogin() {
 		$("#submitButton").removeAttr("disabled");
 	}
 	return false;
+}
+
+function checkingUserAssignedRoles(){
+	var grn_roles_id_string=window.localStorage["grn_roles_id"];
+	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
+	var tempArr = new Array();
+	tempArr = grn_roles_id_string.split(",");
+	
+	var $userRolesUlObj = $("#userRolesUl");
+	var rolesArr=['5','7','9','10'];
+	
+	jQuery.each(rolesArr, function(index,value) {
+		if ( $.inArray(value, tempArr) > -1 ) {
+		}else {
+			$userRolesUlObj.find("li#"+value+"").remove();
+		}
+	});
+	//	/$('#userRolesUl').listview();
 }
 
 function getSOBySONumber(){
@@ -1001,6 +1012,9 @@ function  hideAllTablesData(){
 
 function changeLoginRole(roleId){
 	navigator.notification.alert("For now default Role = Production.", function() {});
+	
+	//window.localStorage["solocal"] = 0;
+	//window.localStorage["tclocal"] = 0;
 }
 
 function getLogTimeListOfOrder(data){
@@ -1233,7 +1247,7 @@ function callAddUpadteLogTime(obj){
 		alert("updateQuery.."+updateQuery);
 		
 		var result=addUpadteLogTime(dataObj,updateQuery);
-		
+		alert("trackerValueSave------"+window.localStorage.getItem("trackerValueSave"));
 		if(result=="appSave" && window.localStorage.getItem("trackerValueSave") == 1){
 			resetTracker();
 			//window.localStorage.getItem("trackerValueSave") == 1
@@ -1478,9 +1492,7 @@ function  calcTotalCrewTime(crewSize,timeDuration){
 		var timeArr = timeDuration.split(':'); // split it at the colons
 		var currentLoggedMinutes;
 		var currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]);
-		
-		alert(timeDuration+"....timeDuration.."+"timeArr.length--"+timeArr.length+"currentLoggedMinutes..."+currentLoggedMinutes);
-		
+		//alert(timeDuration+"....timeDuration.."+"timeArr.length--"+timeArr.length+"currentLoggedMinutes..."+currentLoggedMinutes);
 		currentLoggedMinutes=currentLoggedMinutes*crewSize;
 		var currentLoggedHours;
 		//Convert minutes to hh:mm format
@@ -1501,11 +1513,8 @@ function  calcTotalCrewTimeBackend(crewSize,timeDuration){
 	if(timeDuration !=''){
 		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
 		var timeArr = timeDuration.split(':'); // split it at the colons
-		
 		var currentLoggedMinutes= (+timeArr[0]) * 60 + (+timeArr[1]);
-		
-		alert(timeDuration+"....timeDuration.."+"timeArr.length--"+timeArr.length+"currentLoggedMinutes..."+currentLoggedMinutes);
-		
+		//alert(timeDuration+"....timeDuration.."+"timeArr.length--"+timeArr.length+"currentLoggedMinutes..."+currentLoggedMinutes);
 		currentLoggedMinutes=currentLoggedMinutes*crewSize;
 		var currentLoggedHours;
 		//Convert minutes to hh:mm format

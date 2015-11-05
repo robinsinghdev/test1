@@ -15,6 +15,7 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <preference name="permissions" value="none"/>
 
     <!-- to enable individual permissions use the following examples -->
+    <feature name="http://api.phonegap.com/1.0/file"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
     <feature name="http://api.phonegap.com/1.0/notification"/>
     
