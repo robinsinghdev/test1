@@ -111,13 +111,14 @@ function checkConnectionForSync() {
     }
 }
 
+var successTimeTrackerIdArr=[];
 function callSyncWithServer() {
 	alert("callSyncWithServer..");
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
-	var successTimeTrackerIdArr=[];
+	
 	db.transaction
 	  (
 	       function (tx){
@@ -161,12 +162,12 @@ function callSyncWithServer() {
 	                    }
 	                }, errorCB
 	            );
-	       },errorCB,successCB
+	       },errorCB,successCBSyncCall
 	   );
 	
-	jQuery.each(successTimeTrackerIdArr, function(index,value) {
+	/*jQuery.each(successTimeTrackerIdArr, function(index,value) {
 		deleteTimeTrackerRow(value);
-	});	
+	});	*/
 	alert("after successTimeTrackerIdArr.."+successTimeTrackerIdArr);
 	
 	//window.localStorage["solocal"] = 0;
@@ -174,9 +175,28 @@ function callSyncWithServer() {
 	window.localStorage["ttsync"] = 1;
 }
 
+//Query the success callback
+function successSyncCall(tx,results) {
+	var len = results.rows.length;
+	alert("successSyncCall: " + len + " rows found.");
+	for (var i=0; i<len; i++){
+		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+		alert(results.rows.item(i)['time']+"--"+results.rows.item(i)['localStatus']);
+		$('#resultList').append('<li><a href="#">' + results.rows.item(i)['localStatus'] + '--' +results.rows.item(i)['time']+'</a></li>');
+	}
+	 $('#resultList').listview();
+	// this will be true since it was a select statement and so rowsAffected was 0
+	if (!results.rowsAffected) {
+		alert('No rows affected!');
+		return false;
+	}
+	console.log("Last inserted row ID = " + results.insertId);
+}
+
 function deleteTimeTrackerRow(id){
 	db.transaction(function(tx) {
-		//alert(id);
+		alert(id);
 		ctx.executeSql('DELETE FROM TIMETRACKER WHERE id='+id+' ',errorCB);
 		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
 	});
@@ -1563,7 +1583,7 @@ function resumeTimer() {
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	var seconds=0;
 	var tempData;
-	var time='00:00' ; //='01:01 min' ;
+	var time='00:00 min' ; //='01:01 min' ;
 	db.transaction
 	  (
 	       function (tx){
@@ -1574,31 +1594,32 @@ function resumeTimer() {
 	                    if(len>0){
 	                        alert(results.rows.item(0)['time']);
 	                    	time=results.rows.item(0)['time'];
+	                    	
+	                    	time=getCorrectTimeForTimerData(time);
+	                    	var timeArr = time.split(':'); // split it at the colons
+	                    	if(timeArr.length==2){
+	                    		seconds = (+timeArr[0]) * 60  + (+timeArr[1]); 
+	                    	}
+	                    	else if(timeArr.length==3){
+	                    		seconds = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60  + (+timeArr[2]); ; 
+	                    	}
+	                    	alert(time+"....time"+"timeArr.length--"+timeArr.length+"seconds..."+seconds);
+	                    	
+	                        $('#logging_time').timer({
+	                            seconds: seconds
+	                        });
+	                        // $('[id="a"]');
+	                        $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
+	                        $('#timer_img_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
+	                        
+	                        $('#logging_pause').show();
+	                        $('#logging_play').hide();
+	                    	
 	                    }
 	                }, errorCB
 	            );
 	       },errorCB,successCB
 	   );
-	
-	time=getCorrectTimeForTimerData(time);
-	var timeArr = time.split(':'); // split it at the colons
-	if(timeArr.length==2){
-		seconds = (+timeArr[0]) * 60  + (+timeArr[1]); 
-	}
-	else if(timeArr.length==3){
-		seconds = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60  + (+timeArr[2]); ; 
-	}
-	alert(time+"....time"+"timeArr.length--"+timeArr.length+"seconds..."+seconds);
-	
-    $('#logging_time').timer({
-        seconds: seconds
-    });
-    // $('[id="a"]');
-    $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
-    $('#timer_img_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
-    
-    $('#logging_pause').show();
-    $('#logging_play').hide();
     
 }
 
