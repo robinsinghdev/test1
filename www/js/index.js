@@ -1219,7 +1219,38 @@ function callAddUpadteLogTime(obj){
 	}
 }
 
+function addUpadteLogTime(dataObj,updateQuery){
+	showModal();
+	
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	var connectionType=checkConnection();
+	//var connectionType="WiFi connection";//For Testing
+	
+	//if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		
+	    var currtimetrackerid = window.localStorage.getItem("trackerkey");
+	    if(currtimetrackerid!=''){
+	    	var timeTracked=$('#logging_time').text();
+	    	db.transaction(function(tx) {
+	    		tx.executeSql(updateQuery);
+	    	});
+	    	
+	    	//window.localStorage.removeItem("trackerkey");
+	    	window.localStorage["trackerkey"] = '';
+	    	$.mobile.changePage('#view-all-sales-order','slide');
+	    	navigator.notification.alert("Time Tracker Data Saved in App", function() {});
+	    	return "appSave";
+	    }else{
+	    	navigator.notification.alert("No proper data", function() {});
+	    	return "false";
+	    }
+	//}
+}
 
+/*
 function addUpadteLogTime(dataObj){
 	showModal();
 	
@@ -1259,7 +1290,7 @@ function addUpadteLogTime(dataObj){
 		});
 	}
 }
-
+*/
 function closeSalesOrder(dataObj){
 	showModal();
 	
