@@ -115,15 +115,15 @@ var successTimeTrackerIdArr=[];
 function callSyncWithServer() {
 	alert("callSyncWithServer..");
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	db.transaction
 	  (
 	       function (tx){
 	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus
-	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(ctx,results){
+	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
 	                    alert("length.."+len);
 	                    if(len>0){
@@ -149,7 +149,7 @@ function callSyncWithServer() {
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
 	                        			//deleteTimeTrackerRow(currid);
-	                        			successTimeTrackerIdArr.push(currid);
+	                        			//successTimeTrackerIdArr.push(currid);
 	                        		}
 	                        		else{
 	                        			
@@ -162,7 +162,7 @@ function callSyncWithServer() {
 	                    }
 	                }, errorCB
 	            );
-	       },errorCB,successCBSyncCall
+	       },errorCB,successCB
 	   );
 	
 	/*jQuery.each(successTimeTrackerIdArr, function(index,value) {
@@ -250,13 +250,13 @@ function updateTrackerVariable(){
 
 function saveLogTime(dataObj){
 	//showModal();
-	
+	alert("saveLogTime called");
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
+	//var connectionType=checkConnection();
+	var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 	   return false;
@@ -270,7 +270,7 @@ function saveLogTime(dataObj){
 		   		var responseJson = $.parseJSON(data);
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
-		   			//alert("data saved sync");
+		   			alert("data saved sync");
 		   			return true;
 		   		}
 		   		else if(responseJson.status=='fail') {
