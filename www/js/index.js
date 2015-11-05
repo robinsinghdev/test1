@@ -117,7 +117,7 @@ function callSyncWithServer() {
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
-	
+	var successTimeTrackerIdArr=[];
 	db.transaction
 	  (
 	       function (tx){
@@ -148,6 +148,7 @@ function callSyncWithServer() {
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
 	                        			//deleteTimeTrackerRow(currid);
+	                        			successTimeTrackerIdArr.push(currid);
 	                        		}
 	                        		else{
 	                        			
@@ -156,11 +157,17 @@ function callSyncWithServer() {
 	                            $('#resultList').append('<li><a href="#">' + results.rows.item(i)['localStatus']+"--"+ results.rows.item(i)['time'] + '</a></li>');
 	                        }
 	                        $('#resultList').listview();
+	                        alert(" before successTimeTrackerIdArr.."+successTimeTrackerIdArr);
 	                    }
 	                }, errorCB
 	            );
 	       },errorCB,successCB
 	   );
+	
+	jQuery.each(successTimeTrackerIdArr, function(index,value) {
+		deleteTimeTrackerRow(value);
+	});	
+	alert("after successTimeTrackerIdArr.."+successTimeTrackerIdArr);
 	
 	//window.localStorage["solocal"] = 0;
 	//window.localStorage["tclocal"] = 0;
@@ -666,8 +673,8 @@ function getCategoriesForTimeTracking(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
@@ -681,11 +688,11 @@ function getCategoriesForTimeTracking(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
-			if(window.localStorage["tclocal"] == 1){
+			/*if(window.localStorage["tclocal"] == 1){
 				getSalesOrders();
 		   		hideModal();
 			}
-			else if(window.localStorage["tclocal"] == 0){
+			else if(window.localStorage["tclocal"] == 0){*/
 				$.ajax({
 					type : 'POST',
 				   url:appUrl,
@@ -695,7 +702,7 @@ function getCategoriesForTimeTracking(){
 				   		time_cats_arr=responseJson.time_cats;
 				   		getSalesOrders();
 				   		
-				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+				   		//db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
 				   		hideModal();
 					},
 					error:function(data,t,f){
@@ -704,7 +711,7 @@ function getCategoriesForTimeTracking(){
 						navigator.notification.alert(appRequiresWiFi, function() {});
 					}
 				});
-			}
+			//}
 		}
 	}
 	else{
@@ -788,13 +795,13 @@ function getAllColorsForSO(){
 
 function getSalesOrders(){
 
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
@@ -807,11 +814,11 @@ function getSalesOrders(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
-			if(window.localStorage["solocal"] == 1){
+			/*if(window.localStorage["solocal"] == 1){
 				//getSalesOrders();
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
-			else if(window.localStorage["solocal"] == 0){
+			else if(window.localStorage["solocal"] == 0){*/
 			
 				$.ajax({
 					type : 'POST',
@@ -916,7 +923,7 @@ function getSalesOrders(){
 					}
 				});
 			
-			}
+			//}
 		}
 		
 	}
@@ -1387,8 +1394,18 @@ function getDataForTotalTimeCalc(){
 function  calcTotalCrewTime(crewSize,timeDuration){
 	if(timeDuration !=''){
 		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
-		var tempSplitVar = timeDuration.split(':'); // split it at the colons
-		var currentLoggedMinutes = (+tempSplitVar[0]) * 60 + (+tempSplitVar[1]);
+		var timeArr = timeDuration.split(':'); // split it at the colons
+		var currentLoggedMinutes;
+		//var currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]);
+		
+		if(timeArr.length==2){
+			currentLoggedMinutes = (+timeArr[0]);
+		}
+		else if(timeArr.length==3){
+			currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]); 
+		}
+		alert(timeDuration+"....timeDuration.."+"timeArr.length--"+timeArr.length+"currentLoggedMinutes..."+currentLoggedMinutes);
+		
 		currentLoggedMinutes=currentLoggedMinutes*crewSize;
 		var currentLoggedHours;
 		//Convert minutes to hh:mm format
@@ -1408,8 +1425,19 @@ function  calcTotalCrewTime(crewSize,timeDuration){
 function  calcTotalCrewTimeBackend(crewSize,timeDuration){
 	if(timeDuration !=''){
 		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
-		var tempSplitVar = timeDuration.split(':'); // split it at the colons
-		var currentLoggedMinutes = (+tempSplitVar[0]) * 60 + (+tempSplitVar[1]);
+		var timeArr = timeDuration.split(':'); // split it at the colons
+		
+		var currentLoggedMinutes;
+		//var currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]);
+		
+		if(timeArr.length==2){
+			currentLoggedMinutes = (+timeArr[0]);
+		}
+		else if(timeArr.length==3){
+			currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]); 
+		}
+		alert(timeDuration+"....timeDuration.."+"timeArr.length--"+timeArr.length+"currentLoggedMinutes..."+currentLoggedMinutes);
+		
 		currentLoggedMinutes=currentLoggedMinutes*crewSize;
 		var currentLoggedHours;
 		//Convert minutes to hh:mm format
@@ -1463,8 +1491,6 @@ function logTimer(obj) {
 }
 
 function startTimer() {
-	var connectionType=checkConnection();
-	//var connectionType="Unknown connection";//For Testing
 	
         TimerFlag = 1;
         $('#logging_time').timer('remove');
@@ -1492,7 +1518,7 @@ function startTimer() {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
     		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus) VALUES (?,?,?,?,?,?,?,?)'
-    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start"]
+    				,[0,getTodayDate().toString(),"0 sec",0,0,"prod_","comments test","start"]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
@@ -1500,13 +1526,6 @@ function startTimer() {
     			 }
     		);
     	});
-    	
-    	if(connectionType=="Unknown connection" || connectionType=="No network connection"){	
-	    }
-		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-			
-		}
-	
 }
 
 function pauseTimer() {
@@ -1518,7 +1537,7 @@ function pauseTimer() {
 	$('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
     
     $('#logging_pause').hide();
-    $('#logging_play').show();//.attr('data-action', 'resume');;
+    $('#logging_play').show().attr('data-action', 'resume');;
     
     //var timeTracked=$('#logging_time').text();
     var currtimetrackerid = window.localStorage.getItem("trackerkey");
@@ -1529,20 +1548,50 @@ function pauseTimer() {
 	//window.localStorage["trackerkey"] = '';
 	//window.localStorage.removeItem("trackerkey");
 	
-	var connectionType=checkConnection();
+	/*var connectionType=checkConnection();
 	//var connectionType="Unknown connection";//For Testing
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-	}
+	}*/
 	
 }
 
 function resumeTimer() {
 	
 	$('#logging_time').timer('remove');
+	var currtimetrackerid = window.localStorage.getItem("trackerkey");
+	var seconds=0;
+	var tempData;
+	var time='00:00' ; //='01:01 min' ;
+	db.transaction
+	  (
+	       function (tx){
+	            tx.executeSql
+	            (
+	                'SELECT time FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
+	                    var len = results.rows.length;
+	                    if(len>0){
+	                        alert(results.rows.item(0)['timeCats']);
+	                    	time=results.rows.item(0)['time'];
+	                    }
+	                }, errorCB
+	            );
+	       },errorCB,successCB
+	   );
+	
+	time=getCorrectTimeForTimerData(time);
+	var timeArr = time.split(':'); // split it at the colons
+	if(timeArr.length==2){
+		seconds = (+timeArr[0]) * 60  + (+timeArr[1]); 
+	}
+	else if(timeArr.length==3){
+		seconds = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60  + (+timeArr[2]); ; 
+	}
+	alert(time+"....time"+"timeArr.length--"+timeArr.length+"seconds..."+seconds);
+	
     $('#logging_time').timer({
-        seconds: 200
+        seconds: seconds
     });
     // $('[id="a"]');
     $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
@@ -1550,14 +1599,7 @@ function resumeTimer() {
     
     $('#logging_pause').show();
     $('#logging_play').hide();
-    var connectionType=checkConnection();
-	//var connectionType="Unknown connection";//For Testing
-	
-	if(connectionType=="Unknown connection" || connectionType=="No network connection"){    
-	}
-	else if(connectionType=="WiFi connection"){
-		
-	}
+    
 }
 
 function logtimeTimer() {
@@ -1576,19 +1618,9 @@ function logtimeTimer() {
 	var soTimeId=order;// done
 	var date=date;// done
 	var time = $('#logging_time').text()// done
-	
-	if (time.indexOf("sec") >= 0){
-		var timeTemp=time.split(" ");
-		time=timeTemp[0];
-		if(time<10){
-			time="00:0"+time;
-		}else{
-			time="00:"+time;
-		}
-	}else if (time.indexOf("min") >= 0){
-		var timeTemp=time.split(" ");
-		time=timeTemp[0];
-	}
+	//// calll
+	time=getCorrectTimeForTimerData(time);
+	alert(time+"....time");
 	
 	var crewSize=1;// done
 	// $('#grn_staffTime_id').val(timerId);
@@ -1614,6 +1646,22 @@ function logtimeTimer() {
 	
 	//alert(window.localStorage.getItem("trackerValueSave"));
 	$.mobile.changePage('#add-log-time','slide');	
+}
+
+function getCorrectTimeForTimerData(time) {
+	if (time.indexOf("sec") >= 0){
+		var timeTemp=time.split(" ");
+		time=timeTemp[0];
+		if(time<10){
+			time="00:0"+time;
+		}else{
+			time="00:"+time;
+		}
+	}else if (time.indexOf("min") >= 0){
+		var timeTemp=time.split(" ");
+		time=timeTemp[0];
+	}
+	return time;
 }
 
 

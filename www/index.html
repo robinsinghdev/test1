@@ -62,9 +62,8 @@
                 	<div data-role="panel" id="overlayPanel" data-display="overlay">
 					    <h4>Select Role</h4>
 					     <ul data-role="listview">
-						  	<li onclick="changeLoginRole(6); return false;"><a href="#">Programming</a></li>
+						  	<li onclick="changeLoginRole(5); return false;"><a href="#">Templating</a></li>
 						  	<li onclick="changeLoginRole(7); return false;"><a href="#">Production</a></li>
-						  	<li onclick="changeLoginRole(8); return false;"><a href="#">Fabrication</a></li>
 						  	<li onclick="changeLoginRole(9); return false;"><a href="#">Quality Control</a></li>
 						  	<li onclick="changeLoginRole(10); return false;"><a href="#">Installing</a></li>
 						 </ul>
@@ -72,7 +71,7 @@
 					 </div> 
 					 
                 	<div id="menu">
-                		<!-- <a href="#" class="mini-btn" data-theme="a" data-role="button" onclick="callSyncWithServer();">callSyncWithServer()</a> -->
+                		<a href="#" class="mini-btn" data-theme="a" data-role="button" onclick="callSyncWithServer();">callSyncWithServer()</a>
                 		
                 		<div>
                 			<h4>Welcome, <span id="userFullName"></span></h4>
@@ -80,17 +79,17 @@
                 		<div>
 	                		<ul class="home-page-menu-ul" data-role="listview"  data-divider-theme="a">
 	                			<li data-role="list-divider">Sales Order</li> 
-							    <li data-icon="bars"><a href="#" onclick="getCategoriesForTimeTracking();">Your Orders</a></li>
-							    <li data-icon="plus"><a href="#getSOBySONumberDialog" data-rel="dialog">Add New Order</a></li>
-							    <li data-role="list-divider">Roles</li>
-							    <li data-icon="action"><a href="#overlayPanel" >Select Roles</a></li>
+							    <li data-icon="bars"><a href="#" onclick="getCategoriesForTimeTracking();">Your Sales Orders</a></li>
+							    <li data-icon="plus"><a href="#getSOBySONumberDialog" data-rel="dialog">Add Sales Order</a></li>
+							    <li data-role="list-divider">User Roles</li>
+							    <li data-icon="action"><a href="#overlayPanel" >Select Role</a></li>
 							</ul>
 						</div>
 						
 						<div class="display-none">
-							<!-- <ul id="resultList">
+							<ul id="resultList">
 								<li></li>
-							</ul> -->
+							</ul>
 						</div>
                 	</div>
                 	
