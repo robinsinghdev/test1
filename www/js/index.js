@@ -269,7 +269,7 @@ function saveLogTime(dataObj){
 		   			alert(JSON.stringify(dataObj));
 		   			alert("data saved sync..."+dataObj["lid"]+"---"+dataObj.lid+"...");
 		   			
-		   			deleteTimeTrackerRow(1);
+		   			deleteTimeTrackerRow(dataObj["lid"]);
 		   			
 		   			return true;
 		   		}
@@ -1842,7 +1842,7 @@ function deleteTimeTrackerRow(id){
 	db.transaction(function(tx) {
 		alert("deleteTimeTrackerRow..."+id);
 		var deleteTTQuery="DELETE FROM TIMETRACKER WHERE id=' "+id+" '";
-		tx.executeSql(deleteTTQuery, successDB, errorCB);
+		tx.executeSql(deleteTTQuery, successCB, errorCB);
 		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
 	});
 	
