@@ -275,9 +275,9 @@ function saveLogTime(dataObj){
 		   		var responseJson = $.parseJSON(data);
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
-		   			alert("data saved sync"+dataObj["lid"]);
+		   			alert("data saved sync"+dataObj["lid"]+"---"+dataObj.lid);
 		   			
-		   			deleteTimeTrackerRow(dataObj["lid"]);
+		   			deleteTimeTrackerRow(1);
 		   			
 		   			return true;
 		   		}
