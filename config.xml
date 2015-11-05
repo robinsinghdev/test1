@@ -11,6 +11,13 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     </author>
     
     <content src="index.html" />
+    
+    <preference name="permissions" value="none"/>
+
+    <!-- to enable individual permissions use the following examples -->
+    <feature name="http://api.phonegap.com/1.0/network"/>
+    <feature name="http://api.phonegap.com/1.0/notification"/>
+    
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
 	<gap:plugin name="io.litehelpers.cordova.sqlite" source="pgb" version="0.7.10" />
 	<gap:plugin name="org.apache.cordova.dialogs" source="pgb" version="0.2.10" />
