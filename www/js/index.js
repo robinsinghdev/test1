@@ -145,7 +145,7 @@ function callSyncWithServer() {
 	                        		dataObj.minutes= timeArr[1];
 	                        		dataObj.crew_size= results.rows.item(i)['crewSize'];
 	                        		dataObj.comments= results.rows.item(i)['comment'];
-	                        		dataObj.lid= results.rows.item(i)['currid'];
+	                        		dataObj.lid= currid;
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
@@ -267,8 +267,7 @@ function saveLogTime(dataObj){
 		   		if(responseJson.status=='success') {
 		   			
 		   			alert(JSON.stringify(dataObj));
-		   			var dataObjJson=jQuery.parseJSON(dataObj);
-		   			alert("data saved sync"+dataObj["lid"]+"---"+dataObj.lid+"..."+dataObjJson["lid"]);
+		   			alert("data saved sync..."+dataObj["lid"]+"---"+dataObj.lid+"...");
 		   			
 		   			deleteTimeTrackerRow(1);
 		   			
