@@ -266,7 +266,7 @@ function saveLogTime(dataObj){
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
 		   			
-		   			alert(JSON.stringify(dataObj));
+		   			//alert(JSON.stringify(dataObj));
 		   			alert("data saved sync..."+dataObj["lid"]+"---"+dataObj.lid+"...");
 		   			
 		   			deleteTimeTrackerRow(dataObj["lid"]);
@@ -1839,16 +1839,22 @@ function errorCB(err) {
 }
 
 function deleteTimeTrackerRow(id){
-	db.transaction(function(tx) {
+	/*db.transaction(function(tx) {
 		alert("deleteTimeTrackerRow..."+id);
 		var deleteTTQuery="DELETE FROM TIMETRACKER WHERE id=' "+id+" '";
 		tx.executeSql(deleteTTQuery, successCB, errorCB);
 		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
+	});*/
+	
+	db.transaction(function(tx) {
+		alert("deleteTimeTrackerRow..."+id);
+		var deleteTTQuery="DELETE FROM TIMETRACKER WHERE id=' "+id+" '";
+		tx.executeSql(deleteTTQuery,errorCB);
+		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
 	});
 	
-	
-	/*db.transaction(function deleteRow(tx) {
-		  tx.executeSql('DELETE FROM TIMETRACKER WHERE id = ' + id, [], successDB, errorCB);
+	db.transaction(function deleteRow(tx) {
+		  tx.executeSql('DELETE FROM TIMETRACKER WHERE id = ' + id, [], successCB, errorCB);
 	}, errorCB);
 	
 	db.transaction
@@ -1859,7 +1865,8 @@ function deleteTimeTrackerRow(id){
 	                'DELETE FROM TIMETRACKER WHERE id=?',[id], errorCB
 	            );
 	       },errorCB,successCB
-	   );*/
+	   );
+
 }
 
 function insertTimeCategory(tx) {
