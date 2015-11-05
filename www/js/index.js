@@ -145,6 +145,7 @@ function callSyncWithServer() {
 	                        		dataObj.minutes= timeArr[1];
 	                        		dataObj.crew_size= results.rows.item(i)['crewSize'];
 	                        		dataObj.comments= results.rows.item(i)['comment'];
+	                        		dataObj.lid= results.rows.item(i)['currid'];
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
@@ -198,8 +199,9 @@ function successSyncCall(tx,results) {
 
 function deleteTimeTrackerRow(id){
 	db.transaction(function(tx) {
-		alert(id);
-		ctx.executeSql('DELETE FROM TIMETRACKER WHERE id='+id+' ',errorCB);
+		alert("deleteTimeTrackerRow..."+id);
+		var deleteTTQuery="DELETE FROM TIMETRACKER WHERE id=' "+id+" '";
+		ctx.executeSql(deleteTTQuery,errorCB);
 		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
 	});
 	
@@ -273,7 +275,10 @@ function saveLogTime(dataObj){
 		   		var responseJson = $.parseJSON(data);
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
-		   			alert("data saved sync");
+		   			alert("data saved sync"+dataObj["lid"]);
+		   			
+		   			deleteTimeTrackerRow(dataObj["lid"]);
+		   			
 		   			return true;
 		   		}
 		   		else if(responseJson.status=='fail') {
