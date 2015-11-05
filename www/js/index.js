@@ -125,7 +125,7 @@ function callSyncWithServer() {
 	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus
 	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
-	                    alert("length.."+len);
+	                    alert(" TIMETRACKER table length...."+len);
 	                    if(len>0){
 	                        for (var i = 0; i < len; i++) {
 	                            //alert(results.rows.item(i)['timeCats']);
@@ -148,6 +148,7 @@ function callSyncWithServer() {
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
+	                        			alert("saveLogTime response ----"+response);
 	                        			//deleteTimeTrackerRow(currid);
 	                        			//successTimeTrackerIdArr.push(currid);
 	                        		}
@@ -155,10 +156,11 @@ function callSyncWithServer() {
 	                        			
 	                        		}
 	                        	}
+	                        	alert(results.rows.item(i)['localStatus']+"---"+results.rows.item(i)['time']);
 	                            $('#resultList').append('<li><a href="#">' + results.rows.item(i)['localStatus']+"--"+ results.rows.item(i)['time'] + '</a></li>');
 	                        }
 	                        $('#resultList').listview();
-	                        alert(" before successTimeTrackerIdArr.."+successTimeTrackerIdArr);
+	                        //alert(" before successTimeTrackerIdArr.."+successTimeTrackerIdArr);
 	                    }
 	                }, errorCB
 	            );
@@ -168,7 +170,7 @@ function callSyncWithServer() {
 	/*jQuery.each(successTimeTrackerIdArr, function(index,value) {
 		deleteTimeTrackerRow(value);
 	});	*/
-	alert("after successTimeTrackerIdArr.."+successTimeTrackerIdArr);
+	//alert("after successTimeTrackerIdArr.."+successTimeTrackerIdArr);
 	
 	//window.localStorage["solocal"] = 0;
 	//window.localStorage["tclocal"] = 0;
@@ -259,6 +261,7 @@ function saveLogTime(dataObj){
 	var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		alert("data saved sync failssss");
 	   return false;
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -274,6 +277,7 @@ function saveLogTime(dataObj){
 		   			return true;
 		   		}
 		   		else if(responseJson.status=='fail') {
+		   			alert("data saved sync failssss");
 		   			return false;
 		   		}
 			},
@@ -1205,7 +1209,7 @@ function callAddUpadteLogTime(obj){
 		
 		var currtimetrackerid = window.localStorage.getItem("trackerkey");
 		var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' WHERE id=' "+currtimetrackerid+" '";
-		//alert("updateQuery.."+updateQuery);
+		alert("updateQuery.."+updateQuery);
 		var result=addUpadteLogTime(dataObj,updateQuery);
 		if(result=="appSave" || connectionType=="No network connection"){
 			resetTracker();
@@ -1220,7 +1224,7 @@ function callAddUpadteLogTime(obj){
 }
 
 function addUpadteLogTime(dataObj,updateQuery){
-	showModal();
+	//showModal();
 	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
@@ -1828,7 +1832,7 @@ function initializeDB(tx) {
 
 //Transaction success callback
 function successCB() {
-	//alert('db transcation success');
+	alert('db transcation success');
 }
 
 //Transaction error callback
