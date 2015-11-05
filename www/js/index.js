@@ -1572,7 +1572,7 @@ function resumeTimer() {
 	                'SELECT time FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
 	                    var len = results.rows.length;
 	                    if(len>0){
-	                        alert(results.rows.item(0)['timeCats']);
+	                        alert(results.rows.item(0)['time']);
 	                    	time=results.rows.item(0)['time'];
 	                    }
 	                }, errorCB
