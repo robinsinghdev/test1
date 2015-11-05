@@ -1846,16 +1846,16 @@ function deleteTimeTrackerRow(id){
 		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
 	});*/
 	
-	db.transaction(function(tx) {
+	/*db.transaction(function(tx) {
 		alert("deleteTimeTrackerRow..."+id);
 		var deleteTTQuery="DELETE FROM TIMETRACKER WHERE id=' "+id+" '";
 		tx.executeSql(deleteTTQuery,errorCB);
 		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
-	});
+	});*/
 	
-	db.transaction(function deleteRow(tx) {
+	/*db.transaction(function deleteRow(tx) {
 		  tx.executeSql('DELETE FROM TIMETRACKER WHERE id = ' + id, [], successCB, errorCB);
-	}, errorCB);
+	}, errorCB);*/
 	
 	db.transaction
 	  (
