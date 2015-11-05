@@ -31,6 +31,7 @@ var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
 var salse_orders_arr;
+var time_cats_arr;
 var globalLogTimeObj={};
 var db;
 
@@ -97,9 +98,8 @@ var app = {
 		
 		//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
 		$('#syncCallTimerDiv').timer({
-		    duration: '70s',
+		    duration: '900s',
 		    callback: function() {
-		        alert('Timer will reset!... 60 Sec Up');
 		        checkConnectionForSync();
 		        $('#syncCallTimerDiv').timer('reset');
 		    },
@@ -117,7 +117,6 @@ var app = {
 function checkConnectionForSync() {
 	var connectionType=checkConnection();
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		//alert('60 Sec Up...found internet');
 		callSyncWithServer();
 	}
 }
@@ -127,8 +126,9 @@ var successTimeTrackerIdArr=[];
 function callSyncWithServer() {
 	alert("callSyncWithServer..");
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
+	//window.localStorage["permissions"]
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	db.transaction
@@ -215,7 +215,7 @@ function callSaveLogTime(obj){
 	//var connectionType="WiFi connection";//For Testing
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -259,7 +259,7 @@ function saveLogTime(dataObj){
 	//showModal();
 	alert("saveLogTime called");
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	//var connectionType=checkConnection();
@@ -296,40 +296,6 @@ function saveLogTime(dataObj){
 			}
 		});
 	}
-}
-
-
-function getConnectionType(type) {
-    var connTypes = {};
-    connTypes[Connection.NONE] = {
-        message: 'No network connection',
-        value: 0
-    };
-    connTypes[Connection.UNKNOWN] = {
-        message: 'Unknown connection',
-        value: 1
-    };
-    connTypes[Connection.ETHERNET] = {
-        message: 'Ethernet connection',
-        value: 2
-    };
-    connTypes[Connection.CELL_2G] = {
-        message: 'Cell 2G connection',
-        value: 3
-    };
-    connTypes[Connection.CELL_3G] = {
-        message: 'Cell 3G connection',
-        value: 4
-    };
-    connTypes[Connection.CELL_4G] = {
-        message: 'Cell 4G connection',
-        value: 5
-    };
-    connTypes[Connection.WIFI] = {
-        message: 'WiFi connection',
-        value: 6
-    };
-    return connTypes[type];
 }
 
 function onBackKeyDown() {
@@ -485,8 +451,6 @@ function handleLogin() {
 			   success:function(data,t,f){
 				var responseJson=jQuery.parseJSON(data);
 				if(responseJson.status == "success" ){
-					
-					
 					var grnUser=responseJson.grn_user;
 					window.localStorage["username"] = u;
 					window.localStorage["password"] = p;
@@ -573,6 +537,9 @@ function checkingUserAssignedRoles(){
 	
 	jQuery.each(rolesArr, function(index,value) {
 		if ( $.inArray(value, tempArr) > -1 ) {
+			if(index==0){
+				window.localStorage["permissions"] = value;
+			}
 		}else {
 			$userRolesUlObj.find("li#"+value+"").remove();
 		}
@@ -584,7 +551,7 @@ function getSOBySONumber(){
 	//var grnUserObj=window.localStorage.getItem("grnUser");
 	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -679,7 +646,7 @@ function getRandomColor(){
 
 function createNewSO(){
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData)
 	
 	if(grnUserObj != '') {
@@ -720,11 +687,10 @@ function createNewSO(){
 	}
 }
 
-var time_cats_arr;
 function getCategoriesForTimeTracking(){
 	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -755,9 +721,11 @@ function getCategoriesForTimeTracking(){
 				   success:function(data){
 				   		var responseJson = $.parseJSON(data);
 				   		time_cats_arr=responseJson.time_cats;
+				   		window.localStorage["tclocal"] = 1;
 				   		getSalesOrders();
 				   		
-				   		//db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+				   		
 				   		hideModal();
 					},
 					error:function(data,t,f){
@@ -778,7 +746,7 @@ function getCategoriesForTimeTracking(){
 
 function getTotalTimeForCategory(){
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
@@ -815,7 +783,7 @@ function getTotalTimeForCategory(){
 
 function getAllColorsForSO(){
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
@@ -851,7 +819,7 @@ function getAllColorsForSO(){
 function getSalesOrders(){
 
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -968,7 +936,6 @@ function getSalesOrders(){
 				   		}
 				   		
 				   		window.localStorage["solocal"] = 1;
-				   		//db.transaction(insertSalesOrder, errorCB, successCB);// Insert Time Category
 				   		//getSalesOrderList();
 				   		$.mobile.changePage('#view-all-sales-order','slide');
 					},
@@ -1010,17 +977,29 @@ function  hideAllTablesData(){
 	 $('table').find('tfoot').hide();
 }
 
-function changeLoginRole(roleId){
-	navigator.notification.alert("For now default Role = Production.", function() {});
-	
-	//window.localStorage["solocal"] = 0;
-	//window.localStorage["tclocal"] = 0;
+function changeLoginRole(roleId,roleName){
+	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		showModal();
+		callSyncWithServer();
+		window.localStorage["permissions"] = ''+roleId+'';
+		window.localStorage["solocal"] = 0;
+		window.localStorage["tclocal"] = 0;
+		
+		$('#salesOrderMainDiv').html('');
+		time_cats_arr=[];
+		getCategoriesForTimeTracking();
+		hideModal();
+		navigator.notification.alert("Role = "+roleName+".", function() {});
+	}
+	else{
+		navigator.notification.alert(appRequiresWiFi, function() {});
+	}
 }
 
 function getLogTimeListOfOrder(data){
 	showModal();
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -1216,7 +1195,7 @@ function callAddUpadteLogTime(obj){
 	//var connectionType="WiFi connection";//For Testing
 	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -1267,7 +1246,7 @@ function addUpadteLogTime(dataObj,updateQuery){
 	//showModal();
 	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	var connectionType=checkConnection();
@@ -1299,7 +1278,7 @@ function addUpadteLogTime(dataObj){
 	showModal();
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	var connectionType=checkConnection();
@@ -1339,7 +1318,7 @@ function closeSalesOrder(dataObj){
 	showModal();
 	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -1391,7 +1370,7 @@ function showOrderSOBySONumber(){
 	showModal();
 	
 	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":"7"};
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -1919,7 +1898,8 @@ function insertTimeCategory(tx) {
 	var timeCategoryCreateSql ='CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer )';
 	
 	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
-       
+		var el = $('#timeCat');
+   		el.find('option').remove().end();
    	     jQuery.each(time_cats_arr, function(index,value) {
    	    	var jsonObj=value;
    	    	var id=jsonObj["id"];
@@ -1930,11 +1910,15 @@ function insertTimeCategory(tx) {
    	    	var revision=jsonObj["revision"];
    	    	var status=jsonObj["status"];
    	    	
+	   		el.append('<option value="'+timeCats+'">'+title+'</option>').val(timeCats);
+   	    	
    	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, spjobname, grnrolesid, revision, status) VALUES (?,?,?,?,?,?,?)',
    	    			[id,timeCats,title,spJobName,grnRolesId,revision,status], function(tx, res) {
 	   	         //alert("insertId: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
   	    	});
    		});
+   	  el.selectmenu();
+   	  el.selectmenu("refresh", true);
    	  window.localStorage["tclocal"]=1;
    	  alert("timeCategoryCreateSql");
     });
