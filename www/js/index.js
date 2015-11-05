@@ -93,6 +93,17 @@ var app = {
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
 		
+		//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
+		$('#syncCallTimerDiv').timer({
+		    duration: '70s',
+		    callback: function() {
+		        alert('Timer will reset!... 60 Sec Up');
+		        checkConnectionForSync();
+		        $('#syncCallTimerDiv').timer('reset');
+		    },
+		    repeat: true //repeatedly call the callback
+		});
+		
 		//setInterval(checkConnectionForSync, 900000);
     },
 	// Update DOM on a Received Event
@@ -102,16 +113,27 @@ var app = {
 };
 
 function checkConnectionForSync() {
+	var connectionType=checkConnection();
+	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		alert('60 Sec Up...found internet');
+		//callSyncWithServer();
+	}
+	else{
+		alert('60 Sec Up...Noooooooo internet');
+	}
+		
+		
 	//alert('fdghdfgkjh');
-	 var objConnection = navigator.network.connection;
+	/* var objConnection = navigator.network.connection;
 	 var connectionInfo = getConnectionType(objConnection.type);
     if (connectionInfo.value >= 3) {
     	//alert('fdghdfgkjh');
     	//call sync here
-    }
+    }*/
 }
 
 var successTimeTrackerIdArr=[];
+
 function callSyncWithServer() {
 	alert("callSyncWithServer..");
 	
@@ -240,6 +262,7 @@ function callSaveLogTime(obj){
 
 function updateTrackerVariable(){
 	window.localStorage["trackerValueSave"] = 1;
+	//window.localStorage.getItem("trackerValueSave")
 }
 
 function saveLogTime(dataObj){
@@ -1206,11 +1229,17 @@ function callAddUpadteLogTime(obj){
 		
 		var currtimetrackerid = window.localStorage.getItem("trackerkey");
 		var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' WHERE id=' "+currtimetrackerid+" '";
+		
 		alert("updateQuery.."+updateQuery);
+		
 		var result=addUpadteLogTime(dataObj,updateQuery);
-		if(result=="appSave" || connectionType=="No network connection"){
+		
+		if(result=="appSave" && window.localStorage.getItem("trackerValueSave") == 1){
 			resetTracker();
-		}else{
+			//window.localStorage.getItem("trackerValueSave") == 1
+			window.localStorage["trackerValueSave"] = 0;
+		}
+		else{
 			
 		}	
 	}
@@ -1234,7 +1263,7 @@ function addUpadteLogTime(dataObj,updateQuery){
 		
 	    var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	    if(currtimetrackerid!=''){
-	    	var timeTracked=$('#logging_time').text();
+	    	//var timeTracked=$('#logging_time').text();
 	    	db.transaction(function(tx) {
 	    		tx.executeSql(updateQuery);
 	    	});
@@ -1448,14 +1477,8 @@ function  calcTotalCrewTime(crewSize,timeDuration){
 		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
 		var timeArr = timeDuration.split(':'); // split it at the colons
 		var currentLoggedMinutes;
-		//var currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]);
+		var currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]);
 		
-		if(timeArr.length==2){
-			currentLoggedMinutes = (+timeArr[0]);
-		}
-		else if(timeArr.length==3){
-			currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]); 
-		}
 		alert(timeDuration+"....timeDuration.."+"timeArr.length--"+timeArr.length+"currentLoggedMinutes..."+currentLoggedMinutes);
 		
 		currentLoggedMinutes=currentLoggedMinutes*crewSize;
@@ -1479,15 +1502,8 @@ function  calcTotalCrewTimeBackend(crewSize,timeDuration){
 		//var currentLoggedTime = timeDuration; //'00:14';   // your input string
 		var timeArr = timeDuration.split(':'); // split it at the colons
 		
-		var currentLoggedMinutes;
-		//var currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]);
+		var currentLoggedMinutes= (+timeArr[0]) * 60 + (+timeArr[1]);
 		
-		if(timeArr.length==2){
-			currentLoggedMinutes = (+timeArr[0]);
-		}
-		else if(timeArr.length==3){
-			currentLoggedMinutes = (+timeArr[0]) * 60 + (+timeArr[1]); 
-		}
 		alert(timeDuration+"....timeDuration.."+"timeArr.length--"+timeArr.length+"currentLoggedMinutes..."+currentLoggedMinutes);
 		
 		currentLoggedMinutes=currentLoggedMinutes*crewSize;
@@ -1504,6 +1520,23 @@ function  calcTotalCrewTimeBackend(crewSize,timeDuration){
 	else{
 		console.log('Empty');
 	}
+}
+
+/** 
+ * Convert seconds to hh-mm-ss format.
+ * @param {number} totalSeconds - the total seconds to convert to hh- mm-ss
+**/
+function secondsTohhmm(totalSeconds) {
+  var hours   = Math.floor(totalSeconds / 3600);
+  var minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+  //var seconds = totalSeconds - (hours * 3600) - (minutes * 60);
+  // round seconds
+  //seconds = Math.round(seconds * 100) / 100
+
+  var result = (hours < 10 ? "0" + hours : hours);
+      result += ":" + (minutes < 10 ? "0" + minutes : minutes);
+      //result += ":" + (seconds  < 10 ? "0" + seconds : seconds);
+  return result;
 }
 
 /* ----------------  Time Tracker Code Starts -------------------------  */
@@ -1570,7 +1603,7 @@ function startTimer() {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
     		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus) VALUES (?,?,?,?,?,?,?,?)'
-    				,[0,getTodayDate().toString(),"0 sec",0,0,"prod_","comments test","start"]
+    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start"]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
@@ -1581,7 +1614,11 @@ function startTimer() {
 }
 
 function pauseTimer() {
-	var timeTracked=$('#logging_time').text();
+	//var timeTracked=$('#logging_time').text();
+	var totalSeconds=$('#logging_time').data('seconds');
+	var timeTracked=secondsTohhmm(totalSeconds);
+	alert(timeTracked+"....timeTracked");
+	
 	$('#logging_time').timer('pause');
     //take current time
 	
@@ -1615,7 +1652,7 @@ function resumeTimer() {
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	var seconds=0;
 	var tempData;
-	var time='00:00 min' ; //='01:01 min' ;
+	var time='00:00' ; //='01:01 min' ;
 	db.transaction
 	  (
 	       function (tx){
@@ -1627,14 +1664,10 @@ function resumeTimer() {
 	                        alert(results.rows.item(0)['time']);
 	                    	time=results.rows.item(0)['time'];
 	                    	
-	                    	time=getCorrectTimeForTimerData(time);
+	                    	//time=getCorrectTimeForTimerData(time);
 	                    	var timeArr = time.split(':'); // split it at the colons
-	                    	if(timeArr.length==2){
-	                    		seconds = (+timeArr[0]) * 60  + (+timeArr[1]); 
-	                    	}
-	                    	else if(timeArr.length==3){
-	                    		seconds = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60  + (+timeArr[2]); ; 
-	                    	}
+	                    	seconds = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60;
+	                    	
 	                    	alert(time+"....time"+"timeArr.length--"+timeArr.length+"seconds..."+seconds);
 	                    	
 	                        $('#logging_time').timer({
@@ -1670,10 +1703,14 @@ function logtimeTimer() {
 	//$('#is_revision').attr('data-timecat', timecat);
 	var soTimeId=order;// done
 	var date=date;// done
-	var time = $('#logging_time').text()// done
-	//// calll
-	time=getCorrectTimeForTimerData(time);
+	
+	var totalSeconds=$('#logging_time').data('seconds');
+	var time=secondsTohhmm(totalSeconds);
 	alert(time+"....time");
+	//var time = $('#logging_time').text()// done
+	//// calll
+	//time=getCorrectTimeForTimerData(time);
+	
 	
 	var crewSize=1;// done
 	// $('#grn_staffTime_id').val(timerId);
@@ -1864,7 +1901,7 @@ function deleteTimeTrackerRow(id){
 	            (
 	                'DELETE FROM TIMETRACKER WHERE id=?',[id], errorCB
 	            );
-	       },errorCB,successCB
+	       }, successCB, errorCB
 	   );
 
 }
