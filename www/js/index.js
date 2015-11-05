@@ -197,16 +197,6 @@ function successSyncCall(tx,results) {
 	console.log("Last inserted row ID = " + results.insertId);
 }
 
-function deleteTimeTrackerRow(id){
-	db.transaction(function(tx) {
-		alert("deleteTimeTrackerRow..."+id);
-		var deleteTTQuery="DELETE FROM TIMETRACKER WHERE id=' "+id+" '";
-		ctx.executeSql(deleteTTQuery,errorCB);
-		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
-	});
-	
-}
-
 function callSaveLogTime(obj){
 	
 	var connectionType=checkConnection();
@@ -702,8 +692,8 @@ function getCategoriesForTimeTracking(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
@@ -717,11 +707,11 @@ function getCategoriesForTimeTracking(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
-			/*if(window.localStorage["tclocal"] == 1){
+			if(window.localStorage["tclocal"] == 1){
 				getSalesOrders();
 		   		hideModal();
 			}
-			else if(window.localStorage["tclocal"] == 0){*/
+			else if(window.localStorage["tclocal"] == 0){
 				$.ajax({
 					type : 'POST',
 				   url:appUrl,
@@ -740,7 +730,7 @@ function getCategoriesForTimeTracking(){
 						navigator.notification.alert(appRequiresWiFi, function() {});
 					}
 				});
-			//}
+			}
 		}
 	}
 	else{
@@ -829,8 +819,8 @@ function getSalesOrders(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
@@ -843,11 +833,11 @@ function getSalesOrders(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
-			/*if(window.localStorage["solocal"] == 1){
+			if(window.localStorage["solocal"] == 1){
 				//getSalesOrders();
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
-			else if(window.localStorage["solocal"] == 0){*/
+			else if(window.localStorage["solocal"] == 0){
 			
 				$.ajax({
 					type : 'POST',
@@ -952,7 +942,7 @@ function getSalesOrders(){
 					}
 				});
 			
-			//}
+			}
 		}
 		
 	}
@@ -1844,6 +1834,30 @@ function successCB() {
 function errorCB(err) {
 	alert("Error processing SQL: "+err.code);
 	//console.log("Error processing SQL: "+err.code);
+}
+
+function deleteTimeTrackerRow(id){
+	db.transaction(function(tx) {
+		alert("deleteTimeTrackerRow..."+id);
+		var deleteTTQuery="DELETE FROM TIMETRACKER WHERE id=' "+id+" '";
+		tx.executeSql(deleteTTQuery,errorCB);
+		//ctx.executeSql('DELETE FROM TIMETRACKER WHERE id =?', [ currid ],errorCB);
+	});
+	
+	
+	db.transaction(function deleteRow(tx) {
+		  tx.executeSql('DELETE FROM TIMETRACKER WHERE id = ' + id, [], successDB, errorCB);
+	}, errorCB);
+	
+	db.transaction
+	  (
+	       function (tx){
+	            tx.executeSql
+	            (
+	                'DELETE FROM TIMETRACKER WHERE id=?',[id], errorCB
+	            );
+	       },errorCB,successCB
+	   );
 }
 
 function insertTimeCategory(tx) {
