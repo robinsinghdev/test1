@@ -920,7 +920,7 @@ function getSalesOrders(){
 										     '<tfoot>'+
 										         '<tr>'+
 										             '<td colspan="3" class="td-danger">'+
-										             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrder(this)"><span>CLOSE</span></a>'+
+										             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrderDialog(this)"><span>CLOSE</span></a>'+
 										             '</td>'+ 
 										         '</tr>'+
 										     '</tfoot>'+
