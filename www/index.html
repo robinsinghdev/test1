@@ -49,12 +49,10 @@
                 </div>
             </div>
             
-            
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
 					<a href="#overlayPanel" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext">Roles Menu</a>
                     <h1>Homepage</h1>
-					<!-- <a href="#"  data-role="button"  data-icon="power" class="" data-inline="true" ></a> -->
 					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
                 </div>
                 
@@ -67,7 +65,6 @@
 						  	<li id="9" onclick="changeLoginRole(9,'Quality Control'); return false;"><a href="#">Quality Control</a></li>
 						  	<li id="10" onclick="changeLoginRole(10,'Installing'); return false;"><a href="#">Installing</a></li>
 						 </ul>
-					    <!-- <a href="#pageone" data-rel="close" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-a ui-icon-delete ui-btn-icon-left">Close</a> -->
 					 </div> 
 					 
                 	<div id="menu">
@@ -92,13 +89,7 @@
 							</ul>
 						</div>
                 	</div>
-                	
-                	
-                	<!-- 
-                	<div id="timeTrackerInfoDiv">
-                	    <a href="#getSOBySONumberDialog" data-theme="a" data-role="button" data-rel="dialog">Add Sales Order</a>
-                    </div>
-					 -->
+					
                 </div>
                 <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="true" class="app-footer-section" class="footer-div">
                     <div id="navbar" data-role="navbar">
@@ -108,7 +99,7 @@
                         </ul>
                     </div>
                 </div>
-            </div><!-- /page  -->
+            </div>
 			
 			<div id="view-all-sales-order" data-role="page">
                 <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -164,9 +155,8 @@
                         </ul>
                     </div>
                 </div>
-            </div><!-- /page  -->
+            </div>
 			
-			<!-- Dialog only page -->
 			<div data-role="page" id="getSOBySONumberDialog" data-close-btn="right" data-corners="false" >
 			  <div data-role="header">
 				<h1>Create Sales Order</h1>
@@ -185,12 +175,11 @@
 				</div>
 				
 				<div class="ui-grid-a sales-order-btn-group">
-				  <!-- <div class="ui-block-a"><a data-rel="back" data-role="button" href="#view-all-sales-order" >Close</a></div> -->
 				  <div class="ui-block-a" ><a  id="tryAgainBtn" class="display-none" data-theme="a" data-role="button" href="#" onclick="tryAgainSOBySONumber();" >Try Again</a></div>
 				  <div class="ui-block-a display-none" ><a  id="showOrderBtn" class="" data-theme="a" data-role="button" href="#" onclick="showOrderSOBySONumber();" >Show Order</a></div>
 				  <div class="ui-block-b"><a id="getSOBySONumberBtn" data-theme="a" data-role="button" href="#" onclick="getSOBySONumber();" >Submit</a></div>
 				  <div class="ui-block-b"><a id="addNewSalesOrderBtn" class="display-none"  data-theme="a" data-role="button" href="#" onclick="createNewSO();" >Create</a></div>
-				</div><!-- /grid-a -->
+				</div>
 				
 			  </div>
 			</div>
@@ -231,8 +220,9 @@
                         </ul>
                     </div>
                 </div>
-            </div><!-- /page  -->
+            </div>
             
+             
             <div id="add-log-time" data-role="page">
                 <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
                 	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
@@ -251,7 +241,7 @@
                         </div>
                     </div>
                     	
-                    <div id="addLogTimeMainDiv">
+                    <div id="addLogTimeMainDiv" class="add-log-time-main-div">
                     	<form id="addLogTimeForm">
                     		<div class="display-none">
                     			<input type="hidden" id="staffTimeId" value="">
@@ -271,30 +261,34 @@
 		                        </select>
 		                    </div>   
 		                    
-							<h4> Modify time logged: </h4>
+							<!-- <h4> Modify time logged: </h4> -->
 		                    <div class="ui-field-contain">
-							    <label for="Date:">Date: </label>
+							    <label for="Date">Date </label>
 							    <input type="text" data-mini="true" data-role="datebox" id="logDate" name="logDate" readonly="readonly"
 							    	data-options='{"mode": "calbox", "overrideDateFormat": "%Y-%m-%d"}' >
-							    <!-- 	
-							    <input type="text" data-mini="true" data-role="datebox" id="mode1" name="mode1" readonly="readonly"
-							    	data-options='{"mode": "flipbox", "overrideDateFormat": "%Y-%m-%d"}' >
-							     -->		
 		                    </div>
 		                    
-		                     <div class="ui-field-contain">	
-								<label for="Time:">Time</label>
+		                     <div class="ui-field-contain time-input-div">	
+								<label for="Time">Time</label>
+								<div class="input-div">
+									<span>Hour</span>
+									<input type="text" data-mini="true" onchange="getDataForTotalTimeCalc();">
+									<span>Min</span>
+									<input type="text" data-mini="true" onchange="getDataForTotalTimeCalc();">
+								</div>
+								<!-- 
 		                    	<input onchange="getDataForTotalTimeCalc();" type="text" data-mini="true" data-role="datebox" id="logTime" name="logTime" readonly="readonly"
 							    	data-options='{"mode": "durationflipbox","overrideDurationOrder":["h","i"] ,"overrideDurationFormat": " %Dl:%DM "}' >
-		                    </div> 
+		                    	 -->
+		                    </div>
 		                    
 		                    <div class="ui-field-contain">
-							    <label for="Add a description:">Add a description: </label>
-							    <textarea cols="40" rows="4" name="logComment" id="logComment"></textarea>
+							    <label for="Comment">Comment </label>
+							    <textarea cols="" rows="4" name="logComment" id="logComment" style="width: 65% !important;"></textarea>
 		                    </div>     
 		                    
 		                    <div class="ui-field-contain">
-		                    	<label for="Crew Size">Crew Size: </label>
+		                    	<label for="Crew Size">Crew Size </label>
 		                    	<select onchange="getDataForTotalTimeCalc();" name="crewSize" id="crewSize" data-mini="true" >                    
 		                    		<option value="1">1</option>
 		                            <option value="2">2</option>
@@ -316,7 +310,7 @@
 		                    </div> 
 		                    
 		                    <div class="ui-field-contain">
-		                    	<p><span >Total Time: </span><span id="totalCrewTime">00:00</span></p>
+		                    	<p><span >Total Time </span><span id="totalCrewTime">00:00</span></p>
 		                    </div> 
 		                    
 		                    <div class="ui-grid-a">
