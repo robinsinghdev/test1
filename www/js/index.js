@@ -1169,7 +1169,7 @@ function editLogTime(dataObj){
 	var comment=$dataObj.data('comment');
 	
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
-	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','update'); 
+	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','update');
 	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','update');
 	$addUpdateLogTimeForm.find('#staffTimeId').val(id);
 	$addUpdateLogTimeForm.find('#soTimeId').val(soTimeId);
@@ -1214,37 +1214,67 @@ function callAddUpadteLogTime(obj){
 		
 		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 		
-		if($(obj).attr('data-flag')=='add'){
-			dataObj.grn_staffTime_id= '';
-		}else if($(obj).attr('data-flag')=='update'){
-			dataObj.grn_staffTime_id= $addUpdateLogTimeForm.find('#staffTimeId').val();
-		}
 		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
 		dataObj.grn_timeCat= $addUpdateLogTimeForm.find('#timeCat option:selected').val();
 		dataObj.date= $addUpdateLogTimeForm.find('#logDate').val();
 		
-		dataObj.hours= $addUpdateLogTimeForm.find('#logHours').val();
-		dataObj.minutes= $addUpdateLogTimeForm.find('#logMinutes').val();
-		var time= hours+":"+minutes;
+		var logHours,logMinutes;
+		logHours=$addUpdateLogTimeForm.find('#logHours').val();
+		logMinutes=$addUpdateLogTimeForm.find('#logMinutes').val();
+		
+		if(logHours==''){
+			$addUpdateLogTimeForm.find('#logHours').val('00');
+			logHours='00';
+		}
+		
+		if(logMinutes==''){
+			$addUpdateLogTimeForm.find('#logMinutes').val('00');
+			logMinutes='00';
+		}
+		
+		dataObj.hours= logHours;
+		dataObj.minutes= logMinutes;
+		var time= logHours+":"+logMinutes;
+		
+		dataObj.time=time;
+		
+		if(time=='00:00'){
+			navigator.notification.alert(
+    		    'Please fill Time Details.',  // message
+    		    'Log Time',            // title
+    		    'Ok'                  // buttonName
+    		);
+			return false;
+		}
 		
 		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
 		
-		var currtimetrackerid = window.localStorage.getItem("trackerkey");
-		var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' WHERE id=' "+currtimetrackerid+" '";
 		
-		//alert("updateQuery.."+updateQuery);
-		
-		var result=addUpadteLogTime(dataObj,updateQuery);
-		//alert("trackerValueSave------"+window.localStorage.getItem("trackerValueSave"));
-		if(result=="appSave" && window.localStorage.getItem("trackerValueSave") == 1){
-			resetTracker();
-			//window.localStorage.getItem("trackerValueSave") == 1
-			window.localStorage["trackerValueSave"] = 0;
+		if($(obj).attr('data-flag')=='add'){
+			dataObj.grn_staffTime_id= '';
+			addLogTimeToServer(dataObj);
 		}
-		else{
+		else if($(obj).attr('data-flag')=='addTT'){
+			dataObj.grn_staffTime_id= '';
 			
-		}	
+			var currtimetrackerid = window.localStorage.getItem("trackerkey");
+			var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' WHERE id=' "+currtimetrackerid+" '";
+			
+			var result=addUpadteLogTimeTT(dataObj,updateQuery);
+			
+			if(result=="appSave" && window.localStorage.getItem("trackerValueSave") == 1){
+				resetTracker();
+				//alert("trackerValueSave------"+window.localStorage.getItem("trackerValueSave"));
+				//window.localStorage.getItem("trackerValueSave") == 1
+				window.localStorage["trackerValueSave"] = 0;
+			}
+		}
+		else if($(obj).attr('data-flag')=='update'){
+			dataObj.grn_staffTime_id= $addUpdateLogTimeForm.find('#staffTimeId').val();
+			updateLogTimeToServer(dataObj);
+		}
+		
 	}
 	else{
 		logout();
@@ -1252,7 +1282,7 @@ function callAddUpadteLogTime(obj){
 	}
 }
 
-function addUpadteLogTime(dataObj,updateQuery){
+function addUpadteLogTimeTT(dataObj,updateQuery){
 	//showModal();
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
@@ -1276,10 +1306,10 @@ function addUpadteLogTime(dataObj,updateQuery){
 	    	$.mobile.changePage('#view-all-sales-order','slide');
 	    	//navigator.notification.alert("Time added successfully", function() {});
 	    	navigator.notification.alert(
-	    		    'Time added successfully.',  // message
-	    		    'Time Tracker',            // title
-	    		    'Ok'                  // buttonName
-	    		);
+    		    'Time added successfully.',  // message
+    		    'Time Tracker',            // title
+    		    'Ok'                  // buttonName
+    		);
 	    	return "appSave";
 	    }else{
 	    	navigator.notification.alert("No proper data", function() {});
@@ -1288,8 +1318,48 @@ function addUpadteLogTime(dataObj,updateQuery){
 	//}
 }
 
-/*
-function addUpadteLogTime(dataObj){
+function addLogTimeToServer(dataObj){
+	showModal();
+	
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	//var connectionType=checkConnection();
+	var connectionType="WiFi connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		//navigator.notification.alert(appRequiresWiFi, function() {});
+		addLogTimeToApp(dataObj);
+	}
+	else if(connectionType=="WiFi connection"){
+		
+		$.ajax({
+			type : 'POST',
+		   url:appUrl,
+		   data:dataObj,
+		   success:function(data){
+		   		var responseJson = $.parseJSON(data);
+		   		console.log(responseJson);
+		   		if(responseJson.status=='success') {
+		   			navigator.notification.alert(responseJson.msg, function() {});
+		   			$.mobile.changePage('#view-all-sales-order','slide');
+		   		}
+		   		else if(responseJson.status=='fail') {
+		   			//navigator.notification.alert(serverBusyMsg, function() {});
+		   			addLogTimeToApp(dataObj);
+		   		}
+		   		hideModal();
+			},
+			error:function(data,t,f){
+				hideModal();
+				addLogTimeToApp(dataObj);
+			}
+		});
+	}
+}
+
+function updateLogTimeToServer(dataObj){
 	showModal();
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
@@ -1312,8 +1382,8 @@ function addUpadteLogTime(dataObj){
 		   		var responseJson = $.parseJSON(data);
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
-		   			$.mobile.changePage('#view-all-sales-order','slide');
 		   			navigator.notification.alert(responseJson.msg, function() {});
+		   			$.mobile.changePage('#view-all-sales-order','slide');
 		   		}
 		   		else if(responseJson.status=='fail') {
 		   			navigator.notification.alert(serverBusyMsg, function() {});
@@ -1322,13 +1392,32 @@ function addUpadteLogTime(dataObj){
 			},
 			error:function(data,t,f){
 				hideModal();
-				console.log(data+' '+t+' '+f);
-				navigator.notification.alert(appRequiresWiFi, function() {});
+				navigator.notification.alert(serverBusyMsg, function() {});
 			}
 		});
 	}
 }
-*/
+
+function addLogTimeToApp(dataObj){
+	
+	db.transaction(function(tx) {
+		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
+		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus) VALUES (?,?,?,?,?,?,?,?)'
+				,[dataObj.grn_salesorderTime_id,
+				  dataObj.date,
+				  dataObj.time,
+				  dataObj.crew_size,
+				  dataObj.grn_staffTime_id,
+				  dataObj.grn_timeCat,
+				  dataObj.comments,
+				  "complete"]
+			,function(tx, results){
+					alert('Returned ID: ' + results.insertId);
+			 }
+		);
+	});
+}
+
 
 function closeSalesOrderDialog(dataObj) {
 	closeSalesOrderDataObj=dataObj;
@@ -1763,8 +1852,8 @@ function logtimeTimer() {
 	var comment="";
 	
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
-	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add');
-	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','add');
+	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','addTT');
+	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','addTT');
 	
 	$addUpdateLogTimeForm.find('#staffTimeId').val('');
 	$addUpdateLogTimeForm.find('#soTimeId').val(soTimeId);
