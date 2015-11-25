@@ -230,10 +230,9 @@ function callSaveLogTime(obj){
 		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
 		dataObj.grn_timeCat= $addUpdateLogTimeForm.find('#timeCat option:selected').val();
 		dataObj.date= $addUpdateLogTimeForm.find('#logDate').val();
-		var time=$addUpdateLogTimeForm.find('#logTime').val();
-		var timeArr=time.split(":");
-		dataObj.hours= timeArr[0];
-		dataObj.minutes= timeArr[1];
+		
+		dataObj.hours= $addUpdateLogTimeForm.find('#logHours').val();
+		dataObj.minutes= $addUpdateLogTimeForm.find('#logMinutes').val();
 		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
 		
@@ -1167,12 +1166,13 @@ function editLogTime(dataObj){
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','update'); 
 	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','update');
-	
 	$addUpdateLogTimeForm.find('#staffTimeId').val(id);
 	$addUpdateLogTimeForm.find('#soTimeId').val(soTimeId);
-	
 	$addUpdateLogTimeForm.find('#logDate').val(date);
-	$addUpdateLogTimeForm.find('#logTime').val(time);
+	
+	var timeArr=time.split(":");
+	$addUpdateLogTimeForm.find('#logHours').val(timeArr[0]);
+	$addUpdateLogTimeForm.find('#logMinutes').val(timeArr[1]);
 	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
 	$addUpdateLogTimeForm.find('#logComment').val(comment);
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
@@ -1217,10 +1217,11 @@ function callAddUpadteLogTime(obj){
 		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
 		dataObj.grn_timeCat= $addUpdateLogTimeForm.find('#timeCat option:selected').val();
 		dataObj.date= $addUpdateLogTimeForm.find('#logDate').val();
-		var time=$addUpdateLogTimeForm.find('#logTime').val();
-		var timeArr=time.split(":");
-		dataObj.hours= timeArr[0];
-		dataObj.minutes= timeArr[1];
+		
+		dataObj.hours= $addUpdateLogTimeForm.find('#logHours').val();
+		dataObj.minutes= $addUpdateLogTimeForm.find('#logMinutes').val();
+		var time= hours+":"+minutes;
+		
 		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
 		
@@ -1498,7 +1499,11 @@ function changeTimeCatImage(obj){
 function getDataForTotalTimeCalc(){
 	var $addLogTimeForm=$('form#addLogTimeForm');
 	var crewSize = $addLogTimeForm.find("#crewSize option:selected").val();
-	var timeDuration=$addLogTimeForm.find('#logTime').val();
+	
+	var logHours=$addLogTimeForm.find('#logHours').val().split(" ").join("");
+	var logMinutes=$addLogTimeForm.find('#logMinutes').val().split(" ").join("");
+	var timeDuration= logHours+":"+logMinutes;
+	
 	calcTotalCrewTime(crewSize,timeDuration);
 }
 
@@ -1562,6 +1567,18 @@ function secondsTohhmm(totalSeconds) {
       result += ":" + (minutes < 10 ? "0" + minutes : minutes);
       //result += ":" + (seconds  < 10 ? "0" + seconds : seconds);
   return result;
+}
+
+function getTodayDate(){
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1;//January is 0, so always add + 1
+
+	var yyyy = today.getFullYear();
+	if(dd<10){dd='0'+dd}
+	if(mm<10){mm='0'+mm}
+	today = yyyy+'-'+mm+'-'+dd;
+	return today;
 }
 
 /* ----------------  Time Tracker Code Starts -------------------------  */
@@ -1726,23 +1743,19 @@ function logtimeTimer() {
 	
 	var id="";
 	//$('#is_revision').attr('data-timecat', timecat);
-	var soTimeId=order;// done
-	var date=date;// done
+	var soTimeId=order;
+	var date=getTodayDate().toString();
 	
 	var totalSeconds=$('#logging_time').data('seconds');
 	var time=secondsTohhmm(totalSeconds);
-	//alert(time+"....time");
-	//var time = $('#logging_time').text()// done
-	//// calll
 	//time=getCorrectTimeForTimerData(time);
 	
-	
-	var crewSize=1;// done
+	var crewSize=1;
 	// $('#grn_staffTime_id').val(timerId);
 	var grnStaffTimeId=timerId;
 	
 	var category=timecat;
-	var comment="";// done
+	var comment="";
 	
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add'); 
@@ -1750,9 +1763,12 @@ function logtimeTimer() {
 	
 	$addUpdateLogTimeForm.find('#staffTimeId').val('');
 	$addUpdateLogTimeForm.find('#soTimeId').val(soTimeId);
-	
 	$addUpdateLogTimeForm.find('#logDate').val(date);
-	$addUpdateLogTimeForm.find('#logTime').val(time);
+	//$addUpdateLogTimeForm.find('#logTime').val(time);
+	var timeArr=time.split(":");
+	$addLogTimeForm.find('#logHours').val(timeArr[0]);
+	$addLogTimeForm.find('#logMinutes').val(timeArr[1]);
+	
 	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
 	$addUpdateLogTimeForm.find('#logComment').val(comment);
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
@@ -2079,46 +2095,3 @@ function getTimeTrackerList(){
 
 
 /* ************* Database Code Ends   -------------------------  */
-
-
-/* ===============  Code Reusable ========================  */
-
-function getTodayDate(){
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth()+1;//January is 0, so always add + 1
-
-	var yyyy = today.getFullYear();
-	if(dd<10){dd='0'+dd}
-	if(mm<10){mm='0'+mm}
-	today = dd+'/'+mm+'/'+yyyy;
-	return today;
-}
-
-function insertTrackerValue() {
-	
-	var currtimetrackerid; 
-	db.transaction(function(tx) {
-		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
-		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus) VALUES (?,?)'
-				,[1,getTodayDate().toString(),"01:06",5,,"prod_","comments test"]
-			,function(tx, results){
-					//alert('Returned ID: ' + results.insertId);
-					currTimeTrackerId=results.insertId;
-					window.localStorage.setItem("trackerkey", ""+currTimeTrackerId+"");
-			 }
-		);
-	});
-} 
-
-function stopTracker() {
-	var timeTracked=$('#timeTrackerDiv').data('seconds');
-	
-	var currtimetrackerid = window.localStorage.getItem("trackerkey");
-	db.transaction(function(tx) {
-		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "' WHERE id=' "+currtimetrackerid+" '");
-	});
-	//window.localStorage.removeItem("trackerkey");
-	window.localStorage["trackerkey"] = '';
-}

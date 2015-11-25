@@ -349,29 +349,19 @@ hr.style {
     background: #f8c326 none repeat scroll 0 0;
 }
 
-.floatleft {
-    float:left;
- }
-.floatright {
-    float:right;
-}
-
 .ui-field-contain{
 	border-bottom: 0px !important;
 }
-
 .add-log-time-main-div .ui-field-contain label{
 	display: inline-block;
     vertical-align: middle;
     min-width: 30%;
 }
-
 .add-log-time-main-div .ui-field-contain.time-input-div .ui-input-text{
 	display: inline-block;
     vertical-align: middle;
     width: 19% !important;
 }
-
 .add-log-time-main-div .ui-field-contain.time-input-div .input-div{
 	display: inline-block;
     vertical-align: middle;
@@ -382,14 +372,8 @@ hr.style {
     vertical-align: middle;
     width: 54% !important;
 }
-
 .add-log-time-main-div .ui-field-contain .ui-select{
 	display: inline-block;
     vertical-align: middle;
     width: 65% !important;
 }
-
-
-
-
-
