@@ -1141,6 +1141,9 @@ function addLogTime(){
 	$('form#addLogTimeForm')[0].reset();
 	
 	$addUpdateLogTimeForm.find('#logDate').val(getTodayDate());
+	
+	$addUpdateLogTimeForm.find('#logHours').val('00');
+	$addUpdateLogTimeForm.find('#logMinutes').val('00');
 	$addUpdateLogTimeForm.find('#staffTimeId').val('');
 	$addUpdateLogTimeForm.find('#soTimeId').val(currDataOrder);
 	
@@ -1760,7 +1763,7 @@ function logtimeTimer() {
 	var comment="";
 	
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
-	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add'); 
+	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add');
 	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','add');
 	
 	$addUpdateLogTimeForm.find('#staffTimeId').val('');
@@ -1768,8 +1771,8 @@ function logtimeTimer() {
 	$addUpdateLogTimeForm.find('#logDate').val(date);
 	//$addUpdateLogTimeForm.find('#logTime').val(time);
 	var timeArr=time.split(":");
-	$addLogTimeForm.find('#logHours').val(timeArr[0]);
-	$addLogTimeForm.find('#logMinutes').val(timeArr[1]);
+	$addUpdateLogTimeForm.find('#logHours').val(timeArr[0]);
+	$addUpdateLogTimeForm.find('#logMinutes').val(timeArr[1]);
 	
 	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
 	$addUpdateLogTimeForm.find('#logComment').val(comment);
