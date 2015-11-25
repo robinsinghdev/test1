@@ -1138,7 +1138,9 @@ function addLogTime(){
 	$so_name_box.find(".so-name-box").html(currDataOname);
 	
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
+	$('form#addLogTimeForm')[0].reset();
 	
+	$addUpdateLogTimeForm.find('#logDate').val(getTodayDate());
 	$addUpdateLogTimeForm.find('#staffTimeId').val('');
 	$addUpdateLogTimeForm.find('#soTimeId').val(currDataOrder);
 	
@@ -1577,8 +1579,8 @@ function getTodayDate(){
 	var yyyy = today.getFullYear();
 	if(dd<10){dd='0'+dd}
 	if(mm<10){mm='0'+mm}
-	today = yyyy+'-'+mm+'-'+dd;
-	return today;
+	var todayString = yyyy+'-'+mm+'-'+dd;
+	return todayString;
 }
 
 /* ----------------  Time Tracker Code Starts -------------------------  */
