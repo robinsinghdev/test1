@@ -635,7 +635,7 @@ function tryAgainSOBySONumber(){
 	$('a#getSOBySONumberBtn').removeClass('display-none');
 	$(".sales-order-msg").html('');
 	
-	getTimeTrackerList();
+	//getTimeTrackerList();
 }
 
 function getRandomColor(){
@@ -1268,7 +1268,12 @@ function addUpadteLogTime(dataObj,updateQuery){
 	    	//window.localStorage.removeItem("trackerkey");
 	    	window.localStorage["trackerkey"] = '';
 	    	$.mobile.changePage('#view-all-sales-order','slide');
-	    	navigator.notification.alert("Time Tracker Data Saved in App", function() {});
+	    	//navigator.notification.alert("Time added successfully", function() {});
+	    	navigator.notification.alert(
+	    		    'Time added successfully.',  // message
+	    		    'Time Tracker',            // title
+	    		    'Ok'                  // buttonName
+	    		);
 	    	return "appSave";
 	    }else{
 	    	navigator.notification.alert("No proper data", function() {});
@@ -1366,10 +1371,21 @@ function closeSalesOrder(dataObj){
 			   		var responseJson = $.parseJSON(data);
 			   		if(responseJson.status=='success') {
 			   			$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
-			   			navigator.notification.alert(responseJson.msg, function() {});
+			   			//navigator.notification.alert(responseJson.msg, function() {});
+			   			
+			   			navigator.notification.alert(
+				    		    ''+responseJson.msg+'',  // message
+				    		    'Sales Order',            // title
+				    		    'Ok'                  // buttonName
+				    		);
 			   		}
 			   		else if(responseJson.status=='fail') {
-			   			navigator.notification.alert(serverBusyMsg, function() {});
+			   			//navigator.notification.alert(serverBusyMsg, function() {});
+			   			navigator.notification.alert(
+				    		    ''+responseJson.msg+'',  // message
+				    		    'Sales Order',            // title
+				    		    'Ok'                  // buttonName
+				    		);
 			   		}
 			   		hideModal();
 				},
