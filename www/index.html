@@ -43,12 +43,12 @@
 							<input type="email" name="username" id="username" placeholder="Username"/>
 							<label for="password">Password </label>
 							<input type="password" name="password" id="password" placeholder="Password" autocomplete="off"/>
-							<input type="submit" value="Login" id="submitButton" class="app-link" data-theme="a" >
+							<input type="submit" value="Login <img src='img/wifi-icon-24px.png' class='wifi-icon' />" id="submitButton" class="app-link" data-theme="a" />
 						</form>
 					</div>
                 </div>
             </div>
-            
+         
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
 					<a href="#overlayPanel" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext">Roles Menu</a>
@@ -58,7 +58,7 @@
                 
                 <div data-role="content" >
                 	<div data-role="panel" id="overlayPanel" data-display="overlay">
-					    <h4>Select Role</h4>
+					    <h4>Select Role <img src="img/wifi-icon-24px.png" class="wifi-icon" /></h4>
 					     <ul data-role="listview" id="userRolesUl">
 						  	<li id="5" onclick="changeLoginRole(5,'Templating'); return false;"><a href="#">Templating</a></li>
 						  	<li id="7" onclick="changeLoginRole(7,'Production'); return false;"><a href="#">Production</a></li>
@@ -77,7 +77,7 @@
 							    <li data-icon="bars"><a href="#" onclick="getCategoriesForTimeTracking();">Your Sales Orders</a></li>
 							    <li data-icon="plus"><a href="#getSOBySONumberDialog" data-rel="dialog">Add Sales Order</a></li>
 							    <li data-role="list-divider">User Roles</li>
-							    <li data-icon="action"><a href="#overlayPanel" >Select Role</a></li>
+							    <li data-icon="action"><a href="#overlayPanel" >Select Role </a></li>
 							</ul>
 						</div>
 						
@@ -311,11 +311,11 @@
 		                    
 		                    <div class="ui-field-contain">
 		                    	<p><span >Total Time </span><span id="totalCrewTime">00:00</span></p>
-		                    </div> 
+		                    </div>
 		                    
 		                    <div class="ui-grid-a">
-						      <div class="ui-block-a" ><input type="button" id="logTimeSubmitBtn" value="Log Time" data-flag="add" onclick="callAddUpadteLogTime(this);" /></div>
-						      <div class="ui-block-b" ><input type="button" id="logTimeRevisionSubmitBtn" value="Revision Log Time" data-flag="update" /></div>
+						      <div class="ui-block-a" ><input type="button" id="logTimeSubmitBtn" value="Log Time" data-flag="add" onclick="callAddUpadteLogTime(this,'logTime');" /></div>
+						      <div class="ui-block-b" ><input type="button" id="logTimeRevisionSubmitBtn" value="Revision Log Time" data-flag="add" onclick="callAddUpadteLogTime(this,'logTimeRevision');" /></div>
 						    </div>
 						</form>	    
                 	</div>
