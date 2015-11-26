@@ -2027,10 +2027,6 @@ function saveRunningTimerAction(button){
 function showRunningTimeTracker(){
 	alert('showRunningTimeTracker--trackerkey--'+window.localStorage.getItem("trackerkey"));
 	
-	/*if(isNaN(tal)) {
-		var tal = 0;
-	}*/
-	
 	if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
 		
 	}
@@ -2068,8 +2064,16 @@ function showRunningTimeTracker(){
 		                    	if(localStatus=='start' || localStatus=='resumed' ){
 		                    		timerId=2;
 		                    		 
+		                    		alert(startTime+"----"+currentDateTimeValue);
 		                    		var secondsDiffereence = calculateDateTimeDiff(startTime,currentDateTimeValue);
 		                    		alert("secondsDiffereence--"+secondsDiffereence);
+		                    		
+		                    		if(isNaN(secondsDiffereence)) {
+			                    		secondsDiffereence = 0;
+			                    		alert("NANNNN secondsDiffereence--"+secondsDiffereence);
+			                    		calculateDateTimeDiff(startTime,currentDateTimeValue);
+			                    	}
+		                    		
 		                    		var totalSeconds=secondsDBValue+secondsDiffereence;
 		                    		 $('#logging_time').timer({
 		                    			 seconds: totalSeconds
