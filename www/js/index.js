@@ -135,7 +135,7 @@ function callSyncWithServer() {
 	db.transaction
 	  (
 	       function (tx){
-	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime text,seconds integer
+	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime text,secondsData integer
 	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
 	                    //alert(" TIMETRACKER table length...."+len);
@@ -1447,10 +1447,10 @@ function updateLogTimeToServer(dataObj){
 }
 
 function addLogTimeToApp(dataObj){
-	
+	var secondsVal=0;
 	db.transaction(function(tx) {
 		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
-		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,seconds) VALUES (?,?,?,?,?,?,?,?)'
+		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData) VALUES (?,?,?,?,?,?,?,?,?,?)'
 				,[dataObj.grn_salesorderTime_id,
 				  dataObj.date,
 				  dataObj.time,
@@ -1459,7 +1459,8 @@ function addLogTimeToApp(dataObj){
 				  dataObj.grn_timeCat,
 				  dataObj.comments,
 				  "complete",
-				  "0", 0]
+				  "0", 
+				  secondsVal]
 			,function(tx, results){
 					alert('Returned ID: ' + results.insertId);
 			 }
@@ -1790,7 +1791,7 @@ function startTimer() {
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,seconds) VALUES (?,?,?,?,?,?,?,?)'
+    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData) VALUES (?,?,?,?,?,?,?,?,?,?)'
     				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTimeValue,0]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
@@ -1821,7 +1822,7 @@ function pauseTimer() {
     var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	db.transaction(function(tx) {
 		//alert(currtimetrackerid+"----"+timeTracked);
-		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "',localStatus='pause',seconds='"+parseInt(totalSeconds)+"'  WHERE id=' "+currtimetrackerid+" '");
+		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "',localStatus='pause',secondsData='"+parseInt(totalSeconds)+"'  WHERE id=' "+currtimetrackerid+" '");
 	});
 	//window.localStorage["trackerkey"] = '';
 	//window.localStorage.removeItem("trackerkey");
@@ -1848,12 +1849,12 @@ function resumeTimer() {
 	       function (tx){
 	            tx.executeSql
 	            (
-	                'SELECT time,seconds FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
+	                'SELECT time,secondsData FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
 	                    var len = results.rows.length;
 	                    if(len>0){
 	                       // alert(results.rows.item(0)['time']);
 	                    	time=results.rows.item(0)['time'];
-	                    	secondsDBValue=results.rows.item(0)['seconds'];
+	                    	secondsDBValue=results.rows.item(0)['secondsData'];
 	                    	//time=getCorrectTimeForTimerData(time);
 	                    	var timeArr = time.split(':'); // split it at the colons
 	                    	secondsValue = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60;
@@ -2050,7 +2051,7 @@ function initializeDB(tx) {
 	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer)');
 	
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,seconds integer  )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer)');
 }
 
 //Transaction success callback
