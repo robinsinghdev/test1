@@ -1840,6 +1840,7 @@ function resumeTimer() {
 	$('#logging_time').timer('remove');
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	var secondsValue=0;
+	var secondsDBValue;
 	var tempData;
 	var time='00:00' ; //='01:01 min' ;
 	db.transaction
@@ -1858,11 +1859,11 @@ function resumeTimer() {
 	                    	secondsValue = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60;
 	                    	
 	                    	//alert(time+"....time"+"timeArr.length--"+timeArr.length+"seconds..."+seconds);
-	                    	secondsValue=seconds;
+	                    	//secondsValue=seconds;
 	                    	alert("seconds--"+seconds+"--"+secondsValue);
-	                    	
+	                    	secondsDBValue=seconds;
 	                        $('#logging_time').timer({
-	                            seconds: secondsValue
+	                            seconds: secondsDBValue
 	                        });
 	                        // $('[id="a"]');
 	                        $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
