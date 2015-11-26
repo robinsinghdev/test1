@@ -1750,8 +1750,6 @@ function logTimer(obj) {
         if (action == 'clock') {
             order = $(obj).attr('data-order');
             timecat = $(obj).attr('data-timeCat');
-            window.localStorage["tt_order_key"] = order;
-            window.localStorage["tt_timecat_key"] = timecat;
             startTimer();
         }
     }
@@ -1779,6 +1777,10 @@ function startTimer() {
         $('#logging_time').timer();
         $('#running_tracker').show();
        
+        window.localStorage["tt_order_key"] = order;
+        window.localStorage["tt_timecat_key"] = timecat;
+        alert( window.localStorage.getItem("tt_order_key")+"-----"+ window.localStorage.getItem("tt_timecat_key"));
+        
         var curr_sp_order_name=$('#sp_order_name_' + order).text();
         curr_sp_order_name=curr_sp_order_name.replace("Report","");
         $('#logging_detail').html(curr_sp_order_name);
@@ -2045,6 +2047,9 @@ function showRunningTimeTracker(){
 	    order=window.localStorage.getItem("tt_order_key");
 	    timecat=window.localStorage.getItem("tt_timecat_key");
 	    
+	    alert("tt_order_key---"+window.localStorage.getItem("tt_order_key")+"--tt_timecat_key--"+window.localStorage.getItem("tt_order_key"));
+	    alert("order variables---"+order+"---timecat ---"+order);
+	    
 		db.transaction
 		  (
 		       function (tx){
@@ -2054,13 +2059,17 @@ function showRunningTimeTracker(){
 		                    var len = results.rows.length;
 		                    if(len>0){
 		                    	time=results.rows.item(0)['time'];
-		                    	alert(results.rows.item(0)['secondsData']);
+		                    	alert(results.rows.item(0)['secondsData']+"----secondsData----");
 		                    	secondsDBValue=results.rows.item(0)['secondsData'];
+		                    	alert(secondsDBValue+"----secondsDBValue----");
 		                    	var localStatus=results.rows.item(0)['localStatus'];
 		                    	var startTime=results.rows.item(0)['startTime'];
 		                    	
 		                    	if(localStatus=='start' || localStatus=='resumed' ){
+		                    		timerId=2;
+		                    		 
 		                    		var secondsDiffereence = calculateDateTimeDiff(startTime,currentDateTimeValue);
+		                    		alert("secondsDiffereence--"+secondsDiffereence);
 		                    		var totalSeconds=secondsDBValue+secondsDiffereence;
 		                    		 $('#logging_time').timer({
 		                    			 seconds: totalSeconds
@@ -2078,17 +2087,24 @@ function showRunningTimeTracker(){
 	                    	        
 	                    	        $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
 	                    	        
-	                    	        timerId=2;
+	                    	       
 	                    	        $('#logging_play').hide();
 	                    	        $('#logging_pause').show();
 		                    		
 		                    	}
 		                    	else if(localStatus=='pause'){
+		                    		 timerId=2;
+		                    		 
 		                    		 $('#logging_time').timer({
 		                    			 seconds: secondsDBValue
 		                    		 });
 		                    		 $('#logging_time').timer('pause');
 		                    		
+		                    		 var curr_sp_order_name=$('#sp_order_name_' + order).text();
+		                    		 curr_sp_order_name=curr_sp_order_name.replace("Report","");
+		                    		 $('#logging_detail').html(curr_sp_order_name);
+		                    		 $('#logging_order_color_code').attr('style', $('#sp_order_name_' + order).find(".so-color-box").attr('style'));
+		                    	        
 		                    		 $('#timer_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
 		                    		 $('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
 		                    	    
