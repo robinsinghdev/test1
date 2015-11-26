@@ -2036,15 +2036,11 @@ function showRunningTimeTracker(){
 		var currentDateTimeValue=currentDateTime();
 		var secondsDBValue=0;
 		
-		//window.localStorage["tt_order_key"] = order;
-	    //window.localStorage["tt_timecat_key"] = timecat;
-	    //window.localStorage["trackerkey"]
-	    //window.localStorage.getItem("trackerkey");
 	    order=window.localStorage.getItem("tt_order_key");
 	    timecat=window.localStorage.getItem("tt_timecat_key");
 	    
-	    alert("tt_order_key---"+window.localStorage.getItem("tt_order_key")+"--tt_timecat_key--"+window.localStorage.getItem("tt_order_key"));
-	    alert("order variables---"+order+"---timecat ---"+order);
+	    //alert("tt_order_key---"+window.localStorage.getItem("tt_order_key")+"--tt_timecat_key--"+window.localStorage.getItem("tt_order_key"));
+	    //alert("order variables---"+order+"---timecat ---"+order);
 	    
 		db.transaction
 		  (
@@ -2055,25 +2051,24 @@ function showRunningTimeTracker(){
 		                    var len = results.rows.length;
 		                    if(len>0){
 		                    	time=results.rows.item(0)['time'];
-		                    	alert(results.rows.item(0)['secondsData']+"----secondsData----");
 		                    	secondsDBValue=results.rows.item(0)['secondsData'];
-		                    	alert(secondsDBValue+"----secondsDBValue----");
 		                    	var localStatus=results.rows.item(0)['localStatus'];
 		                    	var startTime=results.rows.item(0)['startTime'];
 		                    	
-		                    	alert(startTime+"----"+currentDateTimeValue);
-		                    	
 		                    	if(localStatus=='start' || localStatus=='resumed' ){
 		                    		timerId=2;
-		                    		 
 		                    		
 		                    		var secondsDiffereence = calculateDateTimeDiff(startTime,currentDateTimeValue);
-		                    		alert("secondsDiffereence--"+secondsDiffereence);
+		                    		//alert("secondsDiffereence--"+secondsDiffereence);
 		                    		
 		                    		if(isNaN(secondsDiffereence)) {
+		                    			alert(startTime+"----"+currentDateTimeValue);
+				                    	alert(secondsDBValue+"----secondsDBValue----"+results.rows.item(0)['secondsData']+"----secondsData----");
+		                    			
 			                    		secondsDiffereence = 0;
 			                    		alert("NANNNN secondsDiffereence--"+secondsDiffereence);
-			                    		calculateDateTimeDiff(startTime,currentDateTimeValue);
+			                    		secondsDiffereence=calculateDateTimeDiff(startTime,currentDateTimeValue);
+			                    		alert("New secondsDiffereence--"+secondsDiffereence);
 			                    	}
 		                    		
 		                    		var totalSeconds=secondsDBValue+secondsDiffereence;
