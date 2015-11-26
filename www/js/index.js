@@ -108,6 +108,11 @@ var app = {
 		});
 		
 		//setInterval(checkConnectionForSync, 900000);
+		
+		 $( "#view-all-sales-order" ).on( "pagecontainerbeforeshow", function( event, ui){
+			alert( "view-all-sales-order ");
+	     });
+		 
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -334,36 +339,6 @@ function alertexit(button){
         //device.exitApp();
         navigator.app.exitApp();
     }
-}
-
-function calculateDateTimeDiff(old_date,new_date) {
-	// The number of milliseconds in one second
-     var ONE_SECOND = 1000;
-     
-     // Convert both dates to milliseconds
-     var old_date_obj = new Date(old_date).getTime();
-     var new_date_obj = new Date(new_date).getTime();
-     
-     // Calculate the difference in milliseconds
-     var difference_ms = Math.abs(new_date_obj - old_date_obj)
-
-     // Convert back to totalSeconds
-     var totalSeconds = Math.round(difference_ms / ONE_SECOND);
-     
-     //alert('total seconds--' +totalSeconds);
-     return totalSeconds;
-}
-
-function currentDateTime() {
-	var currentdate = new Date(); 
-    var datetimeValue = currentdate.getFullYear() + "-"
-    				+(currentdate.getMonth()+1)  +"-"
-				    +currentdate.getDate() 
-	                +"T" 
-	                + currentdate.getHours() + ":"  
-	                + currentdate.getMinutes() + ":" 
-	                + currentdate.getSeconds();
-	return datetimeValue;
 }
 
 function doLogout() {
@@ -727,13 +702,13 @@ function createNewSO(){
 
 function getCategoriesForTimeTracking(){
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
@@ -752,7 +727,7 @@ function getCategoriesForTimeTracking(){
 		   		hideModal();
 			}
 			else if(window.localStorage["tclocal"] == 0){
-			}
+			
 				$.ajax({
 					type : 'POST',
 				   url:appUrl,
@@ -763,7 +738,7 @@ function getCategoriesForTimeTracking(){
 				   		window.localStorage["tclocal"] = 1;
 				   		getSalesOrders();
 				   		
-				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+				   		//db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
 				   		
 				   		hideModal();
 					},
@@ -773,6 +748,7 @@ function getCategoriesForTimeTracking(){
 						navigator.notification.alert(appRequiresWiFi, function() {});
 					}
 				});
+			}	
 		}
 	}
 	else{
@@ -856,17 +832,18 @@ function getAllColorsForSO(){
 
 function getSalesOrders(){
 
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
 				$.mobile.changePage('#view-all-sales-order','slide');
+				showRunningTimeTracker();
 			}
 			else if(window.localStorage["solocal"] == 0){
 				navigator.notification.alert(appRequiresWiFi, function() {});
@@ -877,10 +854,11 @@ function getSalesOrders(){
 			
 			if(window.localStorage["solocal"] == 1){
 				//getSalesOrders();
+				showRunningTimeTracker();
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
 			else if(window.localStorage["solocal"] == 0){
-			}
+			
 				$.ajax({
 					type : 'POST',
 				   url:appUrl,
@@ -975,6 +953,7 @@ function getSalesOrders(){
 				   		
 				   		window.localStorage["solocal"] = 1;
 				   		//getSalesOrderList();
+				   		showRunningTimeTracker();
 				   		$.mobile.changePage('#view-all-sales-order','slide');
 					},
 					error:function(data,t,f){
@@ -982,7 +961,7 @@ function getSalesOrders(){
 						navigator.notification.alert(appRequiresWiFi, function() {});	
 					}
 				});
-			
+			}
 		}
 		
 	}
@@ -1725,6 +1704,36 @@ function getTodayDate(){
 	return todayString;
 }
 
+function currentDateTime() {
+	var currentdate = new Date(); 
+    var datetimeValue = currentdate.getFullYear() + "-"
+    				+(currentdate.getMonth()+1)  +"-"
+				    +currentdate.getDate() 
+	                +"T" 
+	                + currentdate.getHours() + ":"  
+	                + currentdate.getMinutes() + ":" 
+	                + currentdate.getSeconds();
+	return datetimeValue;
+}
+
+function calculateDateTimeDiff(old_date,new_date) {
+	// The number of milliseconds in one second
+     var ONE_SECOND = 1000;
+     
+     // Convert both dates to milliseconds
+     var old_date_obj = new Date(old_date).getTime();
+     var new_date_obj = new Date(new_date).getTime();
+     
+     // Calculate the difference in milliseconds
+     var difference_ms = Math.abs(new_date_obj - old_date_obj)
+
+     // Convert back to totalSeconds
+     var totalSeconds = Math.round(difference_ms / ONE_SECOND);
+     
+     //alert('total seconds--' +totalSeconds);
+     return totalSeconds;
+}
+
 /* ----------------  Time Tracker Code Starts -------------------------  */
 
 var TimerFlag = 0;
@@ -1741,6 +1750,8 @@ function logTimer(obj) {
         if (action == 'clock') {
             order = $(obj).attr('data-order');
             timecat = $(obj).attr('data-timeCat');
+            window.localStorage["tt_order_key"] = order;
+            window.localStorage["tt_timecat_key"] = timecat;
             startTimer();
         }
     }
@@ -1778,15 +1789,12 @@ function startTimer() {
         
         $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
         
-        //timerId = data.timerId;
-        //date = data.date;
         timerId=2;
         $('#logging_play').hide();
         $('#logging_pause').show();
         
         var currtimetrackerid;
         var currentDateTimeValue=currentDateTime();
-        alert(currentDateTimeValue);
     	
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
@@ -1803,14 +1811,9 @@ function startTimer() {
 }
 
 function pauseTimer() {
-	//var timeTracked=$('#logging_time').text();
 	var totalSeconds=$('#logging_time').data('seconds');
-	alert("totalSeconds--"+totalSeconds+parseInt(totalSeconds));
 	var timeTracked=secondsTohhmm(totalSeconds);
-	//alert(timeTracked+"....timeTracked");
-	
 	$('#logging_time').timer('pause');
-    //take current time
 	
 	$('#timer_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
 	$('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
@@ -1818,29 +1821,18 @@ function pauseTimer() {
     $('#logging_pause').hide();
     $('#logging_play').show().attr('data-action', 'resume');
     
-    //var timeTracked=$('#logging_time').text();
     var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	db.transaction(function(tx) {
-		//alert(currtimetrackerid+"----"+timeTracked);
 		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "',localStatus='pause',secondsData='"+parseInt(totalSeconds)+"'  WHERE id=' "+currtimetrackerid+" '");
 	});
 	//window.localStorage["trackerkey"] = '';
 	//window.localStorage.removeItem("trackerkey");
-	
-	/*var connectionType=checkConnection();
-	//var connectionType="Unknown connection";//For Testing
-	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-	}
-	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-	}*/
-	
 }
 
 function resumeTimer() {
 	
 	$('#logging_time').timer('remove');
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
-	var secondsValue=0;
 	var secondsDBValue=0;
 	var tempData;
 	var time='00:00' ; //='01:01 min' ;
@@ -1852,21 +1844,15 @@ function resumeTimer() {
 	                'SELECT time,secondsData FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
 	                    var len = results.rows.length;
 	                    if(len>0){
-	                       // alert(results.rows.item(0)['time']);
 	                    	time=results.rows.item(0)['time'];
 	                    	secondsDBValue=results.rows.item(0)['secondsData'];
-	                    	//time=getCorrectTimeForTimerData(time);
-	                    	var timeArr = time.split(':'); // split it at the colons
-	                    	secondsValue = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60;
-	                    	
-	                    	//alert(time+"....time"+"timeArr.length--"+timeArr.length+"seconds..."+seconds);
-	                    	//secondsValue=seconds;
-	                    	alert("seconds--"+time+"--"+secondsDBValue);
+	                    	//var timeArr = time.split(':'); // split it at the colons
+	                    	//secondsValue = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60;
 	                    	
 	                        $('#logging_time').timer({
 	                            seconds: secondsDBValue
 	                        });
-	                        // $('[id="a"]');
+	                        // $('[id="a"]'); for all ids
 	                        $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
 	                        $('#timer_img_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
 	                        
@@ -1877,6 +1863,12 @@ function resumeTimer() {
 	            );
 	       },errorCB,successCB
 	   );
+	
+	// Update Status to resume
+	var currentDateTimeValue=currentDateTime();
+	db.transaction(function(tx) {
+		tx.executeSql("UPDATE TIMETRACKER SET localStatus='resumed',startTime='"+currentDateTimeValue+"'  WHERE id=' "+currtimetrackerid+" '");
+	});
 }
 
 function logtimeTimer() {
@@ -1947,7 +1939,6 @@ function getCorrectTimeForTimerData(time) {
 
 function deleteTimer() {
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
-	//alert("currtimetrackerid..."+currtimetrackerid);
 	db.transaction(function(tx) {
 		//alert(currtimetrackerid+"----"+timeTracked);
 		tx.executeSql("DELETE FROM TIMETRACKER WHERE id=' "+currtimetrackerid+" '");
@@ -2031,6 +2022,82 @@ function saveRunningTimerAction(button){
     }
 }
 
+function showRunningTimeTracker(){
+	alert('showRunningTimeTracker called');
+	if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
+		
+	}
+	else{
+		$('#logging_time').timer('remove');
+		var currtimetrackerid = window.localStorage.getItem("trackerkey");
+		var currentDateTimeValue=currentDateTime();
+		var secondsDBValue=0;
+		
+		//window.localStorage["tt_order_key"] = order;
+	    //window.localStorage["tt_timecat_key"] = timecat;
+	    //window.localStorage["trackerkey"]
+	    //window.localStorage.getItem("trackerkey");
+	    order=window.localStorage.getItem("tt_order_key");
+	    timecat=window.localStorage.getItem("tt_timecat_key");
+	    
+		db.transaction
+		  (
+		       function (tx){
+		            tx.executeSql
+		            (
+		                'SELECT localStatus,startTime,secondsData FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
+		                    var len = results.rows.length;
+		                    if(len>0){
+		                    	time=results.rows.item(0)['time'];
+		                    	secondsDBValue=results.rows.item(0)['secondsData'];
+		                    	var localStatus=results.rows.item(0)['localStatus'];
+		                    	var startTime=results.rows.item(0)['startTime'];
+		                    	
+		                    	if(localStatus=='start' || localStatus=='resumed' ){
+		                    		var secondsDiffereence = calculateDateTimeDiff(startTime,currentDateTimeValue);
+		                    		var totalSeconds=secondsDBValue+secondsDiffereence;
+		                    		 $('#logging_time').timer({
+		                    			 seconds: totalSeconds
+		                    		 });
+		                    		 
+		                    		 $('#running_tracker').show();
+		                    	       
+	                    	        var curr_sp_order_name=$('#sp_order_name_' + order).text();
+	                    	        curr_sp_order_name=curr_sp_order_name.replace("Report","");
+	                    	        $('#logging_detail').html(curr_sp_order_name);
+	                    	        $('#logging_order_color_code').attr('style', $('#sp_order_name_' + order).find(".so-color-box").attr('style'));
+	                    	        
+	                    	        $('#timer_' + order + '_' + timecat).removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
+	                    	        $('#timer_img_' + order + '_' + timecat).addClass('play').attr('data-action', 'logpauseOption');
+	                    	        
+	                    	        $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
+	                    	        
+	                    	        timerId=2;
+	                    	        $('#logging_play').hide();
+	                    	        $('#logging_pause').show();
+		                    		
+		                    	}
+		                    	else if(localStatus=='pause'){
+		                    		 $('#logging_time').timer({
+		                    			 seconds: secondsDBValue
+		                    		 });
+		                    		 $('#logging_time').timer('pause');
+		                    		
+		                    		 $('#timer_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
+		                    		 $('#timer_img_' + order + '_' + timecat).removeClass('play').addClass('pause').attr('data-action', 'resume');
+		                    	    
+		                    		 $('#logging_pause').hide();
+		                    		 $('#logging_play').show().attr('data-action', 'resume');
+		                    		 
+		                    		 $('#running_tracker').show();
+		                    	}
+		                    }
+		                }, errorCB
+		            );
+		       },errorCB,successCB
+		   );
+	}
+}
 
 /* ----------------  Time Tracker Code Ends   -------------------------  */
 
