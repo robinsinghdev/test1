@@ -2023,7 +2023,12 @@ function saveRunningTimerAction(button){
 }
 
 function showRunningTimeTracker(){
-	alert('showRunningTimeTracker called');
+	alert('showRunningTimeTracker--trackerkey--'+window.localStorage.getItem("trackerkey"));
+	
+	/*if(isNaN(tal)) {
+		var tal = 0;
+	}*/
+	
 	if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
 		
 	}
@@ -2049,6 +2054,7 @@ function showRunningTimeTracker(){
 		                    var len = results.rows.length;
 		                    if(len>0){
 		                    	time=results.rows.item(0)['time'];
+		                    	alert(results.rows.item(0)['secondsData']);
 		                    	secondsDBValue=results.rows.item(0)['secondsData'];
 		                    	var localStatus=results.rows.item(0)['localStatus'];
 		                    	var startTime=results.rows.item(0)['startTime'];
