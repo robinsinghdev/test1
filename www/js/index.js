@@ -135,7 +135,7 @@ function callSyncWithServer() {
 	db.transaction
 	  (
 	       function (tx){
-	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus
+	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime text,seconds integer
 	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
 	                    //alert(" TIMETRACKER table length...."+len);
@@ -336,17 +336,52 @@ function alertexit(button){
     }
 }
 
+function calculateDateTimeDiff(old_date,new_date) {
+	// The number of milliseconds in one second
+     var ONE_SECOND = 1000;
+     
+     // Convert both dates to milliseconds
+     var old_date_obj = new Date(old_date).getTime();
+     var new_date_obj = new Date(new_date).getTime();
+     
+     // Calculate the difference in milliseconds
+     var difference_ms = Math.abs(new_date_obj - old_date_obj)
+
+     // Convert back to totalSeconds
+     var totalSeconds = Math.round(difference_ms / ONE_SECOND);
+     
+     //alert('total seconds--' +totalSeconds);
+     return totalSeconds;
+}
+
+function currentDateTime() {
+	var currentdate = new Date(); 
+    var datetimeValue = currentdate.getFullYear() + "-"
+    				+(currentdate.getMonth()+1)  +"-"
+				    +currentdate.getDate() 
+	                +"T" 
+	                + currentdate.getHours() + ":"  
+	                + currentdate.getMinutes() + ":" 
+	                + currentdate.getSeconds();
+	return datetimeValue;
+}
+
 function doLogout() {
 	var connectionType=checkConnection();
 	//var connectionType="Unknown connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		navigator.notification.alert("Logout requires active internet connection.", function() {});
+		//navigator.notification.alert("Logout requires active internet connection.", function() {});
+		
+		navigator.notification.alert(
+		    'Logout requires active internet connection <img src="img/wifi-icon-24px.png" class="wifi-icon" /> ',  // message
+		    'BP Metrics',            // title
+		    'Ok'                  // buttonName
+		);
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		showLogoutDialog();
 	}
-	
 }
 
 function showLogoutDialog() {
@@ -544,6 +579,9 @@ function checkingUserAssignedRoles(){
 			$userRolesUlObj.find("li#"+value+"").remove();
 		}
 	});
+	
+	$('ul#userRolesUl li').removeClass('active');
+	$('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').addClass('active');
 	//	/$('#userRolesUl').listview();
 }
 
@@ -984,9 +1022,13 @@ function changeLoginRole(roleId,roleName){
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		showModal();
 		callSyncWithServer();
+		
 		window.localStorage["permissions"] = ''+roleId+'';
 		window.localStorage["solocal"] = 0;
 		window.localStorage["tclocal"] = 0;
+		
+		$('ul#userRolesUl li').removeClass('active');
+		$('ul#userRolesUl li#'+roleId+'').addClass('active');
 		
 		$('#salesOrderMainDiv').html('');
 		time_cats_arr=[];
@@ -1198,13 +1240,13 @@ function refreshSelect(ele,currentValue){
 	el.selectmenu("refresh", true);
 }
 
-function callAddUpadteLogTime(obj){
+function callAddUpadteLogTime(obj,logTimeType){
 	
-	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
+	//var connectionType=checkConnection();
+	var connectionType="WiFi connection";//For Testing
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
@@ -1214,8 +1256,15 @@ function callAddUpadteLogTime(obj){
 		
 		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 		
+		var grnTimeCat=$addUpdateLogTimeForm.find('#timeCat option:selected').val();
+		if(logTimeType=='logTime'){
+			dataObj.grn_timeCat= grnTimeCat;
+		}
+		else if(logTimeType=='logTimeRevision'){
+			dataObj.grn_timeCat= grnTimeCat+"_revision";
+		}
+		
 		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
-		dataObj.grn_timeCat= $addUpdateLogTimeForm.find('#timeCat option:selected').val();
 		dataObj.date= $addUpdateLogTimeForm.find('#logDate').val();
 		
 		var logHours,logMinutes;
@@ -1402,7 +1451,7 @@ function addLogTimeToApp(dataObj){
 	
 	db.transaction(function(tx) {
 		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
-		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus) VALUES (?,?,?,?,?,?,?,?)'
+		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,seconds) VALUES (?,?,?,?,?,?,?,?)'
 				,[dataObj.grn_salesorderTime_id,
 				  dataObj.date,
 				  dataObj.time,
@@ -1410,7 +1459,8 @@ function addLogTimeToApp(dataObj){
 				  dataObj.grn_staffTime_id,
 				  dataObj.grn_timeCat,
 				  dataObj.comments,
-				  "complete"]
+				  "complete",
+				  "0", 0]
 			,function(tx, results){
 					alert('Returned ID: ' + results.insertId);
 			 }
@@ -1681,7 +1731,7 @@ var TimerFlag = 0;
 var order = 0;
 var timecat = 0;
 var timerId = 0;
-var date = 0000-00-00;
+var date = getTodayDate();
 baseGrnUrl="";
 
 function logTimer(obj) {
@@ -1734,12 +1784,14 @@ function startTimer() {
         $('#logging_play').hide();
         $('#logging_pause').show();
         
-        var currtimetrackerid; 
+        var currtimetrackerid;
+        var currentDateTime=currentDateTime();
+    	
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus) VALUES (?,?,?,?,?,?,?,?)'
-    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start"]
+    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,seconds) VALUES (?,?,?,?,?,?,?,?)'
+    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTime,0]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
@@ -1768,7 +1820,7 @@ function pauseTimer() {
     var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	db.transaction(function(tx) {
 		//alert(currtimetrackerid+"----"+timeTracked);
-		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "',localStatus='pause'  WHERE id=' "+currtimetrackerid+" '");
+		tx.executeSql("UPDATE TIMETRACKER SET time='" + timeTracked + "',localStatus='pause',seconds='"+totalSeconds+"'  WHERE id=' "+currtimetrackerid+" '");
 	});
 	//window.localStorage["trackerkey"] = '';
 	//window.localStorage.removeItem("trackerkey");
@@ -1786,7 +1838,7 @@ function resumeTimer() {
 	
 	$('#logging_time').timer('remove');
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
-	var seconds=0;
+	var secondsValue=0;
 	var tempData;
 	var time='00:00' ; //='01:01 min' ;
 	db.transaction
@@ -1794,7 +1846,7 @@ function resumeTimer() {
 	       function (tx){
 	            tx.executeSql
 	            (
-	                'SELECT time FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
+	                'SELECT time,seconds FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
 	                    var len = results.rows.length;
 	                    if(len>0){
 	                       // alert(results.rows.item(0)['time']);
@@ -1802,12 +1854,14 @@ function resumeTimer() {
 	                    	
 	                    	//time=getCorrectTimeForTimerData(time);
 	                    	var timeArr = time.split(':'); // split it at the colons
-	                    	seconds = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60;
+	                    	secondsValue = (+timeArr[0]) * 60 * 60 + (+timeArr[1]) * 60;
 	                    	
 	                    	//alert(time+"....time"+"timeArr.length--"+timeArr.length+"seconds..."+seconds);
+	                    	secondsValue=seconds;
+	                    	alert("seconds--"+seconds+"--"+secondsValue);
 	                    	
 	                        $('#logging_time').timer({
-	                            seconds: seconds
+	                            seconds: secondsValue
 	                        });
 	                        // $('[id="a"]');
 	                        $('#timer_' + order + '_' + timecat).removeClass('pause').addClass('play').attr('data-action', 'logpauseOption');
@@ -1815,13 +1869,11 @@ function resumeTimer() {
 	                        
 	                        $('#logging_pause').show();
 	                        $('#logging_play').hide();
-	                    	
 	                    }
 	                }, errorCB
 	            );
 	       },errorCB,successCB
 	   );
-    
 }
 
 function logtimeTimer() {
@@ -1996,7 +2048,7 @@ function initializeDB(tx) {
 	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer)');
 	
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text  )');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,seconds integer  )');
 }
 
 //Transaction success callback
