@@ -1,16 +1,3 @@
-/*$(document).ready(function() {
-    //checkTimeTracker(); 
-	$("a.process-report").on("click", function(event){
-		  event.stopPropagation();
-		  console.log( "I was clicked, but my parent will not be." );
-		});
-	
-	var connCheck = setInterval(function() {
-        checkConnection();
-    }, 3000);
-	
-	alert(secondsTohhmm(120));
-});*/
 
 $( document ).on( "mobileinit", function() {
     // Make your jQuery Mobile framework configuration changes here!
@@ -108,11 +95,6 @@ var app = {
 		});
 		
 		//setInterval(checkConnectionForSync, 900000);
-		
-		 $( "#view-all-sales-order" ).on( "pagecontainerbeforeshow", function( event, ui){
-			alert( "view-all-sales-order ");
-	     });
-		 
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {

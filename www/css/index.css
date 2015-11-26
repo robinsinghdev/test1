@@ -383,5 +383,5 @@ ul#userRolesUl li.active a{
 }
 
 #overlayPanel .wifi-icon, #loginForm .wifi-icon{
-	vertical-align: middle;
+	vertical-align: top;
 }
