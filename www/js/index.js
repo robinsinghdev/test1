@@ -2061,10 +2061,12 @@ function showRunningTimeTracker(){
 		                    	var localStatus=results.rows.item(0)['localStatus'];
 		                    	var startTime=results.rows.item(0)['startTime'];
 		                    	
+		                    	alert(startTime+"----"+currentDateTimeValue);
+		                    	
 		                    	if(localStatus=='start' || localStatus=='resumed' ){
 		                    		timerId=2;
 		                    		 
-		                    		alert(startTime+"----"+currentDateTimeValue);
+		                    		
 		                    		var secondsDiffereence = calculateDateTimeDiff(startTime,currentDateTimeValue);
 		                    		alert("secondsDiffereence--"+secondsDiffereence);
 		                    		
