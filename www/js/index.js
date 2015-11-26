@@ -1705,15 +1705,24 @@ function getTodayDate(){
 }
 
 function currentDateTime() {
-	var currentdate = new Date(); 
-    var datetimeValue = currentdate.getFullYear() + "-"
-    				+(currentdate.getMonth()+1)  +"-"
-				    +currentdate.getDate() 
+	var currentdate = new Date();
+	var formattedSeconds=currentdate.getSeconds();
+	if(formattedSeconds < 10){
+		formattedSeconds = "0"+formattedSeconds;
+	}
+	
+    var datetimeValue = padStr(currentdate.getFullYear()) + "-"
+    				+padStr(currentdate.getMonth()+1)  +"-"
+				    +padStr(currentdate.getDate()) 
 	                +"T" 
-	                + currentdate.getHours() + ":"  
-	                + currentdate.getMinutes() + ":" 
-	                + currentdate.getSeconds();
+	                + padStr(currentdate.getHours()) + ":"  
+	                + padStr(currentdate.getMinutes()) + ":" 
+	                + padStr(currentdate.getSeconds());
 	return datetimeValue;
+}
+
+function padStr(i) {
+    return (i < 10) ? "0" + i : "" + i;
 }
 
 function calculateDateTimeDiff(old_date,new_date) {
@@ -1779,7 +1788,6 @@ function startTimer() {
        
         window.localStorage["tt_order_key"] = order;
         window.localStorage["tt_timecat_key"] = timecat;
-        alert( window.localStorage.getItem("tt_order_key")+"-----"+ window.localStorage.getItem("tt_timecat_key"));
         
         var curr_sp_order_name=$('#sp_order_name_' + order).text();
         curr_sp_order_name=curr_sp_order_name.replace("Report","");
@@ -2025,8 +2033,6 @@ function saveRunningTimerAction(button){
 }
 
 function showRunningTimeTracker(){
-	alert('showRunningTimeTracker--trackerkey--'+window.localStorage.getItem("trackerkey"));
-	
 	if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
 		
 	}
@@ -2041,7 +2047,6 @@ function showRunningTimeTracker(){
 	    
 	    //alert("tt_order_key---"+window.localStorage.getItem("tt_order_key")+"--tt_timecat_key--"+window.localStorage.getItem("tt_order_key"));
 	    //alert("order variables---"+order+"---timecat ---"+order);
-	    
 		db.transaction
 		  (
 		       function (tx){
