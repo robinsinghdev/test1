@@ -1084,7 +1084,7 @@ function errorCBTimeCatTbodyObj(err) {
 }
 
 function populateSalesOrders(tbodyObj){
-	var populateFlag=false;
+	var populateFlag=true;
 	if(salse_orders_arr.length==0){
 		db.transaction
 		  (
@@ -1104,12 +1104,12 @@ function populateSalesOrders(tbodyObj){
 		       },errorCB,successCB
 		   );
 		
-		populateFlag=true;
 	}
 	
 	if(populateFlag==true){
-		
+		alert("populateFlag==true");
 		jQuery.each(salse_orders_arr, function(index,value) {
+			alert("index.."+index);
 	    	var jsonObj=value;
 	    	var id=jsonObj["id"];
 	    	var grn_companies_id=jsonObj["grn_companies_id"];
