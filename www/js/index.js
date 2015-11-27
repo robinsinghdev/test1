@@ -847,7 +847,7 @@ function getSalesOrders(){
 					setTimeout(function(){
 						alert('populateSalesOrders timeout called');
 						populateSalesOrders(tbodyObjGlobal);
-					}, 2000);
+					}, 3000);
 			   		
 			   		hideAllTablesData();
 				}
@@ -1021,7 +1021,7 @@ function timeCatTbodyObj(){
 		                        	jsonObj.timeCats=results.rows.item(i)['timeCats'];
 		                        	jsonObj.title=results.rows.item(i)['title'];
 		                        	//jsonObj.sp_jobName=results.rows.item(i)['spjobname'];
-		                        	jsonObj.grn_roles_id=results.rows.item(i)['grnrolesid'];
+		                        	jsonObj["grn_roles_id"]=results.rows.item(i)['grnrolesid'];
 		                        	jsonObj.revision=results.rows.item(i)['revision'];
 		                        	jsonObj.status=results.rows.item(i)['status'];
 		                        	
@@ -1030,7 +1030,7 @@ function timeCatTbodyObj(){
 		                    }
 		                }, errorCB
 		            );
-		       },errorCB,successCB
+		       },errorCBTimeCatTbodyObj,successCBTimeCatTbodyObj
 		   );
 		
 		populateFlag=true;
@@ -1072,11 +1072,20 @@ function timeCatTbodyObj(){
 	return tbodyObj;
 }
 
+//Transaction success callback
+function successCBTimeCatTbodyObj() {
+	alert('db transcation success successCBTimeCatTbodyObj');
+}
+
+//Transaction error callback
+function errorCBTimeCatTbodyObj(err) {
+	alert(" errorCBTimeCatTbodyObj Error processing SQL: "+err.code);
+	//console.log("Error processing SQL: "+err.code);
+}
+
 function populateSalesOrders(tbodyObj){
 	var populateFlag=false;
 	if(salse_orders_arr.length==0){
-		populateFlag=true;
-	}else{
 		db.transaction
 		  (
 		       function (tx){
@@ -1094,6 +1103,8 @@ function populateSalesOrders(tbodyObj){
 		            );
 		       },errorCB,successCB
 		   );
+		
+		populateFlag=true;
 	}
 	
 	if(populateFlag==true){
