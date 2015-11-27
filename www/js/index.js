@@ -467,6 +467,7 @@ function handleLogin() {
 					window.localStorage["ttsync"] = 0;
 					
 					checkingUserAssignedRoles();
+					 $('#syncCallTimerDiv').timer('reset');
 					checkConnectionForSync();
 					
 					//$.mobile.changePage('#home-page','slide');					
@@ -534,7 +535,7 @@ function checkingUserAssignedRoles(){
 	
 	jQuery.each(rolesArr, function(index,value) {
 		if ( $.inArray(value, tempArr) > -1 ) {
-			if(index==0){
+			if(index==0 && window.localStorage.getItem("user_logged_in")==0){
 				window.localStorage["permissions"] = value;
 			}
 		}else {
@@ -833,18 +834,13 @@ function getSalesOrders(){
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
-				
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
-				alert("salesTableDivLenght.."+salesTableDivLength);
 				
 				showModal();
 				if(salesTableDivLength==0){
 					$('#salesOrderMainDiv').html('');
-					alert('salesOrderMainDiv cleaned');
-			   		
 					tbodyObjGlobal=timeCatTbodyObj();
 				}
-		   		
 		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
@@ -858,7 +854,6 @@ function getSalesOrders(){
 			if(window.localStorage["solocal"] == 1){
 				
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
-				alert("salesTableDivLenght.."+salesTableDivLength);
 				showModal();
 				
 				if(salesTableDivLength == 0){
@@ -996,24 +991,18 @@ function getSalesOrders(){
 
 function timeCatTbodyObj(){
 	var populateFlag=false;
-	alert("time_cats_arr.length...."+time_cats_arr.length);
 	if(time_cats_arr.length==0){
-		
 		db.transaction
 		  (
 		       function (tx){
 		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,revision,status FROM TIMECATEGORY',[],function(tx,results){
 		                    var len = results.rows.length;
-		                    alert("len timecats----"+len);
 		                    if(len>0){
 		                        for (var i = 0; i < len; i++) {
-		                            //$('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats']+ results.rows.item(i)['pid'] + '</a></li>');
-		                        	//id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer)');
 		                        	var jsonObj={};
 		                        	jsonObj.id=results.rows.item(i)['pid'];
 		                        	jsonObj.timeCats=results.rows.item(i)['timeCats'];
 		                        	jsonObj.title=results.rows.item(i)['title'];
-		                        	//jsonObj.sp_jobName=results.rows.item(i)['spjobname'];
 		                        	jsonObj["grn_roles_id"]=results.rows.item(i)['grnrolesid'];
 		                        	jsonObj.revision=results.rows.item(i)['revision'];
 		                        	jsonObj.status=results.rows.item(i)['status'];
@@ -1033,9 +1022,6 @@ function timeCatTbodyObj(){
 
 //Transaction success callback
 function successCBTimeCatTbodyObj() {
-	//alert('db transcation success successCBTimeCatTbodyObj');
-	//alert('populateSalesOrders timeout called');
-	
 	var tbodyObj='<tbody>';
 	
 	jQuery.each(time_cats_arr, function(index,value) {
@@ -1070,8 +1056,7 @@ function successCBTimeCatTbodyObj() {
 
 //Transaction error callback
 function errorCBTimeCatTbodyObj(err) {
-	alert(" errorCBTimeCatTbodyObj Error processing SQL: "+err.code);
-	//console.log("Error processing SQL: "+err.code);
+	alert("Time Category Error processing SQL: "+err.code);
 }
 
 function populateSalesOrders(tbodyObj){
@@ -1083,7 +1068,6 @@ function populateSalesOrders(tbodyObj){
 		                    var len = results.rows.length;
 		                    if(len>0){
 		                        for (var i = 0; i < len; i++) {
-		                            //alert("createTime--"+results.rows.item(i)['createTime']+"--jsonArr--"+results.rows.item(i)['jsonArr']);
 		                            var jsonArrString=results.rows.item(i)['jsonArr'];
 		                            salse_orders_arr= $.parseJSON(jsonArrString);
 		                        }
@@ -1100,17 +1084,12 @@ function populateSalesOrders(tbodyObj){
 }
 
 function errorCBPopulateSalesOrders(err){
-	alert("errorCBPopulateSalesOrders code"+err.code);
+	alert("Populate Sales Orders Error Code"+err.code);
 }
 
 function successCBPopulateSalesOrders(){
-	
-	alert("successCBPopulateSalesOrders");
-	alert("salse_orders_arr.length----"+salse_orders_arr.length);
 	showModal();
 	jQuery.each(salse_orders_arr, function(index,value) {
-		//alert("index.."+index);
-		//alert("value...."+JSON.stringify(value));
     	var jsonObj=value;
     	var id=jsonObj["id"];
     	var grn_companies_id=jsonObj["grn_companies_id"];
@@ -1462,6 +1441,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 		if(time=='00:00'){
 			navigator.notification.alert(
     		    'Please fill Time Details.',  // message
+    		    alertConfirm,
     		    'Log Time',            // title
     		    'Ok'                  // buttonName
     		);
@@ -1484,11 +1464,14 @@ function callAddUpadteLogTime(obj,logTimeType){
 			
 			var result=addUpadteLogTimeTT(dataObj,updateQuery);
 			
-			if(result=="appSave" && window.localStorage.getItem("trackerValueSave") == 1){
+			if(result=="appSave" ){
 				resetTracker();
 				//alert("trackerValueSave------"+window.localStorage.getItem("trackerValueSave"));
 				//window.localStorage.getItem("trackerValueSave") == 1
 				window.localStorage["trackerValueSave"] = 0;
+				// Call Sync
+		        $('#syncCallTimerDiv').timer('reset');
+		        checkConnectionForSync();
 			}
 		}
 		else if($(obj).attr('data-flag')=='update'){
@@ -1528,6 +1511,7 @@ function addUpadteLogTimeTT(dataObj,updateQuery){
 	    	//navigator.notification.alert("Time added successfully", function() {});
 	    	navigator.notification.alert(
     		    'Time added successfully.',  // message
+    		    alertConfirm,
     		    'Time Tracker',            // title
     		    'Ok'                  // buttonName
     		);
@@ -1635,7 +1619,7 @@ function addLogTimeToApp(dataObj){
 				  "0", 
 				  secondsVal]
 			,function(tx, results){
-					alert('Returned ID: ' + results.insertId);
+					//alert('Returned ID: ' + results.insertId);
 			 }
 		);
 	});
@@ -1693,6 +1677,7 @@ function closeSalesOrder(dataObj){
 			   			
 			   			navigator.notification.alert(
 				    		    ''+responseJson.msg+'',  // message
+				    		    alertConfirm,
 				    		    'Sales Order',            // title
 				    		    'Ok'                  // buttonName
 				    		);
@@ -1701,6 +1686,7 @@ function closeSalesOrder(dataObj){
 			   			//navigator.notification.alert(serverBusyMsg, function() {});
 			   			navigator.notification.alert(
 				    		    ''+responseJson.msg+'',  // message
+				    		    alertConfirm,
 				    		    'Sales Order',            // title
 				    		    'Ok'                  // buttonName
 				    		);
@@ -2262,13 +2248,8 @@ function showRunningTimeTracker(){
 		                    		//alert("secondsDiffereence--"+secondsDiffereence);
 		                    		
 		                    		if(isNaN(secondsDiffereence)) {
-		                    			alert(startTime+"----"+currentDateTimeValue);
-				                    	alert(secondsDBValue+"----secondsDBValue----"+results.rows.item(0)['secondsData']+"----secondsData----");
-		                    			
 			                    		secondsDiffereence = 0;
-			                    		alert("NANNNN secondsDiffereence--"+secondsDiffereence);
 			                    		secondsDiffereence=calculateDateTimeDiff(startTime,currentDateTimeValue);
-			                    		alert("New secondsDiffereence--"+secondsDiffereence);
 			                    	}
 		                    		
 		                    		var totalSeconds=secondsDBValue+secondsDiffereence;
@@ -2438,7 +2419,7 @@ function insertSalesOrderJson(tx) {
    		
    		tx.executeSql('INSERT INTO SALESORDER_JSON(jsonArr, createTime) VALUES (?,?)',
     		[JSON.stringify(salse_orders_arr),currentDateTimeValue], function(tx, res) {
-   			alert("insertSalesOrderJson Id: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
+   			//alert("insertSalesOrderJson Id: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
     	});
     });
 }
@@ -2452,7 +2433,7 @@ function getSalesOrderJsonList(){
                     var len = results.rows.length;
                     if(len>0){
                         for (var i = 0; i < len; i++) {
-                            alert("createTime--"+results.rows.item(i)['createTime']+"--jsonArr--"+results.rows.item(i)['jsonArr']);
+                            //alert("createTime--"+results.rows.item(i)['createTime']+"--jsonArr--"+results.rows.item(i)['jsonArr']);
                             //$('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats']+ results.rows.item(i)['pid'] + '</a></li>');
                         }
                         //$('#resultList').listview();
@@ -2530,10 +2511,9 @@ function getTimeCategoryList(){
        function (tx){
             tx.executeSql('SELECT timeCats,pid FROM TIMECATEGORY',[],function(tx,results){
                     var len = results.rows.length;
-                    alert("timeCats len---"+len);
                     if(len>0){
                         for (var i = 0; i < len; i++) {
-                            alert(results.rows.item(i)['timeCats']);
+                            //alert(results.rows.item(i)['timeCats']);
                             //$('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats']+ results.rows.item(i)['pid'] + '</a></li>');
                         }
                         //$('#resultList').listview();
