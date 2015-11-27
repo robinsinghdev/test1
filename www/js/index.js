@@ -820,6 +820,7 @@ function getAllColorsForSO(){
 	}
 }
 
+var tbodyObjGlobal;
 function getSalesOrders(){
 
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
@@ -841,8 +842,12 @@ function getSalesOrders(){
 					$('#salesOrderMainDiv').html('');
 					alert('salesOrderMainDiv cleaned');
 			   		
-			   		var tbodyObj=timeCatTbodyObj();
-			   		populateSalesOrders(tbodyObj);
+					tbodyObjGlobal=timeCatTbodyObj();
+					
+					setTimeout(function(){
+						alert('populateSalesOrders timeout called');
+						populateSalesOrders(tbodyObjGlobal);
+					}, 2000);
 			   		
 			   		hideAllTablesData();
 				}
@@ -855,12 +860,13 @@ function getSalesOrders(){
 			}
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-			showModal();
+			
 			
 			if(window.localStorage["solocal"] == 1){
 				
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				alert("salesTableDivLenght.."+salesTableDivLength);
+				showModal();
 				
 				if(salesTableDivLength==0){
 					window.localStorage["solocal"] = 0;
@@ -872,7 +878,7 @@ function getSalesOrders(){
 			
 			if(window.localStorage["solocal"] == 0){
 			//}
-			
+				showModal();
 				$.ajax({
 					type : 'POST',
 				   url:appUrl,
