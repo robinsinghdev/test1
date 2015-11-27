@@ -1378,15 +1378,16 @@ function getLogTimeListLocal(oid){
 	       function (tx){
 	            tx.executeSql
 	            (
-	                'SELECT soTimeId,date,time,crewSize,timecat,comment FROM TIMETRACKER WHERE soTimeId=?',[oid],function(tx,results){
+	                'SELECT id,soTimeId,date,time,crewSize,timecat,comment FROM TIMETRACKER WHERE soTimeId=?',[oid],function(tx,results){
 	                    var len = results.rows.length;
+	                    alert('len...'+len);
 	                    if(len>0){
 	                    	//time=results.rows.item(0)['time'];
 	                    	//secondsDBValue=results.rows.item(0)['secondsData'];
 	                    	
 	                    	$('#logTimeHistoryLocalDiv').html('');
 	                    	
-					   			var id =  results.rows.item(0)['i'];
+					   			var id =  results.rows.item(0)['id'];
 					   			var grn_users_id='';
 					   			var grn_salesorderTime_id= results.rows.item(0)['soTimeId'];
 					   			var date = results.rows.item(0)['date'];
@@ -1659,12 +1660,12 @@ function addUpadteLogTimeTT(dataObj,updateQuery){
 function addLogTimeToServer(dataObj){
 	showModal();
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	//var connectionType=checkConnection();
-	var connectionType="WiFi connection";//For Testing
+	var connectionType=checkConnection();
+	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		//navigator.notification.alert(appRequiresWiFi, function() {});
