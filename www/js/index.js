@@ -1386,7 +1386,6 @@ function getLogTimeListLocal(oid){
 	                    	//secondsDBValue=results.rows.item(0)['secondsData'];
 	                    	
 	                    	$('#logTimeHistoryLocalDiv').html('');
-	                    	
 					   			var id =  results.rows.item(0)['id'];
 					   			var grn_users_id='';
 					   			var grn_salesorderTime_id= results.rows.item(0)['soTimeId'];
@@ -1396,9 +1395,9 @@ function getLogTimeListLocal(oid){
 					   			var crew_size = results.rows.item(0)['crewSize'];
 					   			var grn_timeCat = results.rows.item(0)['timecat'];
 					   			var commentsData = results.rows.item(0)['comment'];				   			
-					   			var title = results.rows.item(0)['timecat'].toUpperCase();
+					   			var title = results.rows.item(0)['timecat'];
 					   			var grn_timeCat_img = results.rows.item(0)['timecat'];
-					   			var grn_timeCat_trimmed=value.grn_timeCat;
+					   			var grn_timeCat_trimmed=results.rows.item(0)['timecat'];
 					   			grn_timeCat_trimmed=grn_timeCat_trimmed.replace("_revision", "");
 					   			
 					   			var timeInHours= results.rows.item(0)['time'];
@@ -1426,7 +1425,7 @@ function getLogTimeListLocal(oid){
 															'<div class="process-img">'+
 																'<img src="img/'+grn_timeCat_img+'.png">'+            				 
 															'</div>'+
-															'<div class="process-name">'+title+'</div>'+
+															'<div class="process-name">'+title.toUpperCase()+'</div>'+
 													  '</div>'+
 													 /* 
 													  '<div class="ui-block-b text-align-right">'+
@@ -1669,6 +1668,7 @@ function addLogTimeToServer(dataObj){
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		//navigator.notification.alert(appRequiresWiFi, function() {});
+		hideModal();
 		addLogTimeToApp(dataObj);
 	}
 	else if(connectionType=="WiFi connection"){
