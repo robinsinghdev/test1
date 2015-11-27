@@ -723,10 +723,13 @@ function getCategoriesForTimeTracking(){
 				   		var responseJson = $.parseJSON(data);
 				   		time_cats_arr=responseJson.time_cats;
 				   		window.localStorage["tclocal"] = 1;
-				   		getSalesOrders();
 				   		
+				   		db.transaction(function(tx) {
+				   			tx.executeSql("DELETE FROM TIMECATEGORY ");
+				   		});
 				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
 				   		
+				   		getSalesOrders();
 				   		hideModal();
 					},
 					error:function(data,t,f){
@@ -2366,10 +2369,6 @@ function deleteTimeTrackerRow(id){
 function insertTimeCategory(tx) {
 	var timeCategoryCreateSql ='CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,revision integer,status integer )';
 	
-	db.transaction(function(txz) {
-		txz.executeSql("DELETE FROM TIMECATEGORY ");
-	});
-	
 	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
 		var el = $('#timeCat');
    		el.find('option').remove().end();
@@ -2496,9 +2495,10 @@ function getTimeCategoryList(){
        function (tx){
             tx.executeSql('SELECT timeCats,pid FROM TIMECATEGORY',[],function(tx,results){
                     var len = results.rows.length;
+                    alert("timeCats len---"+len);
                     if(len>0){
                         for (var i = 0; i < len; i++) {
-                            //alert(results.rows.item(i)['timeCats']);
+                            alert(results.rows.item(i)['timeCats']);
                             //$('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats']+ results.rows.item(i)['pid'] + '</a></li>');
                         }
                         //$('#resultList').listview();
