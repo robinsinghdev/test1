@@ -394,7 +394,7 @@ function checkPreAuth() {
 
 function logout() {
 	$('#syncCallTimerDiv').timer('reset');
-	checkConnectionForSync();
+    checkConnectionForSync();
 	
 	window.localStorage["password"] = '';
 	window.localStorage["user_logged_in"] = 0;
@@ -444,87 +444,76 @@ function handleLogin() {
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
-			
-			/*if(window.localStorage["user_logged_in"] ==1) {
-				checkingUserAssignedRoles();
-				$.mobile.changePage('#home-page',{ transition: "slideup"});
-			}
-			else{*/
-				$.ajax({
-					type : 'POST',
-				   url:appUrl,
-				   data:{action:'userLogin',email:u,password:p,check:'1'},
-				   success:function(data,t,f){
-					var responseJson=jQuery.parseJSON(data);
-					if(responseJson.status == "success" ){
-						var grnUser=responseJson.grn_user;
-						window.localStorage["username"] = u;
-						window.localStorage["password"] = p;
-						if (window.localStorage.getItem("permissions") === null || window.localStorage.getItem("permissions") === '') {
-							window.localStorage["permissions"] = grnUser["permissions"];
-						}
-						
-						window.localStorage["user_logged_in"] = 1;
-						window.localStorage["grnUser"] = JSON.stringify(grnUser);
-						window.localStorage["ID"] = grnUser["ID"];
-						window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
-						window.localStorage["full_name"] = grnUser["full_name"];
-						window.localStorage["nickname"] = grnUser["nickname"];
-						window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
-						
-						window.localStorage["email"] = grnUser["email"];
-						
-						window.localStorage["trackerValueSave"]=0;
-						window.localStorage["solocal"] = 0;
-						window.localStorage["tclocal"] = 0;
-						window.localStorage["ttsync"] = 0;
-						
-						checkingUserAssignedRoles();
-						 $('#syncCallTimerDiv').timer('reset');
-						checkConnectionForSync();
-						
-						//$.mobile.changePage('#home-page','slide');					
-						$.mobile.changePage('#home-page',{ transition: "slideup"});
-					}else{
-						window.localStorage["password"] = '';
-						window.localStorage["user_logged_in"] = 0;
-						window.localStorage["trackerValueSave"]=0;
-						
-						window.localStorage["grnUser"] = '';
-						window.localStorage["ID"] = '';
-						window.localStorage["grn_companies_id"] = '';
-						window.localStorage["nickname"] = '';
-						window.localStorage["grn_roles_id"] = '';
-						window.localStorage["permissions"] = '';
-						
-						window.localStorage["email"] = '';
-						
-						window.localStorage["trackerValueSave"]=0;
-						window.localStorage["solocal"] = 0;
-						window.localStorage["tclocal"] = 0;
-						window.localStorage["ttsync"] = 0;
-						
-						var form = $("#loginForm");
-						$("#username", form).val(window.localStorage["username"]);
-						$.mobile.changePage('#login-page','slide');
-						
-						navigator.notification.alert("Invalid Credentials, please try again", function() {});
-					}
-					hideModal();
-					$('#userFullName').html(window.localStorage.getItem("full_name"));
-				   },
-				   error:function(data,t,f){
-					   hideModal();
-					   navigator.notification.alert(appRequiresWiFi, function() {});
-					 var responseJson = $.parseJSON(data);
-					 //alert(w+' '+t+' '+f);
-					 //console.log(data+' '+t+' '+f);
-					 if(responseJson.status==404){
-						 navigator.notification.alert(appRequiresWiFi, function() {});
-					 }
-				   }
-				});
-			//}	
+			$.ajax({
+				type : 'POST',
+			   url:appUrl,
+			   data:{action:'userLogin',email:u,password:p,check:'1'},
+			   success:function(data,t,f){
+				var responseJson=jQuery.parseJSON(data);
+				if(responseJson.status == "success" ){
+					var grnUser=responseJson.grn_user;
+					window.localStorage["username"] = u;
+					window.localStorage["password"] = p;
+					window.localStorage["user_logged_in"] = 1;
+					window.localStorage["grnUser"] = JSON.stringify(grnUser);
+					window.localStorage["ID"] = grnUser["ID"];
+					window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
+					window.localStorage["full_name"] = grnUser["full_name"];
+					window.localStorage["nickname"] = grnUser["nickname"];
+					window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
+					window.localStorage["permissions"] = grnUser["permissions"];
+					window.localStorage["email"] = grnUser["email"];
+					
+					window.localStorage["trackerValueSave"]=0;
+					window.localStorage["solocal"] = 0;
+					window.localStorage["tclocal"] = 0;
+					window.localStorage["ttsync"] = 0;
+					
+					checkingUserAssignedRoles();
+					 $('#syncCallTimerDiv').timer('reset');
+					checkConnectionForSync();
+					
+					//$.mobile.changePage('#home-page','slide');					
+					$.mobile.changePage('#home-page',{ transition: "slideup"});
+				}else{
+					window.localStorage["password"] = '';
+					window.localStorage["user_logged_in"] = 0;
+					window.localStorage["trackerValueSave"]=0;
+					
+					window.localStorage["grnUser"] = '';
+					window.localStorage["ID"] = '';
+					window.localStorage["grn_companies_id"] = '';
+					window.localStorage["nickname"] = '';
+					window.localStorage["grn_roles_id"] = '';
+					window.localStorage["permissions"] = '';
+					
+					window.localStorage["email"] = '';
+					
+					window.localStorage["trackerValueSave"]=0;
+					window.localStorage["solocal"] = 0;
+					window.localStorage["tclocal"] = 0;
+					window.localStorage["ttsync"] = 0;
+					
+					var form = $("#loginForm");
+					$("#username", form).val(window.localStorage["username"]);
+					$.mobile.changePage('#login-page','slide');
+					
+					navigator.notification.alert("Invalid Credentials, please try again", function() {});
+				}
+				hideModal();
+				$('#userFullName').html(window.localStorage.getItem("full_name"));
+			   },
+			   error:function(data,t,f){
+				   hideModal();
+				   navigator.notification.alert(appRequiresWiFi, function() {});
+				 var responseJson = $.parseJSON(data);
+				 //alert(w+' '+t+' '+f);
+				 //console.log(data+' '+t+' '+f);
+				 if(responseJson.status==404){
+					 navigator.notification.alert(appRequiresWiFi, function() {});
+				 }
+			   }
+			});
 		}
 		else{
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -1195,8 +1184,7 @@ function changeLoginRole(roleId,roleName){
 	
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		showModal();
-		$('#syncCallTimerDiv').timer('reset');
-		checkConnectionForSync();
+		callSyncWithServer();
 		
 		window.localStorage["permissions"] = ''+roleId+'';
 		window.localStorage["solocal"] = 0;
