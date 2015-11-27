@@ -460,11 +460,13 @@ function handleLogin() {
 					window.localStorage["grn_companies_id"] = grnUser["grn_companies_id"];
 					window.localStorage["full_name"] = grnUser["full_name"];
 					window.localStorage["nickname"] = grnUser["nickname"];
+										
+					if (window.localStorage.getItem("permissions") === null ) {
+						window.localStorage["permissions"] = '';
+					}
 					window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
 					//window.localStorage["permissions"] = grnUser["permissions"];
-					window.localStorage["permissions"] = '';
 					window.localStorage["email"] = grnUser["email"];
-					
 					window.localStorage["trackerValueSave"]=0;
 					window.localStorage["solocal"] = 0;
 					window.localStorage["tclocal"] = 0;
