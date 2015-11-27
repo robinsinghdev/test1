@@ -385,3 +385,14 @@ ul#userRolesUl li.active a{
 #overlayPanel .wifi-icon, #loginForm .wifi-icon{
 	vertical-align: top;
 }
+
+.timecat-totao-time-td {
+	font-size: 13px;
+}
+.timecat-totao-time-td .time-img{
+	vertical-align: top;
+}
+
+.history-tabs .wifi-icon{
+	vertical-align: top;
+}

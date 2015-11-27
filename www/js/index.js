@@ -766,14 +766,18 @@ function getCategoriesForTimeTracking(){
 }
 
 
-function getTotalTimeForCategory(){
+function getTotalTimeForCategory(dataObj){
+	var salesOrderTimeId=$(dataObj).attr('data-sotid');
+	var timCatvalue=$(dataObj).attr('data-timecat');
+	//	data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace"
+	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
-		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
+		//var connectionType=checkConnection();
+		var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi, function() {});
@@ -783,10 +787,22 @@ function getTotalTimeForCategory(){
 			$.ajax({
 				type : 'POST',
 			   url:appUrl,
-			   data:{action:'getTotalTime',grn_user:grnUserObj,grn_salesorderTime_id:"1",grn_timeCat:"prod_materials"},
+			   //data:{action:'getTotalTime',grn_user:grnUserObj,grn_salesorderTime_id:"1",grn_timeCat:"prog_crm"},
+			   data:{action:'getTotalTime',grn_user:grnUserObj,grn_salesorderTime_id:salesOrderTimeId,grn_timeCat:timCatvalue},
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
-			   		//console.log(responseJson);
+			   		if(responseJson["status"] == "success"){
+			   			var timeData= responseJson["total_time"];
+			   			if(timeData === null){
+			   				$(dataObj).find(".time-data").html('0.0 hrs');
+			   			}else{
+			   				$(dataObj).find(".time-data").html(timeData);
+			   			}
+			   		}
+			   		else if(responseJson["status"] == "fail"){
+			   			
+			   		}
+			   		
 			   		hideModal();
 				},
 				error:function(data,t,f){
@@ -909,8 +925,10 @@ function getSalesOrders(){
 						                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 						                     '</span>'+
 						                 '</td>'+
-						                 '<td>'+
-						                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+						                 '<td class="timecat-totao-time-td">'+
+						                     '<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="sp_salesorderNumber" onclick="getTotalTimeForCategory(this);"><span class="time-img" ><img src="img/wifi-icon-24px.png" class="wifi-icon" /></span>&nbsp;<span class="time-data">--:-- hrs</span></span>'+
+						                     //'<br/><span id="orderId_spOrderIdReplace" class="timer">LCL &nbsp;<span class="lcl">--:-- hrs</span></span>'+
+
 						                 '</td>'+
 						                 '<td class="order-t-icon">'+
 						                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
@@ -1245,7 +1263,7 @@ function getLogTimeListOfOrder(data){
 									'<div class="process-name">'+appRequiresWiFi+'.</div>'+
 							'</div>';
 			$('#logTimeHistoryDiv').append(logTimeDiv);
-			
+			getLogTimeListLocal();
 			hideModal();
 	   		$.mobile.changePage('#view-log-time-history','slide');
 	   		
@@ -1333,6 +1351,7 @@ function getLogTimeListOfOrder(data){
 				   		});
 				   		
 			   		}
+			   		getLogTimeListLocal();
 			   		hideModal();
 			   		$.mobile.changePage('#view-log-time-history','slide');
 				},
@@ -1348,6 +1367,94 @@ function getLogTimeListOfOrder(data){
 		navigator.notification.alert("Please login again.", function() {});
 	}
 }
+
+function getLogTimeListLocal(){
+	//soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData
+	
+	//id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer)');
+	db.transaction
+	  (
+	       function (tx){
+	            tx.executeSql
+	            (
+	                'SELECT soTimeId,date,time,crewSize,timecat,comment FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
+	                    var len = results.rows.length;
+	                    if(len>0){
+	                    	//time=results.rows.item(0)['time'];
+	                    	//secondsDBValue=results.rows.item(0)['secondsData'];
+	                    	
+	                    	$('#logTimeHistoryLocalDiv').html('');
+	                    	
+					   			var id =  results.rows.item(0)['i'];
+					   			var grn_users_id='';
+					   			var grn_salesorderTime_id= results.rows.item(0)['soTimeId'];
+					   			var date = results.rows.item(0)['date'];
+					   			var decimalTime= '';
+					   			var timer_flag = '';
+					   			var crew_size = results.rows.item(0)['crewSize'];
+					   			var grn_timeCat = results.rows.item(0)['timecat'];
+					   			var commentsData = results.rows.item(0)['comment'];				   			
+					   			var title = results.rows.item(0)['timecat'].toUpperCase();
+					   			var grn_timeCat_img = results.rows.item(0)['timecat'];
+					   			var grn_timeCat_trimmed=value.grn_timeCat;
+					   			grn_timeCat_trimmed=grn_timeCat_trimmed.replace("_revision", "");
+					   			
+					   			var timeInHours= results.rows.item(0)['time'];
+					   			var totalCrewTimeData = calcTotalCrewTimeBackend(crew_size,timeInHours);
+					   			
+					   			grn_timeCat_img=grn_timeCat_img.replace("_revision", "");
+					   			var revisionSpan;
+					   			if (grn_timeCat.toLowerCase().indexOf("revision") >= 0){
+					   				revisionSpan='<span style="vertical-align: top;" class="text-pink">Revision Work</span>';
+					   			}else{
+					   				revisionSpan='<span style="vertical-align: top;" class="text-purple">Work</span>';
+					   			}
+					   			var comments="";	
+					   			if(commentsData==""){
+					   				comments="No Comments Yet.";
+					   			}
+					   			
+						   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
+											   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
+													'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
+												'</div>'+
+												'<div class="process-details">'+
+													'<div class="ui-grid-a my-breakpoint">'+
+													  '<div class="ui-block-a">'+
+															'<div class="process-img">'+
+																'<img src="img/'+grn_timeCat_img+'.png">'+            				 
+															'</div>'+
+															'<div class="process-name">'+title+'</div>'+
+													  '</div>'+
+													 /* 
+													  '<div class="ui-block-b text-align-right">'+
+															'<span class="link-custom-spam">'+
+																'<a onclick="editLogTime(this);" href="#" data-sotimeid="'+grn_salesorderTime_id+'" data-comment="'+commentsData+'"  '+
+																' data-id="'+id+'" data-date="'+date+'" data-time="'+timeInHours+'" data-crewSize="'+crew_size+'"  data-category="'+grn_timeCat_trimmed+'" >Edit</a>'+
+															'</span>'+	
+													  '</div>'+
+													  */
+													'</div>'+
+													'<div class="more-process-details-main ">'+
+														'<div class="text-align-right">'+
+															'<a onclick="moreProcessDetails(this);" href="#" class="link">Show Details</a>'+
+														'</div>'+
+														'<div class="more-process-details moreDetailsDiv12" style="display: none;">'+
+															'<p class="process-comment">Revision: '+revisionSpan+'</p>'+
+															'<p class="process-comment">Comment: <span>'+comments+'</span></p>'+
+														'</div>'+
+													'</div>'+    
+												'</div>'+
+											'</div>';
+						   		
+						   		$('#logTimeHistoryLocalDiv').append(logTimeDiv);
+	                    }
+	                }, errorCB
+	            );
+	       },errorCB,successCB
+	   );
+}
+
 
 function addLogTime(){
 	var $so_name_box = $('#addLogTimeContent').find('.so-details-box');
@@ -1988,8 +2095,10 @@ function logTimer(obj) {
 function startTimer() {
 	
         TimerFlag = 1;
-        $('#logging_time').timer('reset');
-        $('#logging_time').timer();
+        $('#logging_time').timer('remove');
+    	$('#logging_time').timer({
+    		 seconds: 0
+    	 });
         $('#running_tracker').show();
        
         window.localStorage["tt_order_key"] = order;
@@ -2046,8 +2155,12 @@ function pauseTimer() {
 }
 
 function resumeTimer() {
+	$('#logging_time').timer('remove');
+	$('#logging_time').timer({
+		 seconds: 0
+	 });
+	$('#logging_time').timer('remove');
 	
-	$('#logging_time').timer('reset');
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	var secondsDBValue=0;
 	var tempData;
@@ -2166,7 +2279,13 @@ function deleteTimer() {
 }
 
 function resetTracker() {
-    $('#logging_time').timer('reset');
+	$('#logging_time').timer('remove');
+	 $('#logging_time').timer({
+		 seconds: 0
+	 });
+    $('#logging_time').timer('remove');
+    //$("#div-id").timer('remove');
+    
     $('#logging_time').html('00:00');
     $('#timer_' + order + '_' + timecat).removeClass('pause').removeClass('play').addClass('clock').attr('data-action', 'clock');
     $('#timer_img_' + order + '_' + timecat).removeClass('pause').removeClass('play').attr('data-action', 'clock');
