@@ -379,7 +379,7 @@ hr.style {
 }
 
 ul#userRolesUl li.active a{
-	background-color: #a8bc7b none repeat scroll 0 0;
+	background: #a8bc7b none repeat scroll 0 0;
 }
 
 #overlayPanel .wifi-icon, #loginForm .wifi-icon{

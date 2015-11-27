@@ -927,15 +927,19 @@ function getSalesOrders(){
 				        	$('#salesOrderMainDiv').append(divObj);
 				   		});
 				   		hideAllTablesData();
-				   		hideModal();
 				   		
+				   		db.transaction(insertSalesOrderJson, errorCB, successCB);// Insert Time Category
+				   		
+				   		window.localStorage["solocal"] = 1;
+				   		//getSalesOrderList();
+				   		
+				   		showRunningTimeTracker();
+				   		
+				   		hideModal();
 				   		if(salse_orders_arr.length <= 0){
 				   			navigator.notification.alert("No sales order to show or try again after sometime.", function() {});	
 				   		}
 				   		
-				   		window.localStorage["solocal"] = 1;
-				   		//getSalesOrderList();
-				   		showRunningTimeTracker();
 				   		$.mobile.changePage('#view-all-sales-order','slide');
 					},
 					error:function(data,t,f){
@@ -2126,6 +2130,8 @@ function closeDatabase() {
 function initializeDB(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER (id integer primary key autoincrement,pid integer,grn_companies_id integer,sp_manager text,sp_salesorderNumber integer,sp_jobName text,grn_colors_id integer,HexColor text )');
 	
+	tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER_JSON (id integer primary key autoincrement,jsonArr text,createTime text )');
+	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer)');
 	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer)');
@@ -2201,6 +2207,45 @@ function insertTimeCategory(tx) {
    	  window.localStorage["tclocal"]=1;
    	  //alert("timeCategoryCreateSql");
     });
+}
+
+function insertSalesOrderJson(tx) {
+	var salesOrderJsonCreateSql ='CREATE TABLE IF NOT EXISTS SALESORDER_JSON (id integer primary key autoincrement,jsonArr text,createTime text )';
+	var currentDateTimeValue=currentDateTime();
+	tx.executeSql(salesOrderJsonCreateSql,[], function (tx, results) {
+   		
+   		tx.executeSql('INSERT INTO SALESORDER_JSON(jsonArr, createTime) VALUES (?,?)',
+    		[salse_orders_arr.toString(),currentDateTimeValue], function(tx, res) {
+   			alert("insertSalesOrderJson Id: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
+    	});
+    });
+}
+
+//Multiple records
+function getSalesOrderJsonList(){
+  db.transaction
+  (
+       function (tx){
+            tx.executeSql('SELECT jsonArr,createTime FROM SALESORDER_JSON',[],function(tx,results){
+                    var len = results.rows.length;
+                    if(len>0){
+                        for (var i = 0; i < len; i++) {
+                            alert("createTime--"+results.rows.item(i)['createTime']+"--jsonArr--"+results.rows.item(i)['jsonArr']);
+                            //$('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats']+ results.rows.item(i)['pid'] + '</a></li>');
+                        }
+                        //$('#resultList').listview();
+                    }
+                }, errorCB
+            );
+       },errorCB,successCB
+   );
+}
+
+
+function deleteSalesOrderJson() {
+	db.transaction(function(tx) {
+		tx.executeSql("DELETE FROM SALESORDER_JSON ");
+	});
 }
 
 function insertSalesOrder(tx) {
