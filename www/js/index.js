@@ -689,13 +689,13 @@ function createNewSO(){
 
 function getCategoriesForTimeTracking(){
 	
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
@@ -709,11 +709,11 @@ function getCategoriesForTimeTracking(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
-			/*if(window.localStorage["tclocal"] == 1){
+			if(window.localStorage["tclocal"] == 1){
 				getSalesOrders();
 		   		hideModal();
 			}
-			else if(window.localStorage["tclocal"] == 0){*/
+			else if(window.localStorage["tclocal"] == 0){
 			//}
 				$.ajax({
 					type : 'POST',
@@ -735,7 +735,7 @@ function getCategoriesForTimeTracking(){
 						navigator.notification.alert(appRequiresWiFi, function() {});
 					}
 				});
-			//}
+			}
 		}
 	}
 	else{
@@ -819,13 +819,13 @@ function getAllColorsForSO(){
 
 function getSalesOrders(){
 
-	var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
-	//var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		//var connectionType=checkConnection();
-		var connectionType="WiFi connection";//For Testing
+		var connectionType=checkConnection();
+		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
@@ -854,7 +854,7 @@ function getSalesOrders(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
-			/*if(window.localStorage["solocal"] == 1){
+			if(window.localStorage["solocal"] == 1){
 				
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				alert("salesTableDivLenght.."+salesTableDivLength);
@@ -867,7 +867,7 @@ function getSalesOrders(){
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
 			
-			if(window.localStorage["solocal"] == 0){*/
+			if(window.localStorage["solocal"] == 0){
 			//}
 			
 				$.ajax({
@@ -982,7 +982,7 @@ function getSalesOrders(){
 					}
 				});
 				
-			//}
+			}
 		}
 		
 	}
