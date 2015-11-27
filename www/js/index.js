@@ -461,7 +461,8 @@ function handleLogin() {
 					window.localStorage["full_name"] = grnUser["full_name"];
 					window.localStorage["nickname"] = grnUser["nickname"];
 					window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
-					window.localStorage["permissions"] = grnUser["permissions"];
+					//window.localStorage["permissions"] = grnUser["permissions"];
+					window.localStorage["permissions"] = '';
 					window.localStorage["email"] = grnUser["email"];
 					
 					window.localStorage["trackerValueSave"]=0;
@@ -529,6 +530,9 @@ function handleLogin() {
 
 function checkingUserAssignedRoles(){
 	alert(window.localStorage.getItem("permissions"));
+	if(window.localStorage.getItem("permissions")== ''){
+		window.localStorage.getItem("permissions")='5';
+	}
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
 	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
 	var tempArr = new Array();
