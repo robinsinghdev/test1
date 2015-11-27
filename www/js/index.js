@@ -552,12 +552,12 @@ function checkingUserAssignedRoles(){
 		}
 	});
 	
-	if ( $.inArray(window.localStorage.getItem("permissions"), rolesArr) > -1 ) {
+	/*if ( $.inArray(window.localStorage.getItem("permissions"), rolesArr) > -1 ) {
 		alert("found---"+window.localStorage.getItem("permissions"));
 	}else{
 		//window.localStorage["permissions"]='5';
 		window.localStorage.setItem("permissions")='5';
-	}
+	}*/
 	
 	$('ul#userRolesUl li').removeClass('active');
 	$('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').addClass('active');
