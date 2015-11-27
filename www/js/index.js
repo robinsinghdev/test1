@@ -471,7 +471,7 @@ function handleLogin() {
 					window.localStorage["ttsync"] = 0;
 					
 					checkingUserAssignedRoles();
-					 $('#syncCallTimerDiv').timer('reset');
+					 //$('#syncCallTimerDiv').timer('reset');
 					checkConnectionForSync();
 					
 					//$.mobile.changePage('#home-page','slide');					
