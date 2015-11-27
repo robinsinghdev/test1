@@ -525,6 +525,7 @@ function handleLogin() {
 }
 
 function checkingUserAssignedRoles(){
+	alert(window.localStorage.getItem("permissions"));
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
 	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
 	var tempArr = new Array();
@@ -535,9 +536,10 @@ function checkingUserAssignedRoles(){
 	
 	jQuery.each(rolesArr, function(index,value) {
 		if ( $.inArray(value, tempArr) > -1 ) {
-			if(index==0 && window.localStorage.getItem("user_logged_in")==0){
+			/*if(index==0){
 				window.localStorage["permissions"] = value;
-			}
+				alert(window.localStorage.getItem("permissions"));
+			}*/
 		}else {
 			$userRolesUlObj.find("li#"+value+"").remove();
 		}
