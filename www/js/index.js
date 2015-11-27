@@ -445,11 +445,11 @@ function handleLogin() {
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			
-			if(window.localStorage["user_logged_in"] ==1) {
+			/*if(window.localStorage["user_logged_in"] ==1) {
 				checkingUserAssignedRoles();
 				$.mobile.changePage('#home-page',{ transition: "slideup"});
 			}
-			else{
+			else{*/
 				$.ajax({
 					type : 'POST',
 				   url:appUrl,
@@ -460,6 +460,10 @@ function handleLogin() {
 						var grnUser=responseJson.grn_user;
 						window.localStorage["username"] = u;
 						window.localStorage["password"] = p;
+						if (window.localStorage.getItem("permissions") === null || window.localStorage.getItem("permissions") === '') {
+							window.localStorage["permissions"] = grnUser["permissions"];
+						}
+						
 						window.localStorage["user_logged_in"] = 1;
 						window.localStorage["grnUser"] = JSON.stringify(grnUser);
 						window.localStorage["ID"] = grnUser["ID"];
@@ -467,7 +471,7 @@ function handleLogin() {
 						window.localStorage["full_name"] = grnUser["full_name"];
 						window.localStorage["nickname"] = grnUser["nickname"];
 						window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
-						window.localStorage["permissions"] = grnUser["permissions"];
+						
 						window.localStorage["email"] = grnUser["email"];
 						
 						window.localStorage["trackerValueSave"]=0;
@@ -520,7 +524,7 @@ function handleLogin() {
 					 }
 				   }
 				});
-			}	
+			//}	
 		}
 		else{
 			navigator.notification.alert(appRequiresWiFi, function() {});
