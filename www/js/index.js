@@ -831,7 +831,7 @@ function getSalesOrders(){
 			if(window.localStorage["solocal"] == 1){
 				
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
-				alert("salesTableDivLenght.."+salesTableDivLenght);
+				alert("salesTableDivLenght.."+salesTableDivLength);
 				
 				showModal();
 				if(salesTableDivLength==0){
