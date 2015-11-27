@@ -531,7 +531,7 @@ function handleLogin() {
 function checkingUserAssignedRoles(){
 	alert(window.localStorage.getItem("permissions"));
 	if(window.localStorage.getItem("permissions")== ''){
-		window.localStorage.getItem("permissions")='5';
+		window.localStorage["permissions"]='5';
 	}
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
 	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
