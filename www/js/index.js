@@ -1033,8 +1033,8 @@ function timeCatTbodyObj(){
 
 //Transaction success callback
 function successCBTimeCatTbodyObj() {
-	alert('db transcation success successCBTimeCatTbodyObj');
-	alert('populateSalesOrders timeout called');
+	//alert('db transcation success successCBTimeCatTbodyObj');
+	//alert('populateSalesOrders timeout called');
 	
 	var tbodyObj='<tbody>';
 	
@@ -1083,7 +1083,7 @@ function populateSalesOrders(tbodyObj){
 		                    var len = results.rows.length;
 		                    if(len>0){
 		                        for (var i = 0; i < len; i++) {
-		                            alert("createTime--"+results.rows.item(i)['createTime']+"--jsonArr--"+results.rows.item(i)['jsonArr']);
+		                            //alert("createTime--"+results.rows.item(i)['createTime']+"--jsonArr--"+results.rows.item(i)['jsonArr']);
 		                            var jsonArrString=results.rows.item(i)['jsonArr'];
 		                            salse_orders_arr= $.parseJSON(jsonArrString);
 		                        }
@@ -1099,18 +1099,18 @@ function populateSalesOrders(tbodyObj){
 	}
 }
 
-function errorCBPopulateSalesOrders(){
-	alert("errorCBPopulateSalesOrders");
+function errorCBPopulateSalesOrders(err){
+	alert("errorCBPopulateSalesOrders code"+err.code);
 }
 
 function successCBPopulateSalesOrders(){
 	
 	alert("successCBPopulateSalesOrders");
-	//showModal();
 	alert("salse_orders_arr.length----"+salse_orders_arr.length);
+	showModal();
 	jQuery.each(salse_orders_arr, function(index,value) {
-		alert("index.."+index);
-		alert("value...."+JSON.stringify(value));
+		//alert("index.."+index);
+		//alert("value...."+JSON.stringify(value));
     	var jsonObj=value;
     	var id=jsonObj["id"];
     	var grn_companies_id=jsonObj["grn_companies_id"];
@@ -1160,8 +1160,8 @@ function successCBPopulateSalesOrders(){
     	$('#salesOrderMainDiv').append(divObj);
 	});
 	hideAllTablesData();
-	//hideModal();
-	//showRunningTimeTracker();
+	hideModal();
+	showRunningTimeTracker();
 }
 	
 function showModal(){
@@ -2230,6 +2230,7 @@ function showRunningTimeTracker(){
 		
 	}
 	else{
+		
 		$('#logging_time').timer('remove');
 		var currtimetrackerid = window.localStorage.getItem("trackerkey");
 		var currentDateTimeValue=currentDateTime();
