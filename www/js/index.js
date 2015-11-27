@@ -1107,8 +1107,10 @@ function successCBPopulateSalesOrders(){
 	
 	alert("successCBPopulateSalesOrders");
 	//showModal();
+	alert("salse_orders_arr.length----"+salse_orders_arr.length);
 	jQuery.each(salse_orders_arr, function(index,value) {
 		alert("index.."+index);
+		alert("value...."+JSON.stringify(value););
     	var jsonObj=value;
     	var id=jsonObj["id"];
     	var grn_companies_id=jsonObj["grn_companies_id"];
@@ -1157,9 +1159,8 @@ function successCBPopulateSalesOrders(){
     	$('#salesOrderMainDiv').append(divObj);
 	});
 	hideAllTablesData();
-	hideModal();
-	showRunningTimeTracker();
-	
+	//hideModal();
+	//showRunningTimeTracker();
 }
 	
 function showModal(){
