@@ -331,7 +331,8 @@ function doLogout() {
 		//navigator.notification.alert("Logout requires active internet connection.", function() {});
 		
 		navigator.notification.alert(
-		    'Logout requires active internet connection <img src="img/wifi-icon-24px.png" class="wifi-icon" /> ',  // message
+		    'Logout requires active internet connection',
+		    alertConfirm,
 		    'BP Metrics',            // title
 		    'Ok'                  // buttonName
 		);
@@ -339,6 +340,10 @@ function doLogout() {
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		showLogoutDialog();
 	}
+}
+
+function alertConfirm(buttonIndex){
+	
 }
 
 function showLogoutDialog() {
@@ -720,7 +725,7 @@ function getCategoriesForTimeTracking(){
 				   		window.localStorage["tclocal"] = 1;
 				   		getSalesOrders();
 				   		
-				   		//db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
 				   		
 				   		hideModal();
 					},
@@ -824,10 +829,11 @@ function getSalesOrders(){
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
-				showModal();
+				
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				alert("salesTableDivLenght.."+salesTableDivLenght);
 				
+				showModal();
 				if(salesTableDivLength==0){
 					$('#salesOrderMainDiv').html('');
 					alert('salesOrderMainDiv cleaned');
@@ -860,7 +866,6 @@ function getSalesOrders(){
 		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
-			
 			
 			if(window.localStorage["solocal"] == 0){
 			//}
@@ -989,10 +994,39 @@ function getSalesOrders(){
 
 function timeCatTbodyObj(){
 	var populateFlag=false;
+	alert("time_cats_arr.length...."+time_cats_arr.length);
 	if(time_cats_arr.length==0){
+		
+		db.transaction
+		  (
+		       function (tx){
+		            tx.executeSql('SELECT pid,timeCats,title,spjobname,grnrolesid,revision,status FROM TIMECATEGORY',[],function(tx,results){
+		                    var len = results.rows.length;
+		                    alert("len timecats----"+len);
+		                    if(len>0){
+		                        for (var i = 0; i < len; i++) {
+		                            //$('#resultList').append('<li><a href="#">' + results.rows.item(i)['timeCats']+ results.rows.item(i)['pid'] + '</a></li>');
+		                        	//id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer)');
+		                        	var jsonObj={};
+		                        	jsonObj.id=results.rows.item(i)['pid'];
+		                        	jsonObj.timeCats=results.rows.item(i)['timeCats'];
+		                        	jsonObj.title=results.rows.item(i)['title'];
+		                        	jsonObj.sp_jobName=results.rows.item(i)['spjobname'];
+		                        	jsonObj.grn_roles_id=results.rows.item(i)['grnrolesid'];
+		                        	jsonObj.revision=results.rows.item(i)['revision'];
+		                        	jsonObj.status=results.rows.item(i)['status'];
+		                        	
+		                        	time_cats_arr.push(jsonObj);
+		                        }
+		                    }
+		                }, errorCB
+		            );
+		       },errorCB,successCB
+		   );
+		
 		populateFlag=true;
 	}else{
-		
+		populateFlag=true;
 	}
 	
 	var tbodyObj='<tbody>';
@@ -2332,6 +2366,10 @@ function deleteTimeTrackerRow(id){
 function insertTimeCategory(tx) {
 	var timeCategoryCreateSql ='CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,spjobname text,grnrolesid integer,revision integer,status integer )';
 	
+	db.transaction(function(txz) {
+		txz.executeSql("DELETE FROM TIMECATEGORY ");
+	});
+	
 	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
 		var el = $('#timeCat');
    		el.find('option').remove().end();
@@ -2395,6 +2433,12 @@ function getSalesOrderJsonList(){
 function deleteSalesOrderJson() {
 	db.transaction(function(tx) {
 		tx.executeSql("DELETE FROM SALESORDER_JSON ");
+	});
+}
+
+function deleteTimecategoryTable() {
+	db.transaction(function(tx) {
+		tx.executeSql("DELETE FROM TIMECATEGORY ");
 	});
 }
 
