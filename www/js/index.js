@@ -1257,13 +1257,13 @@ function getLogTimeListOfOrder(data){
    		
 		var oid=$thisData.attr("data-order");
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			getLogTimeListLocal(oid);
 			$('#logTimeHistoryDiv').html('');
-			
 			var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">'+
 									'<div class="process-name">'+appRequiresWiFi+'.</div>'+
 							'</div>';
 			$('#logTimeHistoryDiv').append(logTimeDiv);
-			getLogTimeListLocal();
+			
 			hideModal();
 	   		$.mobile.changePage('#view-log-time-history','slide');
 	   		
@@ -1351,7 +1351,7 @@ function getLogTimeListOfOrder(data){
 				   		});
 				   		
 			   		}
-			   		getLogTimeListLocal();
+			   		getLogTimeListLocal(oid);
 			   		hideModal();
 			   		$.mobile.changePage('#view-log-time-history','slide');
 				},
@@ -1368,16 +1368,17 @@ function getLogTimeListOfOrder(data){
 	}
 }
 
-function getLogTimeListLocal(){
+function getLogTimeListLocal(oid){
 	//soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData
 	
 	//id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer)');
+	alert('getLogTimeListLocal');
 	db.transaction
 	  (
 	       function (tx){
 	            tx.executeSql
 	            (
-	                'SELECT soTimeId,date,time,crewSize,timecat,comment FROM TIMETRACKER WHERE id=?',[currtimetrackerid],function(tx,results){
+	                'SELECT soTimeId,date,time,crewSize,timecat,comment FROM TIMETRACKER WHERE soTimeId=?',[oid],function(tx,results){
 	                    var len = results.rows.length;
 	                    if(len>0){
 	                    	//time=results.rows.item(0)['time'];
@@ -2363,8 +2364,10 @@ function showRunningTimeTracker(){
 		
 	}
 	else{
-		
-		$('#logging_time').timer('reset');
+		 $('#logging_time').timer({
+			 seconds: 0
+		 });
+		$('#logging_time').timer('remove');
 		var currtimetrackerid = window.localStorage.getItem("trackerkey");
 		var currentDateTimeValue=currentDateTime();
 		var secondsDBValue=0;
