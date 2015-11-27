@@ -17,8 +17,8 @@ var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
-var salse_orders_arr;
-var time_cats_arr;
+var salse_orders_arr=[];
+var time_cats_arr=[];
 var globalLogTimeObj={};
 var db;
 var closeSalesOrderDataObj;
@@ -709,7 +709,7 @@ function getCategoriesForTimeTracking(){
 		   		hideModal();
 			}
 			else if(window.localStorage["tclocal"] == 0){
-			
+			//}
 				$.ajax({
 					type : 'POST',
 				   url:appUrl,
@@ -730,7 +730,7 @@ function getCategoriesForTimeTracking(){
 						navigator.notification.alert(appRequiresWiFi, function() {});
 					}
 				});
-			}	
+			}
 		}
 	}
 	else{
@@ -824,8 +824,22 @@ function getSalesOrders(){
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
+				showModal();
+				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
+				alert("salesTableDivLenght.."+salesTableDivLenght);
+				
+				if(salesTableDivLength==0){
+					$('#salesOrderMainDiv').html('');
+					alert('salesOrderMainDiv cleaned');
+			   		
+			   		var tbodyObj=timeCatTbodyObj();
+			   		populateSalesOrders(tbodyObj);
+			   		
+			   		hideAllTablesData();
+				}
+		   		showRunningTimeTracker();
+		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
-				showRunningTimeTracker();
 			}
 			else if(window.localStorage["solocal"] == 0){
 				navigator.notification.alert(appRequiresWiFi, function() {});
@@ -835,11 +849,21 @@ function getSalesOrders(){
 			showModal();
 			
 			if(window.localStorage["solocal"] == 1){
-				//getSalesOrders();
-				showRunningTimeTracker();
+				
+				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
+				alert("salesTableDivLenght.."+salesTableDivLength);
+				
+				if(salesTableDivLength==0){
+					window.localStorage["solocal"] = 0;
+				}
+		   		showRunningTimeTracker();
+		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
-			else if(window.localStorage["solocal"] == 0){
+			
+			
+			if(window.localStorage["solocal"] == 0){
+			//}
 			
 				$.ajax({
 					type : 'POST',
@@ -875,6 +899,7 @@ function getSalesOrders(){
 						                 '</td>'+
 						             '</tr>';
 				   		});
+				   		
 				   		tbodyObj+='</tbody>';
 				   		
 				   		salse_orders_arr=responseJson.sales_orders;
@@ -928,6 +953,10 @@ function getSalesOrders(){
 				   		});
 				   		hideAllTablesData();
 				   		
+				   		db.transaction(function(tx) {
+				   			tx.executeSql("DELETE FROM SALESORDER_JSON ");
+				   		});
+				   		
 				   		db.transaction(insertSalesOrderJson, errorCB, successCB);// Insert Time Category
 				   		
 				   		window.localStorage["solocal"] = 1;
@@ -947,6 +976,7 @@ function getSalesOrders(){
 						navigator.notification.alert(appRequiresWiFi, function() {});	
 					}
 				});
+				
 			}
 		}
 		
@@ -957,6 +987,126 @@ function getSalesOrders(){
 	}
 }
 
+function timeCatTbodyObj(){
+	var populateFlag=false;
+	if(time_cats_arr.length==0){
+		populateFlag=true;
+	}else{
+		
+	}
+	
+	var tbodyObj='<tbody>';
+	
+	if(populateFlag==true){
+		jQuery.each(time_cats_arr, function(index,value) {
+		var jsonObj=value;
+		var id=jsonObj["id"];
+		var timeCats=jsonObj["timeCats"];
+		var title=jsonObj["title"];
+		var grn_roles_id=jsonObj["grn_roles_id"];
+		var revision=jsonObj["revision"];
+		var status=jsonObj["status"];
+		
+		tbodyObj+='<tr>'+
+	                 '<td class="order-p-icon">'+
+	                     '<span class="process-icon cm-10">'+
+	                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+	                     '</span>'+
+	                 '</td>'+
+	                 '<td>'+
+	                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+	                 '</td>'+
+	                 '<td class="order-t-icon">'+
+	                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+						 '</a>'+
+	                 '</td>'+
+	             '</tr>';
+		});
+	}
+	
+	tbodyObj+='</tbody>';
+	
+	return tbodyObj;
+}
+
+function populateSalesOrders(tbodyObj){
+	var populateFlag=false;
+	if(salse_orders_arr.length==0){
+		populateFlag=true;
+	}else{
+		db.transaction
+		  (
+		       function (tx){
+		            tx.executeSql('SELECT jsonArr,createTime FROM SALESORDER_JSON',[],function(tx,results){
+		                    var len = results.rows.length;
+		                    if(len>0){
+		                        for (var i = 0; i < len; i++) {
+		                            alert("createTime--"+results.rows.item(i)['createTime']+"--jsonArr--"+results.rows.item(i)['jsonArr']);
+		                            var jsonArrString=results.rows.item(i)['jsonArr'];
+		                            salse_orders_arr= $.parseJSON(jsonArrString);
+		                        }
+		                        populateFlag=true;
+		                    }
+		                }, errorCB
+		            );
+		       },errorCB,successCB
+		   );
+	}
+	
+	if(populateFlag==true){
+		
+		jQuery.each(salse_orders_arr, function(index,value) {
+	    	var jsonObj=value;
+	    	var id=jsonObj["id"];
+	    	var grn_companies_id=jsonObj["grn_companies_id"];
+	    	var sp_manager=jsonObj["sp_manager"];
+	    	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
+	    	var sp_jobName=jsonObj["sp_jobName"];
+	    	var grn_colors_id=jsonObj["grn_colors_id"];
+	    	//var time_running_status=jsonObj["time_running_status"];
+	    	//var grn_status_id=jsonObj["grn_status_id"];
+	    	var HexColor=jsonObj["HexColor"];
+	    	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
+	    	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
+	    	
+	    	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
+	                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
+						     '<thead onclick="showHideTable(this);">'+
+						         '<tr>'+
+						             '<th class="sp-order " colspan="3" id="sp_order_name_'+id+'">'+
+						             		
+						             	'<div id="so_details_box" class="so-details-box" style="border-color: #'+HexColor+';">'+
+					                    	'<div class="so-color-box" style="background-color: #'+HexColor+';">'+
+					                    		'<span style="">&nbsp;</span>'+
+					                        '</div>'+
+					                        '<div class="so-name-box" >'+
+					                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
+					                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
+					                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
+								                 '</a>'+
+					                        '</div>'+
+					                    '</div>'+	
+						             '</th>'+
+						         '</tr>'+
+						     '</thead>'+
+						     tbodyObjCurr+
+						     '</tbody>'+
+						     '<tfoot>'+
+						         '<tr>'+
+						             '<td colspan="3" class="td-danger">'+
+						             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrderDialog(this)"><span>CLOSE</span></a>'+
+						             '</td>'+ 
+						         '</tr>'+
+						     '</tfoot>'+
+						 '</table>'+
+					 '</div>';
+	    	
+	    	$('#salesOrderMainDiv').append(divObj);
+		});
+	}	
+	
+}
+	
 function showModal(){
   $('body').append("<div class='ui-loader-background'> </div>");
   $.mobile.loading( "show" );
@@ -2215,7 +2365,7 @@ function insertSalesOrderJson(tx) {
 	tx.executeSql(salesOrderJsonCreateSql,[], function (tx, results) {
    		
    		tx.executeSql('INSERT INTO SALESORDER_JSON(jsonArr, createTime) VALUES (?,?)',
-    		[salse_orders_arr.toString(),currentDateTimeValue], function(tx, res) {
+    		[JSON.stringify(salse_orders_arr),currentDateTimeValue], function(tx, res) {
    			alert("insertSalesOrderJson Id: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
     	});
     });
