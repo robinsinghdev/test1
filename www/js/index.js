@@ -1122,7 +1122,8 @@ function successCBPopulateSalesOrders(){
     	//var grn_status_id=jsonObj["grn_status_id"];
     	var HexColor=jsonObj["HexColor"];
     	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
-    	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
+    	var tbodyObjTemp=tbodyObjGlobal;
+    	var tbodyObjCurr = tbodyObjTemp.replace(/spOrderIdReplace/g,id);
     	
     	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
                 		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
