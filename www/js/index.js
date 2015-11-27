@@ -1162,6 +1162,7 @@ function successCBPopulateSalesOrders(){
 	hideAllTablesData();
 	hideModal();
 	showRunningTimeTracker();
+	timeCatSelectRefresh();
 }
 	
 function showModal(){
@@ -2415,6 +2416,19 @@ function insertTimeCategory(tx) {
    	  window.localStorage["tclocal"]=1;
    	  //alert("timeCategoryCreateSql");
     });
+}
+
+function timeCatSelectRefresh(){
+	var el = $('#timeCat');
+		el.find('option').remove().end();
+	     jQuery.each(time_cats_arr, function(index,value) {
+	    	var jsonObj=value;
+	    	var timeCats=jsonObj["timeCats"];
+	    	var title=jsonObj["title"];
+	    	el.append('<option value="'+timeCats+'">'+title+'</option>').val(timeCats);
+		});
+	  el.selectmenu();
+	  el.selectmenu("refresh", true);
 }
 
 function insertSalesOrderJson(tx) {
