@@ -202,10 +202,30 @@
                         </div>
                     </div>
                     
-                    <div id="logTimeHistoryDiv">
-                    	<div class="log-time-entry-div logTimeDiv1" id="logTimeDiv"><div class="date-time-details">Date:<span class="">2015-10-13</span><span class="pull-right">1:03 hrs</span></div><div class="process-details"><div class="ui-grid-a my-breakpoint"><div class="ui-block-a"><div class="process-img"><img src="img/prog_production.png"></div><div class="process-name">Programming Production</div></div><div class="ui-block-b text-align-right"><span class="link-custom-spam"><a data-category="prog_production" data-crewsize="3" data-time="1:03" data-date="2015-10-13" data-id="11" data-sotimeid="1" data-comment="dsfdsfdxfdsg dfgdfgd dfgdf" href="#" onclick="editLogTime(this);">Edit</a></span></div></div><div class="more-process-details-main "><div class="text-align-right"><a class="link" href="#" onclick="moreProcessDetails(this);">Show Details</a></div><div style="display: none;" class="more-process-details moreDetailsDiv12"><p class="process-comment">Revision: <span class="text-purple" style="vertical-align: top;">Work</span></p><p class="process-comment">Comment: <span>No Comments Yet.</span></p></div></div></div></div>
-                    </div>
-                	
+                    <div data-role="tabs" id="tabs">
+						  <div data-role="navbar">
+						    <ul class="history-tabs">
+						      <li><a href="#historyTab" data-ajax="false" class="ui-btn-active"><span>TT Report</span> <span><img src='img/wifi-icon-16px.png' class='wifi-icon' /></span></a></li>
+						      <li><a href="#historyLocalTab" data-ajax="false" >LCL Report</a></li>
+						    </ul>
+						  </div>
+						  <div id="historyTab" class="ui-body-d ui-content">
+						    <div id="logTimeHistoryDiv">
+						    	<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">
+										<div class="process-name">This order has no previous logged time history.</div>
+								</div>
+								<!--<div class="log-time-entry-div logTimeDiv1" id="logTimeDiv"><div class="date-time-details">Date:<span class="">2015-10-13</span><span class="pull-right">1:03 hrs</span></div><div class="process-details"><div class="ui-grid-a my-breakpoint"><div class="ui-block-a"><div class="process-img"><img src="img/prog_production.png"></div><div class="process-name">Programming Production</div></div><div class="ui-block-b text-align-right"><span class="link-custom-spam"><a data-category="prog_production" data-crewsize="3" data-time="1:03" data-date="2015-10-13" data-id="11" data-sotimeid="1" data-comment="dsfdsfdxfdsg dfgdfgd dfgdf" href="#" onclick="editLogTime(this);">Edit</a></span></div></div><div class="more-process-details-main "><div class="text-align-right"><a class="link" href="#" onclick="moreProcessDetails(this);">Show Details</a></div><div style="display: none;" class="more-process-details moreDetailsDiv12"><p class="process-comment">Revision: <span class="text-purple" style="vertical-align: top;">Work</span></p><p class="process-comment">Comment: <span>No Comments Yet.</span></p></div></div></div></div>-->                    
+ 							</div>
+						    
+						  </div>
+						  <div id="historyLocalTab">
+						    	<div id="logTimeHistoryLocalDiv">
+						    		<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">
+											<div class="process-name">This order has no previous logged time history.</div>
+									</div>
+						    	</div>
+						  </div>
+					</div>
                 </div>
                 
                 <div data-role="footer" data-id="footer1" data-position="fixed" data-tap-toggle="true" class="app-footer-section" class="footer-div">
