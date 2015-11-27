@@ -843,15 +843,8 @@ function getSalesOrders(){
 					alert('salesOrderMainDiv cleaned');
 			   		
 					tbodyObjGlobal=timeCatTbodyObj();
-					
-					setTimeout(function(){
-						alert('populateSalesOrders timeout called');
-						populateSalesOrders(tbodyObjGlobal);
-					}, 3000);
-			   		
-			   		hideAllTablesData();
 				}
-		   		showRunningTimeTracker();
+		   		
 		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
@@ -868,7 +861,7 @@ function getSalesOrders(){
 				alert("salesTableDivLenght.."+salesTableDivLength);
 				showModal();
 				
-				if(salesTableDivLength==0){
+				if(salesTableDivLength == 0){
 					window.localStorage["solocal"] = 0;
 				}
 		   		showRunningTimeTracker();
@@ -1075,6 +1068,9 @@ function timeCatTbodyObj(){
 //Transaction success callback
 function successCBTimeCatTbodyObj() {
 	alert('db transcation success successCBTimeCatTbodyObj');
+	
+	alert('populateSalesOrders timeout called');
+	populateSalesOrders(tbodyObjGlobal);
 }
 
 //Transaction error callback
@@ -1097,68 +1093,78 @@ function populateSalesOrders(tbodyObj){
 		                            var jsonArrString=results.rows.item(i)['jsonArr'];
 		                            salse_orders_arr= $.parseJSON(jsonArrString);
 		                        }
-		                        populateFlag=true;
 		                    }
 		                }, errorCB
 		            );
-		       },errorCB,successCB
+		       },errorCBPopulateSalesOrders,successCBPopulateSalesOrders
 		   );
 		
 	}
+	else{
+		successCBPopulateSalesOrders();
+	}
+}
+
+function errorCBPopulateSalesOrders(){
+	alert("errorCBPopulateSalesOrders");
+}
+
+function successCBPopulateSalesOrders(){
 	
-	if(populateFlag==true){
-		alert("populateFlag==true");
-		jQuery.each(salse_orders_arr, function(index,value) {
-			alert("index.."+index);
-	    	var jsonObj=value;
-	    	var id=jsonObj["id"];
-	    	var grn_companies_id=jsonObj["grn_companies_id"];
-	    	var sp_manager=jsonObj["sp_manager"];
-	    	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
-	    	var sp_jobName=jsonObj["sp_jobName"];
-	    	var grn_colors_id=jsonObj["grn_colors_id"];
-	    	//var time_running_status=jsonObj["time_running_status"];
-	    	//var grn_status_id=jsonObj["grn_status_id"];
-	    	var HexColor=jsonObj["HexColor"];
-	    	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
-	    	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
-	    	
-	    	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
-	                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
-						     '<thead onclick="showHideTable(this);">'+
-						         '<tr>'+
-						             '<th class="sp-order " colspan="3" id="sp_order_name_'+id+'">'+
-						             		
-						             	'<div id="so_details_box" class="so-details-box" style="border-color: #'+HexColor+';">'+
-					                    	'<div class="so-color-box" style="background-color: #'+HexColor+';">'+
-					                    		'<span style="">&nbsp;</span>'+
-					                        '</div>'+
-					                        '<div class="so-name-box" >'+
-					                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
-					                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
-					                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
-								                 '</a>'+
-					                        '</div>'+
-					                    '</div>'+	
-						             '</th>'+
-						         '</tr>'+
-						     '</thead>'+
-						     tbodyObjCurr+
-						     '</tbody>'+
-						     '<tfoot>'+
-						         '<tr>'+
-						             '<td colspan="3" class="td-danger">'+
-						             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrderDialog(this)"><span>CLOSE</span></a>'+
-						             '</td>'+ 
-						         '</tr>'+
-						     '</tfoot>'+
-						 '</table>'+
-					 '</div>';
-	    	
-	    	$('#salesOrderMainDiv').append(divObj);
-		});
-	}	
-	
+	alert("errorCBPopulateSalesOrders");
+	showModal();	
+	jQuery.each(salse_orders_arr, function(index,value) {
+		alert("index.."+index);
+    	var jsonObj=value;
+    	var id=jsonObj["id"];
+    	var grn_companies_id=jsonObj["grn_companies_id"];
+    	var sp_manager=jsonObj["sp_manager"];
+    	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
+    	var sp_jobName=jsonObj["sp_jobName"];
+    	var grn_colors_id=jsonObj["grn_colors_id"];
+    	//var time_running_status=jsonObj["time_running_status"];
+    	//var grn_status_id=jsonObj["grn_status_id"];
+    	var HexColor=jsonObj["HexColor"];
+    	//var tbodyObjCurr = tbodyObj.replace("spOrderIdReplace", id);
+    	var tbodyObjCurr = tbodyObj.replace(/spOrderIdReplace/g,id);
+    	
+    	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
+                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
+					     '<thead onclick="showHideTable(this);">'+
+					         '<tr>'+
+					             '<th class="sp-order " colspan="3" id="sp_order_name_'+id+'">'+
+					             		
+					             	'<div id="so_details_box" class="so-details-box" style="border-color: #'+HexColor+';">'+
+				                    	'<div class="so-color-box" style="background-color: #'+HexColor+';">'+
+				                    		'<span style="">&nbsp;</span>'+
+				                        '</div>'+
+				                        '<div class="so-name-box" >'+
+				                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
+				                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
+				                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
+							                 '</a>'+
+				                        '</div>'+
+				                    '</div>'+	
+					             '</th>'+
+					         '</tr>'+
+					     '</thead>'+
+					     tbodyObjCurr+
+					     '</tbody>'+
+					     '<tfoot>'+
+					         '<tr>'+
+					             '<td colspan="3" class="td-danger">'+
+					             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrderDialog(this)"><span>CLOSE</span></a>'+
+					             '</td>'+ 
+					         '</tr>'+
+					     '</tfoot>'+
+					 '</table>'+
+				 '</div>';
+    	
+    	$('#salesOrderMainDiv').append(divObj);
+	});
+	hideAllTablesData();
+	showRunningTimeTracker();
+	hideModal();
 }
 	
 function showModal(){
