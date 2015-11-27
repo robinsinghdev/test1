@@ -820,7 +820,7 @@ function getAllColorsForSO(){
 	}
 }
 
-var tbodyObjGlobal;
+var tbodyObjGlobal='';
 function getSalesOrders(){
 
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
@@ -1026,50 +1026,45 @@ function timeCatTbodyObj(){
 		       },errorCBTimeCatTbodyObj,successCBTimeCatTbodyObj
 		   );
 		
-		populateFlag=true;
 	}else{
-		populateFlag=true;
+		successCBTimeCatTbodyObj();
 	}
-	
-	var tbodyObj='<tbody>';
-	
-	if(populateFlag==true){
-		jQuery.each(time_cats_arr, function(index,value) {
-		var jsonObj=value;
-		var id=jsonObj["id"];
-		var timeCats=jsonObj["timeCats"];
-		var title=jsonObj["title"];
-		var grn_roles_id=jsonObj["grn_roles_id"];
-		var revision=jsonObj["revision"];
-		var status=jsonObj["status"];
-		
-		tbodyObj+='<tr>'+
-	                 '<td class="order-p-icon">'+
-	                     '<span class="process-icon cm-10">'+
-	                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-	                     '</span>'+
-	                 '</td>'+
-	                 '<td>'+
-	                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
-	                 '</td>'+
-	                 '<td class="order-t-icon">'+
-	                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-						 '</a>'+
-	                 '</td>'+
-	             '</tr>';
-		});
-	}
-	
-	tbodyObj+='</tbody>';
-	
-	return tbodyObj;
 }
 
 //Transaction success callback
 function successCBTimeCatTbodyObj() {
 	alert('db transcation success successCBTimeCatTbodyObj');
-	
 	alert('populateSalesOrders timeout called');
+	
+	var tbodyObj='<tbody>';
+	
+	jQuery.each(time_cats_arr, function(index,value) {
+	var jsonObj=value;
+	var id=jsonObj["id"];
+	var timeCats=jsonObj["timeCats"];
+	var title=jsonObj["title"];
+	var grn_roles_id=jsonObj["grn_roles_id"];
+	var revision=jsonObj["revision"];
+	var status=jsonObj["status"];
+	
+	tbodyObj+='<tr>'+
+                 '<td class="order-p-icon">'+
+                     '<span class="process-icon cm-10">'+
+                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+                     '</span>'+
+                 '</td>'+
+                 '<td>'+
+                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+                 '</td>'+
+                 '<td class="order-t-icon">'+
+                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+					 '</a>'+
+                 '</td>'+
+             '</tr>';
+	});
+	
+	tbodyObj+='</tbody>';
+	tbodyObjGlobal=tbodyObj;
 	populateSalesOrders(tbodyObjGlobal);
 }
 
@@ -1080,7 +1075,6 @@ function errorCBTimeCatTbodyObj(err) {
 }
 
 function populateSalesOrders(tbodyObj){
-	var populateFlag=true;
 	if(salse_orders_arr.length==0){
 		db.transaction
 		  (
@@ -1111,8 +1105,8 @@ function errorCBPopulateSalesOrders(){
 
 function successCBPopulateSalesOrders(){
 	
-	alert("errorCBPopulateSalesOrders");
-	showModal();	
+	alert("successCBPopulateSalesOrders");
+	//showModal();
 	jQuery.each(salse_orders_arr, function(index,value) {
 		alert("index.."+index);
     	var jsonObj=value;
@@ -1163,8 +1157,9 @@ function successCBPopulateSalesOrders(){
     	$('#salesOrderMainDiv').append(divObj);
 	});
 	hideAllTablesData();
-	showRunningTimeTracker();
 	hideModal();
+	showRunningTimeTracker();
+	
 }
 	
 function showModal(){
