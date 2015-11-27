@@ -1188,6 +1188,14 @@ function changeLoginRole(roleId,roleName){
 	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
+			
+		}
+		else{
+			showSaveRunningTimerDialog();
+			return false;
+		}
+		
 		showModal();
 		callSyncWithServer();
 		
@@ -1675,6 +1683,7 @@ function closeSalesOrder(dataObj){
 		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			hideModal();
 			navigator.notification.alert(appRequiresWiFi, function() {});
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -1979,7 +1988,7 @@ function logTimer(obj) {
 function startTimer() {
 	
         TimerFlag = 1;
-        $('#logging_time').timer('remove');
+        $('#logging_time').timer('reset');
         $('#logging_time').timer();
         $('#running_tracker').show();
        
@@ -2038,7 +2047,7 @@ function pauseTimer() {
 
 function resumeTimer() {
 	
-	$('#logging_time').timer('remove');
+	$('#logging_time').timer('reset');
 	var currtimetrackerid = window.localStorage.getItem("trackerkey");
 	var secondsDBValue=0;
 	var tempData;
@@ -2151,12 +2160,13 @@ function deleteTimer() {
 		tx.executeSql("DELETE FROM TIMETRACKER WHERE id=' "+currtimetrackerid+" '");
 	});
 	//window.localStorage.removeItem("trackerkey");
+	//window.localStorage.setItem("trackerkey")=0;
 	window.localStorage["trackerkey"] = '';
 	resetTracker();
 }
 
 function resetTracker() {
-    $('#logging_time').timer('remove');
+    $('#logging_time').timer('reset');
     $('#logging_time').html('00:00');
     $('#timer_' + order + '_' + timecat).removeClass('pause').removeClass('play').addClass('clock').attr('data-action', 'clock');
     $('#timer_img_' + order + '_' + timecat).removeClass('pause').removeClass('play').attr('data-action', 'clock');
@@ -2235,7 +2245,7 @@ function showRunningTimeTracker(){
 	}
 	else{
 		
-		$('#logging_time').timer('remove');
+		$('#logging_time').timer('reset');
 		var currtimetrackerid = window.localStorage.getItem("trackerkey");
 		var currentDateTimeValue=currentDateTime();
 		var secondsDBValue=0;
