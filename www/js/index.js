@@ -1372,7 +1372,6 @@ function getLogTimeListLocal(oid){
 	//soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData
 	
 	//id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer)');
-	alert('getLogTimeListLocal');
 	db.transaction
 	  (
 	       function (tx){
@@ -1380,7 +1379,6 @@ function getLogTimeListLocal(oid){
 	            (
 	                'SELECT id,soTimeId,date,time,crewSize,timecat,comment FROM TIMETRACKER WHERE soTimeId=?',[oid],function(tx,results){
 	                    var len = results.rows.length;
-	                    alert('len...'+len);
 	                    if(len>0){
 	                    	//time=results.rows.item(0)['time'];
 	                    	//secondsDBValue=results.rows.item(0)['secondsData'];
@@ -1754,6 +1752,13 @@ function addLogTimeToApp(dataObj){
 				  secondsVal]
 			,function(tx, results){
 					//alert('Returned ID: ' + results.insertId);
+					navigator.notification.alert(
+		    		    'Time added successfully.',  // message
+		    		    alertConfirm,
+		    		    'Time Tracker',            // title
+		    		    'Ok'                  // buttonName
+		    		);
+					$.mobile.changePage('#view-all-sales-order','slide');
 			 }
 		);
 	});
