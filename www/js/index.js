@@ -92,7 +92,7 @@ var app = {
 		$('#syncCallTimerDiv').timer({
 		    duration: '3m',
 		    callback: function() {
-		    	alert('syncCallTimerDiv');
+		    	alert('syncCallTimerDiv Initialised One');
 		        $('#syncCallTimerDiv').timer('reset');
 		        checkConnectionForSync();
 		    },
@@ -108,11 +108,12 @@ var app = {
 };
 
 function resetSyncTimer(){
+	$('#syncCallTimerDiv').timer('remove');
 	//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
 	$('#syncCallTimerDiv').timer({
 	    duration: '3m',
 	    callback: function() {
-	    	alert('syncCallTimerDiv');
+	    	alert('reseted syncCallTimerDiv');
 	        $('#syncCallTimerDiv').timer('reset');
 	        checkConnectionForSync();
 	    },
@@ -1605,7 +1606,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 		
 		dataObj.time=time;
 		
-		if(time=='00:00'){
+		if(time=='00:00' || (parseInt(logHours)==0 && (parseInt(logMinutes)==0)){
 			navigator.notification.alert(
     		    'Please fill Time Details.',  // message
     		    alertConfirm,
