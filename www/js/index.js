@@ -1606,7 +1606,9 @@ function callAddUpadteLogTime(obj,logTimeType){
 		
 		dataObj.time=time;
 		
-		if(time=='00:00' || (parseInt(logHours)==0 && (parseInt(logMinutes)==0)){
+		var logHoursInt=parseInt(logHours);
+		var logMinutes=parseInt(logMinutes);
+		if(time=='00:00' || ( logHoursInt==0 && logMinutes==0) ){
 			navigator.notification.alert(
     		    'Please fill Time Details.',  // message
     		    alertConfirm,
