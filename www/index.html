@@ -106,7 +106,7 @@
                 
                 <div data-role="content" >
                 	<div id="timeTrackerInfoDiv">
-                	    <a href="#getSOBySONumberDialog" class="mini-btn" data-theme="a" data-role="button"  data-rel="dialog">Add Sales Order</a>
+                	    <a href="#getSOBySONumberDialog" class="mini-btn" data-theme="a" data-role="button"  data-rel="dialog" onclick="getSOBySONumberOpen();">Add Sales Order</a>
                     </div>
                     <hr class="style">
                     
@@ -167,6 +167,8 @@
 					<input type="text" name="sp_jobName" id="sp_jobName" placeholder="Job Name" autocomplete="off" />
 					<label for="Sales Order Number">Choose Color</label>
 					<input type="text" name="chooseColorForSalesOrder" id="chooseColorForSalesOrder" placeholder="Choose Color" autocomplete="off" />
+					<input type="hidden" name="salesOrderColorId" id="salesOrderColorId" />
+					
 					<p style="text-align: center;"><span id="colorForSO" style="width: 50%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
 				</div>
 				
