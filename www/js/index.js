@@ -1453,6 +1453,10 @@ function getLogTimeListLocal(oid){
 	                    }
 	                    else{
 	                    	$('#logTimeHistoryLocalDiv').html('');
+	                    	var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">'+
+												'<div class="process-name">This order has no previous logged time history.</div>'+
+											'</div>';
+							$('#logTimeHistoryLocalDiv').append(logTimeDiv);
 	                    }
 	                }, errorCB
 	            );
