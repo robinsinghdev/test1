@@ -89,8 +89,8 @@ var app = {
 		    duration: '180s',
 		    callback: function() {
 		    	alert('syncCallTimerDiv');
-		        checkConnectionForSync();
 		        $('#syncCallTimerDiv').timer('reset');
+		        checkConnectionForSync();
 		    },
 		    repeat: true //repeatedly call the callback
 		});
@@ -104,6 +104,8 @@ var app = {
 };
 
 function checkConnectionForSync() {
+	$('#syncCallTimerDiv').timer('reset');
+	alert('checkConnectionForSync');
 	var connectionType=checkConnection();
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		callSyncWithServer();
@@ -395,7 +397,6 @@ function checkPreAuth() {
 }
 
 function logout() {
-	$('#syncCallTimerDiv').timer('reset');
     checkConnectionForSync();
 	
 	window.localStorage["password"] = '';
@@ -475,7 +476,6 @@ function handleLogin() {
 					window.localStorage["ttsync"] = 0;
 					
 					checkingUserAssignedRoles();
-					$('#syncCallTimerDiv').timer('reset');
 					checkConnectionForSync();
 					
 					//$.mobile.changePage('#home-page','slide');					
@@ -928,7 +928,7 @@ function getSalesOrders(){
 						                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 						                     '</span>'+
 						                 '</td>'+
-						                 '<td class="timecat-totao-time-td">'+
+						                 '<td class="timecat-total-time-td">'+
 						                     '<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="sp_salesorderNumber" onclick="getTotalTimeForCategory(this);"><span class="time-img" ><img src="img/wifi-icon-24px.png" class="wifi-icon" /></span>&nbsp;<span class="time-data">--:-- hrs</span></span>'+
 						                     //'<br/><span id="orderId_spOrderIdReplace" class="timer">LCL &nbsp;<span class="lcl">--:-- hrs</span></span>'+
 
@@ -1354,6 +1354,7 @@ function getLogTimeListOfOrder(data){
 				   		});
 				   		
 			   		}
+			   		
 			   		getLogTimeListLocal(oid);
 			   		hideModal();
 			   		$.mobile.changePage('#view-log-time-history','slide');
@@ -1462,6 +1463,7 @@ function getLogTimeListLocal(oid){
 	            );
 	       },errorCB,successCB
 	   );
+	$('#historyTab').trigger('click');
 }
 
 
@@ -1615,7 +1617,6 @@ function callAddUpadteLogTime(obj,logTimeType){
 				//window.localStorage.getItem("trackerValueSave") == 1
 				window.localStorage["trackerValueSave"] = 0;
 				// Call Sync
-		        $('#syncCallTimerDiv').timer('reset');
 		        checkConnectionForSync();
 			}
 		}
