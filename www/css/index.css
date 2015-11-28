@@ -386,10 +386,10 @@ ul#userRolesUl li.active a{
 	vertical-align: top;
 }
 
-.timecat-totao-time-td {
+.timecat-total-time-td {
 	font-size: 15px;
 }
-.timecat-totao-time-td .time-img{
+.timecat-totao-time-td img.wifi-icon{
 	vertical-align: top;
 }
 

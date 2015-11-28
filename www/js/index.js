@@ -103,8 +103,21 @@ var app = {
     }
 };
 
+function resetSyncTimer(){
+	//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
+	$('#syncCallTimerDiv').timer({
+	    duration: '180s',
+	    callback: function() {
+	    	alert('syncCallTimerDiv');
+	        $('#syncCallTimerDiv').timer('reset');
+	        checkConnectionForSync();
+	    },
+	    repeat: true //repeatedly call the callback
+	});
+}
+
 function checkConnectionForSync() {
-	$('#syncCallTimerDiv').timer('reset');
+	resetSyncTimer();
 	alert('checkConnectionForSync');
 	var connectionType=checkConnection();
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -692,6 +705,8 @@ function createNewSO(){
 			   		var responseJson = $.parseJSON(data);
 			   		tryAgainSOBySONumber();
 			   		$(".sales-order-msg").html(responseJson.msg);
+			   		
+			   		window.localStorage["solocal"] = 0;
 			   		getCategoriesForTimeTracking();
 				},
 				error:function(data,t,f){
@@ -1218,7 +1233,7 @@ function changeLoginRole(roleId,roleName){
 		}
 		
 		showModal();
-		callSyncWithServer();
+		checkConnectionForSync()
 		
 		window.localStorage["permissions"] = ''+roleId+'';
 		window.localStorage["solocal"] = 0;
@@ -1315,7 +1330,7 @@ function getLogTimeListOfOrder(data){
 				   			}else{
 				   				revisionSpan='<span style="vertical-align: top;" class="text-purple">Work</span>';
 				   			}
-				   			var comments="";	
+				   			var comments=commentsData;	
 				   			if(commentsData==""){
 				   				comments="No Comments Yet.";
 				   			}
@@ -1894,7 +1909,8 @@ function showOrderSOBySONumber(){
 			   success:function(data){
 			   		var responseJson = $.parseJSON(data);
 			   		if(responseJson.status=='success') {
-			   			getCategoriesForTimeTracking();
+			   			window.localStorage["solocal"] = 0;
+				   		getCategoriesForTimeTracking();
 			   		}
 			   		else if(responseJson.status=='fail') {
 			   			$(".sales-order-msg").html(responseJson.msg);
