@@ -86,8 +86,9 @@ var app = {
 		
 		//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
 		$('#syncCallTimerDiv').timer({
-		    duration: '900s',
+		    duration: '180s',
 		    callback: function() {
+		    	alert('syncCallTimerDiv');
 		        checkConnectionForSync();
 		        $('#syncCallTimerDiv').timer('reset');
 		    },
@@ -112,6 +113,7 @@ function checkConnectionForSync() {
 var successTimeTrackerIdArr=[];
 
 function callSyncWithServer() {
+	alert('callSyncWithServer');
 	//alert("callSyncWithServer..");
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
@@ -690,6 +692,7 @@ function createNewSO(){
 			   		var responseJson = $.parseJSON(data);
 			   		tryAgainSOBySONumber();
 			   		$(".sales-order-msg").html(responseJson.msg);
+			   		getCategoriesForTimeTracking();
 				},
 				error:function(data,t,f){
 					hideModal();
@@ -1384,69 +1387,72 @@ function getLogTimeListLocal(oid){
 	                    	//secondsDBValue=results.rows.item(0)['secondsData'];
 	                    	
 	                    	$('#logTimeHistoryLocalDiv').html('');
-					   			var id =  results.rows.item(0)['id'];
-					   			var grn_users_id='';
-					   			var grn_salesorderTime_id= results.rows.item(0)['soTimeId'];
-					   			var date = results.rows.item(0)['date'];
-					   			var decimalTime= '';
-					   			var timer_flag = '';
-					   			var crew_size = results.rows.item(0)['crewSize'];
-					   			var grn_timeCat = results.rows.item(0)['timecat'];
-					   			var commentsData = results.rows.item(0)['comment'];				   			
-					   			var title = results.rows.item(0)['timecat'];
-					   			var grn_timeCat_img = results.rows.item(0)['timecat'];
-					   			var grn_timeCat_trimmed=results.rows.item(0)['timecat'];
-					   			grn_timeCat_trimmed=grn_timeCat_trimmed.replace("_revision", "");
-					   			
-					   			var timeInHours= results.rows.item(0)['time'];
-					   			var totalCrewTimeData = calcTotalCrewTimeBackend(crew_size,timeInHours);
-					   			
-					   			grn_timeCat_img=grn_timeCat_img.replace("_revision", "");
-					   			var revisionSpan;
-					   			if (grn_timeCat.toLowerCase().indexOf("revision") >= 0){
-					   				revisionSpan='<span style="vertical-align: top;" class="text-pink">Revision Work</span>';
-					   			}else{
-					   				revisionSpan='<span style="vertical-align: top;" class="text-purple">Work</span>';
-					   			}
-					   			var comments="";	
-					   			if(commentsData==""){
-					   				comments="No Comments Yet.";
-					   			}
-					   			
-						   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
-											   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
-													'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
+				   			var id =  results.rows.item(0)['id'];
+				   			var grn_users_id='';
+				   			var grn_salesorderTime_id= results.rows.item(0)['soTimeId'];
+				   			var date = results.rows.item(0)['date'];
+				   			var decimalTime= '';
+				   			var timer_flag = '';
+				   			var crew_size = results.rows.item(0)['crewSize'];
+				   			var grn_timeCat = results.rows.item(0)['timecat'];
+				   			var commentsData = results.rows.item(0)['comment'];				   			
+				   			var title = results.rows.item(0)['timecat'];
+				   			var grn_timeCat_img = results.rows.item(0)['timecat'];
+				   			var grn_timeCat_trimmed=results.rows.item(0)['timecat'];
+				   			grn_timeCat_trimmed=grn_timeCat_trimmed.replace("_revision", "");
+				   			
+				   			var timeInHours= results.rows.item(0)['time'];
+				   			var totalCrewTimeData = calcTotalCrewTimeBackend(crew_size,timeInHours);
+				   			
+				   			grn_timeCat_img=grn_timeCat_img.replace("_revision", "");
+				   			var revisionSpan;
+				   			if (grn_timeCat.toLowerCase().indexOf("revision") >= 0){
+				   				revisionSpan='<span style="vertical-align: top;" class="text-pink">Revision Work</span>';
+				   			}else{
+				   				revisionSpan='<span style="vertical-align: top;" class="text-purple">Work</span>';
+				   			}
+				   			var comments="";	
+				   			if(commentsData==""){
+				   				comments="No Comments Yet.";
+				   			}
+				   			
+					   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
+										   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
+												'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
+											'</div>'+
+											'<div class="process-details">'+
+												'<div class="ui-grid-a my-breakpoint">'+
+												  '<div class="ui-block-a">'+
+														'<div class="process-img">'+
+															'<img src="img/'+grn_timeCat_img+'.png">'+            				 
+														'</div>'+
+														'<div class="process-name">'+title.toUpperCase()+'</div>'+
+												  '</div>'+
+												 /* 
+												  '<div class="ui-block-b text-align-right">'+
+														'<span class="link-custom-spam">'+
+															'<a onclick="editLogTime(this);" href="#" data-sotimeid="'+grn_salesorderTime_id+'" data-comment="'+commentsData+'"  '+
+															' data-id="'+id+'" data-date="'+date+'" data-time="'+timeInHours+'" data-crewSize="'+crew_size+'"  data-category="'+grn_timeCat_trimmed+'" >Edit</a>'+
+														'</span>'+	
+												  '</div>'+
+												  */
 												'</div>'+
-												'<div class="process-details">'+
-													'<div class="ui-grid-a my-breakpoint">'+
-													  '<div class="ui-block-a">'+
-															'<div class="process-img">'+
-																'<img src="img/'+grn_timeCat_img+'.png">'+            				 
-															'</div>'+
-															'<div class="process-name">'+title.toUpperCase()+'</div>'+
-													  '</div>'+
-													 /* 
-													  '<div class="ui-block-b text-align-right">'+
-															'<span class="link-custom-spam">'+
-																'<a onclick="editLogTime(this);" href="#" data-sotimeid="'+grn_salesorderTime_id+'" data-comment="'+commentsData+'"  '+
-																' data-id="'+id+'" data-date="'+date+'" data-time="'+timeInHours+'" data-crewSize="'+crew_size+'"  data-category="'+grn_timeCat_trimmed+'" >Edit</a>'+
-															'</span>'+	
-													  '</div>'+
-													  */
+												'<div class="more-process-details-main ">'+
+													'<div class="text-align-right">'+
+														'<a onclick="moreProcessDetails(this);" href="#" class="link">Show Details</a>'+
 													'</div>'+
-													'<div class="more-process-details-main ">'+
-														'<div class="text-align-right">'+
-															'<a onclick="moreProcessDetails(this);" href="#" class="link">Show Details</a>'+
-														'</div>'+
-														'<div class="more-process-details moreDetailsDiv12" style="display: none;">'+
-															'<p class="process-comment">Revision: '+revisionSpan+'</p>'+
-															'<p class="process-comment">Comment: <span>'+comments+'</span></p>'+
-														'</div>'+
-													'</div>'+    
-												'</div>'+
-											'</div>';
+													'<div class="more-process-details moreDetailsDiv12" style="display: none;">'+
+														'<p class="process-comment">Revision: '+revisionSpan+'</p>'+
+														'<p class="process-comment">Comment: <span>'+comments+'</span></p>'+
+													'</div>'+
+												'</div>'+    
+											'</div>'+
+										'</div>';
 						   		
 						   		$('#logTimeHistoryLocalDiv').append(logTimeDiv);
+	                    }
+	                    else{
+	                    	$('#logTimeHistoryLocalDiv').html('');
 	                    }
 	                }, errorCB
 	            );
@@ -1473,6 +1479,8 @@ function addLogTime(){
 	
 	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add');
 	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','add');
+	
+	changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	
 	$.mobile.changePage('#add-log-time','slide');
 }
@@ -1507,6 +1515,8 @@ function editLogTime(dataObj){
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
+	
+	changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	
 	$.mobile.changePage('#add-log-time','slide');
 }
@@ -1748,7 +1758,7 @@ function addLogTimeToApp(dataObj){
 				  dataObj.grn_timeCat,
 				  dataObj.comments,
 				  "complete",
-				  "0", 
+				  "0",
 				  secondsVal]
 			,function(tx, results){
 					//alert('Returned ID: ' + results.insertId);
@@ -2251,6 +2261,8 @@ function logtimeTimer() {
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
+	
+	changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	
 	//alert(window.localStorage.getItem("trackerValueSave"));
 	$.mobile.changePage('#add-log-time','slide');	
