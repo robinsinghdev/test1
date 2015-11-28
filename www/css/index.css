@@ -389,7 +389,7 @@ ul#userRolesUl li.active a{
 .timecat-total-time-td {
 	font-size: 15px;
 }
-.timecat-totao-time-td img.wifi-icon{
+.timecat-total-time-td img.wifi-icon,.time-data{
 	vertical-align: top;
 }
 
