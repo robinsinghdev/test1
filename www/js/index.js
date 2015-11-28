@@ -90,9 +90,8 @@ var app = {
 		
 		//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
 		$('#syncCallTimerDiv').timer({
-		    duration: '3m',
+		    duration: '5m',
 		    callback: function() {
-		    	alert('syncCallTimerDiv Initialised One');
 		        $('#syncCallTimerDiv').timer('reset');
 		        checkConnectionForSync();
 		    },
@@ -111,7 +110,7 @@ function resetSyncTimer(){
 	$('#syncCallTimerDiv').timer('remove');
 	//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
 	$('#syncCallTimerDiv').timer({
-	    duration: '3m',
+	    duration: '5m',
 	    callback: function() {
 	        $('#syncCallTimerDiv').timer('reset');
 	        checkConnectionForSync();
@@ -152,6 +151,7 @@ function callSyncWithServer() {
 	                        		var dataObj={};
 	                        		dataObj.action='addLogTime';
 	                        		dataObj.grn_user=grnUserObj;
+	                        		dataObj.nickname= window.localStorage["nickname"];
 	                        		dataObj.grn_staffTime_id= results.rows.item(i)['grnStaffTimeId'];
 	                        		dataObj.grn_salesorderTime_id= results.rows.item(i)['soTimeId'];
 	                        		dataObj.grn_timeCat= results.rows.item(i)['timecat'];
@@ -163,6 +163,7 @@ function callSyncWithServer() {
 	                        		dataObj.crew_size= results.rows.item(i)['crewSize'];
 	                        		dataObj.comments= results.rows.item(i)['comment'];
 	                        		dataObj.lid= currid;
+	                        		
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
@@ -215,6 +216,7 @@ function callSaveLogTime(obj){
 		var dataObj={};
 		dataObj.action='addLogTime';
 		dataObj.grn_user=grnUserObj;
+		dataObj.nickname= window.localStorage["nickname"];
 		
 		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 		
@@ -227,6 +229,7 @@ function callSaveLogTime(obj){
 		dataObj.minutes= $addUpdateLogTimeForm.find('#logMinutes').val();
 		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
+		
 		
 		var result=saveLogTime(dataObj,updateQuery);
 		if(result=="serverSave"){
@@ -320,6 +323,12 @@ function alertexit(button){
 }
 
 function doLogout() {
+	
+	var randomNumber=getRandomColor();
+	alert("randomNumber.."+randomNumber);
+	var randomColorCode=colorArray[randomNumber-1]["HexColor"];
+	alert("randomNumber.."+randomNumber+"---randomColorCode--"+randomColorCode);
+	
 	var connectionType=checkConnection();
 	//var connectionType="Unknown connection";//For Testing
 	
@@ -607,10 +616,12 @@ function getSOBySONumber(){
 				   			var soInfo=responseJson.soInfo;
 					   		$sp_details_div.find('#sp_jobName').val(soInfo["Job"]);
 					   		var randomNumber=getRandomColor();
-					   		var randomColorCode=colorArray[randomNumber-1]["HexColor"];
+					   		var randomColorId=randomNumber;
+					   		var randomColorCode=colorArray[randomColorId-1]["HexColor"];
+					   		
+					   		$sp_details_div.find('#salesOrderColorId').val(randomColorId);
 					   		$sp_details_div.find('#chooseColorForSalesOrder').val(randomColorCode);
 					   		$sp_details_div.find('#colorForSO').css('background','#'+randomColorCode);
-					   		
 					   		
 					   		$sp_details_div.show();
 					   		
@@ -651,6 +662,8 @@ function tryAgainSOBySONumber(){
 	$('#sp_salesOrderNumber').val('');
 	$sp_details_div.find('#sp_jobName').val('');
 	$sp_details_div.find('#chooseColorForSalesOrder').val('');
+	$sp_details_div.find('#salesOrderColorId').val('');
+	
 	
 	$sp_details_div.hide();
 	$('a#tryAgainBtn').addClass('display-none');
@@ -660,6 +673,10 @@ function tryAgainSOBySONumber(){
 	$(".sales-order-msg").html('');
 	
 	//getTimeTrackerList();
+}
+
+function getSOBySONumberOpen(){
+	tryAgainSOBySONumber();
 }
 
 function getRandomColor(){
@@ -685,9 +702,8 @@ function createNewSO(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			var spJobName=$('#sp_jobName').val();
 			var spSalesorderNumber=$('#sp_salesOrderNumber').val();
-			var grn_colors_id=$('#chooseColorForSalesOrder').val(); 
+			var grn_colors_id=$('#salesOrderColorId').val();
 			showModal();
-			var grn_colors_id=getRandomColor();
 			$.ajax({
 				type : 'POST',
 			   url:appUrl,
@@ -936,7 +952,7 @@ function getSalesOrders(){
 						                     '</span>'+
 						                 '</td>'+
 						                 '<td class="timecat-total-time-td">'+
-						                     '<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="sp_salesorderNumber" onclick="getTotalTimeForCategory(this);"><span class="time-img" ><img src="img/wifi-icon-24px.png" class="wifi-icon" /></span>&nbsp;<span class="time-data">--:-- hrs</span></span>'+
+						                     '<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" onclick="getTotalTimeForCategory(this);"><span class="time-img" ><img src="img/wifi-icon-24px.png" class="wifi-icon" /></span>&nbsp;<span class="time-data">--:-- hrs</span></span>'+
 						                     //'<br/><span id="orderId_spOrderIdReplace" class="timer">LCL &nbsp;<span class="lcl">--:-- hrs</span></span>'+
 
 						                 '</td>'+
@@ -1554,6 +1570,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 		var dataObj={};
 		dataObj.action='addLogTime';
 		dataObj.grn_user=grnUserObj;
+		dataObj.nickname= window.localStorage["nickname"];
 		
 		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 		
