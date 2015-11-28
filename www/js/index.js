@@ -11,6 +11,10 @@ $( document ).on( "mobileinit", function() {
      jQuery.mobile.loader.prototype.options.text = "loading";
      jQuery.mobile.loader.prototype.options.textVisible = true;
      jQuery.mobile.loader.prototype.options.theme = "a";
+     
+     $.mobile.toolbar.prototype.options.updatePagePadding = false;
+     $.mobile.toolbar.prototype.options.hideDuringFocus = "";
+     $.mobile.toolbar.prototype.options.tapToggle = false;
 });
 
 var appUrl='https://dev.bpmetrics.com/grn/m_app/';
