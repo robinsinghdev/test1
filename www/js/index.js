@@ -86,7 +86,7 @@ var app = {
 		
 		//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
 		$('#syncCallTimerDiv').timer({
-		    duration: '180s',
+		    duration: '3m',
 		    callback: function() {
 		    	alert('syncCallTimerDiv');
 		        $('#syncCallTimerDiv').timer('reset');
@@ -106,7 +106,7 @@ var app = {
 function resetSyncTimer(){
 	//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
 	$('#syncCallTimerDiv').timer({
-	    duration: '180s',
+	    duration: '3m',
 	    callback: function() {
 	    	alert('syncCallTimerDiv');
 	        $('#syncCallTimerDiv').timer('reset');
@@ -1478,7 +1478,8 @@ function getLogTimeListLocal(oid){
 	            );
 	       },errorCB,successCB
 	   );
-	$('#historyTab').trigger('click');
+	
+	$('#historyTab').trigger('click').addClass('ui-btn-active');
 }
 
 
