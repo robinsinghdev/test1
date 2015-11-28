@@ -419,8 +419,8 @@ function handleLogin() {
 	$("#submitButton",form).attr("disabled","disabled");
 	var u = $("#username", form).val();
 	var p = $("#password", form).val();
-	u='support@dynaread.com';
-	p='marbleF16XS';
+	//u='support@dynaread.com';
+	//p='marbleF16XS';
 	
 	if(u != '' && p!= '') {
 		
