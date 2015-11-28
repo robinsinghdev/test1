@@ -817,7 +817,7 @@ function getTotalTimeForCategory(dataObj){
 			   				$(dataObj).find(".time-data").html('00:00 hrs');
 			   			}else{
 			   				var timeInHours=convertDecimalTimeToHours(timeData);
-			   				$(dataObj).find(".time-data").html(timeInHours);
+			   				$(dataObj).find(".time-data").html(timeInHours+" hrs");
 			   			}
 			   		}
 			   		else if(responseJson["status"] == "fail"){
