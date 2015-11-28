@@ -113,7 +113,6 @@ function resetSyncTimer(){
 	$('#syncCallTimerDiv').timer({
 	    duration: '3m',
 	    callback: function() {
-	    	alert('reseted syncCallTimerDiv');
 	        $('#syncCallTimerDiv').timer('reset');
 	        checkConnectionForSync();
 	    },
@@ -123,7 +122,6 @@ function resetSyncTimer(){
 
 function checkConnectionForSync() {
 	resetSyncTimer();
-	alert('checkConnectionForSync');
 	var connectionType=checkConnection();
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		callSyncWithServer();
@@ -133,9 +131,6 @@ function checkConnectionForSync() {
 var successTimeTrackerIdArr=[];
 
 function callSyncWithServer() {
-	alert('callSyncWithServer');
-	//alert("callSyncWithServer..");
-	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
 	//window.localStorage["permissions"]
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
@@ -179,24 +174,12 @@ function callSyncWithServer() {
 	                        			
 	                        		}
 	                        	}
-	                        	//alert(results.rows.item(i)['localStatus']+"---"+results.rows.item(i)['time']);
-	                            //$('#resultList').append('<li><a href="#">' + results.rows.item(i)['localStatus']+"--"+ results.rows.item(i)['time'] + '</a></li>');
 	                        }
-	                        //$('#resultList').listview();
-	                        //alert(" before successTimeTrackerIdArr.."+successTimeTrackerIdArr);
 	                    }
 	                }, errorCB
 	            );
 	       },errorCB,successCB
 	   );
-	
-	/*jQuery.each(successTimeTrackerIdArr, function(index,value) {
-		deleteTimeTrackerRow(value);
-	});	*/
-	//alert("after successTimeTrackerIdArr.."+successTimeTrackerIdArr);
-	
-	//window.localStorage["solocal"] = 0;
-	//window.localStorage["tclocal"] = 0;
 	window.localStorage["ttsync"] = 1;
 }
 
@@ -265,8 +248,6 @@ function updateTrackerVariable(){
 }
 
 function saveLogTime(dataObj){
-	//showModal();
-	//alert("saveLogTime called");
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
@@ -275,7 +256,6 @@ function saveLogTime(dataObj){
 	var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		//alert("data saved sync failssss");
 	   return false;
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -285,23 +265,17 @@ function saveLogTime(dataObj){
 		   data:dataObj,
 		   success:function(data){
 		   		var responseJson = $.parseJSON(data);
-		   		//console.log(responseJson);
 		   		if(responseJson.status=='success') {
-		   			//alert(JSON.stringify(dataObj));
-		   			//alert("data saved sync..."+dataObj["lid"]+"---"+dataObj.lid+"...");
 		   			deleteTimeTrackerRow(dataObj["lid"]);
 		   			return true;
 		   		}
 		   		else if(responseJson.status=='fail') {
-		   			//alert("data saved sync failssss");
 		   			return false;
 		   		}
 			},
 			error:function(data,t,f){
 				hideModal();
 				return false;
-				//console.log(data+' '+t+' '+f);
-				navigator.notification.alert(appRequiresWiFi, function() {});
 			}
 		});
 	}
