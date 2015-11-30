@@ -603,18 +603,16 @@ function checkingUserAssignedRoles(){
 		$('ul#userRolesUl li').removeClass('active').show();
 		
 		$.each(rolesArr, function(index,value) {
-			//alert("for loop"+value+'--index---'+index);
 			
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
-				
 				$userRolesUlObj.find("li#"+value+"").show();
-				
 				if(window.localStorage["permissions"]== ''){
 					var permissionValue=value;
 					window.localStorage["permissions"]=''+permissionValue+'';
-					//alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage["permissions"]);
-					//alert(window.localStorage.getItem("permissions"));
+				}
+				
+				if(window.localStorage["permissions"]== value){
 					$('ul#userRolesUl li#'+value+'').addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+value+'').text();
 					$('#userRoleShow').html(currentUserRoleText);
