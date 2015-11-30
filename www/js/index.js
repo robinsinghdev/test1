@@ -593,6 +593,8 @@ function checkingUserAssignedRoles(){
 		var $userRolesUlObj = $("#userRolesUl");
 		var rolesArr=['5','7','9','10'];
 		
+		$('ul#userRolesUl li').removeClass('active');
+		
 		$.each(rolesArr, function(index,value) {
 			//alert("for loop"+value+'--index---'+index);
 			
@@ -600,26 +602,28 @@ function checkingUserAssignedRoles(){
 			if ( $.inArray(value, tempArr) > -1 ) {
 				if(window.localStorage.getItem("permissions")== ''){
 					alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage.getItem("permissions"));
-						//window.localStorage["permissions"]='5';
-						window.localStorage["permissions"] = value;
-						//alert(window.localStorage.getItem("permissions")+"--selecetd permission");
+					//window.localStorage["permissions"]='5';
+					//window.localStorage["permissions"] = value;
+					//alert(window.localStorage.getItem("permissions")+"--selecetd permission");
 					//window.localStorage["permissions"] = value;
 					//alert(window.localStorage.getItem("permissions"));
+					window.localStorage.setItem("permissions")=value;
+					$('ul#userRolesUl li#'+value).addClass('active');
+					var currentUserRoleText = $('ul#userRolesUl li#'+value).text();
+					$('#userRoleShow').html(currentUserRoleText);
 				}
-			}else {
+				
+			}
+			else {
 				alert('removing'+value);
 				$userRolesUlObj.find("li#"+value+"").remove();
 			}
 		});
 		
-		if(window.localStorage.getItem("permissions")== ''){
+		if(window.localStorage.getItem("permissions") ==''){
 			logoutUnAuthorisedUser();
 		}
 		
-		$('ul#userRolesUl li').removeClass('active');
-		$('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').addClass('active');
-		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
-		$('#userRoleShow').html(currentUserRoleText);
 	}
 	else{
 		logoutUnAuthorisedUser();
