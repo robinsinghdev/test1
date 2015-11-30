@@ -1,3 +1,6 @@
+/*$( document ).ready(function() {
+	$("#loginForm").on("submit",handleLogin);
+});*/
 
 $( document ).on( "mobileinit", function() {
     // Make your jQuery Mobile framework configuration changes here!
@@ -411,6 +414,7 @@ function logout() {
 	
 	var form = $("#loginForm");
 	$("#username", form).val(window.localStorage["username"]);
+	$("#password", form).val('');
 	$.mobile.changePage('#login-page','slide');
 }
 
@@ -448,6 +452,7 @@ function handleLogin() {
 			   data:{action:'userLogin',email:u,password:p,check:'1'},
 			   success:function(data,t,f){
 				var responseJson=jQuery.parseJSON(data);
+				alert(responseJson);
 				if(responseJson.status == "success" ){
 					var grnUser=responseJson.grn_user;
 					window.localStorage["username"] = u;
@@ -495,7 +500,7 @@ function handleLogin() {
 					window.localStorage["ttsync"] = 0;
 					
 					var form = $("#loginForm");
-					$("#username", form).val(window.localStorage["username"]);
+					//$("#username", form).val(window.localStorage["username"]);
 					$.mobile.changePage('#login-page','slide');
 					
 					//navigator.notification.alert("Invalid Credentials, please try again", function() {});
@@ -554,6 +559,7 @@ function checkingUserAssignedRoles(){
 		jQuery.each(rolesArr, function(index,value) {
 			if ( $.inArray(value, tempArr) > -1 ) {
 				if(index==0){
+					alert(window.localStorage.getItem("permissions"));
 					if(window.localStorage.getItem("permissions")== ''){
 						//window.localStorage["permissions"]='5';
 						window.localStorage["permissions"] = value;
@@ -576,8 +582,6 @@ function checkingUserAssignedRoles(){
 		
 		$('ul#userRolesUl li').removeClass('active');
 		$('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').addClass('active');
-		//	/$('#userRolesUl').listview();
-		
 		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
 		$('#userRoleShow').html(currentUserRoleText);
 	}	
@@ -1261,6 +1265,8 @@ function changeLoginRole(roleId,roleName){
 		
 		$('ul#userRolesUl li').removeClass('active');
 		$('ul#userRolesUl li#'+roleId+'').addClass('active');
+		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
+		$('#userRoleShow').html(currentUserRoleText);
 		
 		$('#salesOrderMainDiv').html('');
 		time_cats_arr=[];
