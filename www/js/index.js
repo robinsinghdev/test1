@@ -145,7 +145,12 @@ function callSyncWithServer() {
 	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
 	                    //alert(" TIMETRACKER table length...."+len);
+	                    if(len == 0){
+	                    	window.localStorage["sync_flag"] = 0;
+	                    }
+	                    
 	                    if(len>0){
+	                    	window.localStorage["sync_flag"] = 1;
 	                        for (var i = 0; i < len; i++) {
 	                            //alert(results.rows.item(i)['timeCats']);
 	                        	if(results.rows.item(i)['localStatus']=='complete'){
@@ -184,7 +189,7 @@ function callSyncWithServer() {
 	            );
 	       },errorCB,successCB
 	   );
-	window.localStorage["ttsync"] = 1;
+	
 }
 
 //Query the success callback
@@ -394,33 +399,53 @@ function checkPreAuth() {
 	}
 }
 
+function dataSyncCheck() {
+	if (window.localStorage.getItem("sync_flag") == 1 ) {
+		navigator.notification.alert('Data Syncing Problem, please logout after sometime.',alertConfirm,'BP Metrics','Ok');
+	}
+    else if (window.localStorage.getItem("sync_flag") == 0 ) {
+    	logout();
+    }
+}
+
 function logout() {
-    checkConnectionForSync();
+	showModal();
+	checkConnectionForSync();
 	
-	window.localStorage["password"] = '';
-	window.localStorage["user_logged_in"] = 0;
+    if (window.localStorage.getItem("sync_flag") == 1 ) {
+    	setTimeout(dataSyncCheck, 4000);
+    	hideModal();
+	}
+    else if (window.localStorage.getItem("sync_flag") == 0 ) {
+		checkConnectionForSync();
 	
-	window.localStorage["grnUser"] = '';
-	window.localStorage["ID"] = '';
-	window.localStorage["grn_companies_id"] = '';
-	window.localStorage["nickname"] = '';
-	window.localStorage["grn_roles_id"] = '';
-	window.localStorage["permissions"] = '';
-	
-	window.localStorage["email"] = '';
-	window.localStorage["datasync"] = 0;
-	window.localStorage["solocal"] = 0;
-	window.localStorage["tclocal"] = 0;
-	window.localStorage["ttsync"] = 0;
-	
-	var form = $("#loginForm");
-	$("#username", form).val(window.localStorage["username"]);
-	$("#password", form).val('');
-	$.mobile.changePage('#login-page','slide');
+		window.localStorage["password"] = '';
+		window.localStorage["user_logged_in"] = 0;
+		
+		window.localStorage["grnUser"] = '';
+		window.localStorage["ID"] = '';
+		window.localStorage["grn_companies_id"] = '';
+		window.localStorage["nickname"] = '';
+		window.localStorage["grn_roles_id"] = '';
+		window.localStorage["permissions"] = '';
+		
+		window.localStorage["email"] = '';
+		window.localStorage["datasync"] = 0;
+		window.localStorage["solocal"] = 0;
+		window.localStorage["tclocal"] = 0;
+		window.localStorage["sync_flag"] = 0;
+		
+		var form = $("#loginForm");
+		$("#username", form).val(window.localStorage["username"]);
+		$("#password", form).val('');
+		$.mobile.changePage('#login-page','slide');
+		hideModal();
+	}	
 }
 
 function logoutUnAuthorisedUser(){
 	logout();
+	hideModal();
 	navigator.notification.alert('You do not have authorized role for login.',alertConfirm,'BP Metrics','Ok');
 	return false;
 }
@@ -473,13 +498,16 @@ function handleLogin() {
 					if (window.localStorage.getItem("permissions") === null ) {
 						window.localStorage["permissions"] = '';
 					}
+					
 					window.localStorage["grn_roles_id"] = grnUser["grn_roles_id"];
 					//window.localStorage["permissions"] = grnUser["permissions"];
 					window.localStorage["email"] = grnUser["email"];
 					window.localStorage["trackerValueSave"]=0;
 					window.localStorage["solocal"] = 0;
 					window.localStorage["tclocal"] = 0;
-					window.localStorage["ttsync"] = 0;
+					if (window.localStorage.getItem("sync_flag") === null ) {
+						window.localStorage["sync_flag"] = 0;
+					}
 					
 					checkingUserAssignedRoles();
 					checkConnectionForSync();
@@ -503,7 +531,9 @@ function handleLogin() {
 					window.localStorage["trackerValueSave"]=0;
 					window.localStorage["solocal"] = 0;
 					window.localStorage["tclocal"] = 0;
-					window.localStorage["ttsync"] = 0;
+					if (window.localStorage.getItem("sync_flag") === null ) {
+						window.localStorage["sync_flag"] = 0;
+					}
 					
 					var form = $("#loginForm");
 					//$("#username", form).val(window.localStorage["username"]);
@@ -1173,7 +1203,7 @@ function populateSalesOrders(tbodyObj){
 }
 
 function errorCBPopulateSalesOrders(err){
-	alert("Populate Sales Orders Error Code"+err.code);
+	//alert("Populate Sales Orders Error Code"+err.code);
 }
 
 function successCBPopulateSalesOrders(){
