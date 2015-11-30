@@ -600,17 +600,18 @@ function checkingUserAssignedRoles(){
 			
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
-				if(window.localStorage.getItem("permissions")== ''){
-					alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage.getItem("permissions"));
+				if(window.localStorage["permissions"]== ''){
+					alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage["permissions"]);
 					//window.localStorage["permissions"]='5';
 					//window.localStorage["permissions"] = value;
 					//alert(window.localStorage.getItem("permissions")+"--selecetd permission");
 					//window.localStorage["permissions"] = value;
 					//alert(window.localStorage.getItem("permissions"));
-					window.localStorage.setItem("permissions")=value;
+					
 					$('ul#userRolesUl li#'+value).addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+value).text();
 					$('#userRoleShow').html(currentUserRoleText);
+					window.localStorage["permissions"]=value;
 				}
 				
 			}
