@@ -327,52 +327,6 @@ function alertexit(button){
 
 function doLogout() {
 	
-	//var grn_roles_id_string=window.localStorage["grn_roles_id"];
-	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
-	var grn_roles_id_string= "7,9";
-	var tempArr = new Array();
-	tempArr = grn_roles_id_string.split(",");
-	alert("grn_roles_id_string---"+tempArr.length+"--"+grn_roles_id_string+"---tempArr---"+tempArr);
-	if(tempArr.length > 0){
-		
-		var $userRolesUlObj = $("#userRolesUl");
-		var rolesArr=['5','7','9','10'];
-		
-		$.each(rolesArr, function(index,value) {
-			alert("for loop"+value+index);
-			
-			var firstRoleFoundFlag=false;
-			if ( $.inArray(value, tempArr) > -1 ) {
-				firstRoleFoundFlag=true;
-				if(firstRoleFoundFlag==true && window.localStorage.getItem("permissions")== ''){
-					alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage.getItem("permissions"));
-					if(window.localStorage.getItem("permissions")== ''){
-						//window.localStorage["permissions"]='5';
-						window.localStorage["permissions"] = value;
-						alert(window.localStorage.getItem("permissions")+"--selecetd permission");
-					}
-					//window.localStorage["permissions"] = value;
-					//alert(window.localStorage.getItem("permissions"));
-					firstRoleFoundFlag=false;
-				}
-			}else {
-				$userRolesUlObj.find("li#"+value+"").remove();
-			}
-		});
-		
-		/*if ( $.inArray(window.localStorage.getItem("permissions"), rolesArr) > -1 ) {
-			alert("found---"+window.localStorage.getItem("permissions"));
-		}else{
-			//window.localStorage["permissions"]='5';
-			window.localStorage.setItem("permissions")='5';
-		}*/
-		
-		$('ul#userRolesUl li').removeClass('active');
-		$('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').addClass('active');
-		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
-		$('#userRoleShow').html(currentUserRoleText);
-	}	
-	
 	var connectionType=checkConnection();
 	//var connectionType="Unknown connection";//For Testing
 	
@@ -465,6 +419,12 @@ function logout() {
 	$.mobile.changePage('#login-page','slide');
 }
 
+function logoutUnAuthorisedUser(){
+	logout();
+	navigator.notification.alert('You do not have authorized role for login.',alertConfirm,'BP Metrics','Ok');
+	return false;
+}
+
 function handleLogin() {
 	//checkConnection();
 	//console.log('handle login called');
@@ -499,7 +459,6 @@ function handleLogin() {
 			   data:{action:'userLogin',email:u,password:p,check:'1'},
 			   success:function(data,t,f){
 				var responseJson=jQuery.parseJSON(data);
-				alert("responseJson login.."+JSON.stringify(responseJson));
 				if(responseJson.status == "success" ){
 					var grnUser=responseJson.grn_user;
 					window.localStorage["username"] = u;
@@ -595,27 +554,27 @@ function checkingUserAssignedRoles(){
 	
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
 	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
-	//var grn_roles_id_string= "7,9";
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
-	alert("grn_roles_id_string---"+tempArr.length+"--"+grn_roles_id_string+"---tempArr---"+tempArr);
+	
+	//alert("grn_roles_id_string---"+tempArr.length+"--"+grn_roles_id_string+"---tempArr---"+tempArr);
 	if(tempArr.length > 0){
 		
 		var $userRolesUlObj = $("#userRolesUl");
 		var rolesArr=['5','7','9','10'];
 		
 		$.each(rolesArr, function(index,value) {
-			alert("for loop"+value+'--index---'+index);
+			//alert("for loop"+value+'--index---'+index);
 			
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
 				firstRoleFoundFlag=true;
 				if(firstRoleFoundFlag==true && window.localStorage.getItem("permissions")== ''){
-					alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage.getItem("permissions"));
+					//alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage.getItem("permissions"));
 					if(window.localStorage.getItem("permissions")== ''){
 						//window.localStorage["permissions"]='5';
 						window.localStorage["permissions"] = value;
-						alert(window.localStorage.getItem("permissions")+"--selecetd permission");
+						//alert(window.localStorage.getItem("permissions")+"--selecetd permission");
 					}
 					//window.localStorage["permissions"] = value;
 					//alert(window.localStorage.getItem("permissions"));
@@ -626,17 +585,17 @@ function checkingUserAssignedRoles(){
 			}
 		});
 		
-		/*if ( $.inArray(window.localStorage.getItem("permissions"), rolesArr) > -1 ) {
-			alert("found---"+window.localStorage.getItem("permissions"));
-		}else{
-			//window.localStorage["permissions"]='5';
-			window.localStorage.setItem("permissions")='5';
-		}*/
+		if(window.localStorage.getItem("permissions")== ''){
+			logoutUnAuthorisedUser();
+		}
 		
 		$('ul#userRolesUl li').removeClass('active');
 		$('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').addClass('active');
 		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
 		$('#userRoleShow').html(currentUserRoleText);
+	}
+	else{
+		logoutUnAuthorisedUser();
 	}
 }
 
@@ -1606,7 +1565,7 @@ function editLogTime(dataObj){
 	$addUpdateLogTimeForm.find('#logHours').val(timeArr[0]);
 	$addUpdateLogTimeForm.find('#logMinutes').val(timeArr[1]);
 	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
-	$addUpdateLogTimeForm.find('#logComment').val(comment);
+	$addUpdateLogTimeForm.find('#logComment').val('');
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
