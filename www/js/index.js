@@ -595,7 +595,6 @@ function checkingUserAssignedRoles(){
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
 	
-	alert("grn_roles_id_string---"+tempArr.length+"--"+grn_roles_id_string+"---tempArr---"+tempArr);
 	if(tempArr.length > 0){
 		
 		var $userRolesUlObj = $("#userRolesUl");
@@ -611,24 +610,24 @@ function checkingUserAssignedRoles(){
 				if(window.localStorage["permissions"]== ''){
 					var permissionValue=value;
 					window.localStorage["permissions"]=''+permissionValue+'';
+					
 					//alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage["permissions"]);
-					//window.localStorage["permissions"]='5';
-					//window.localStorage["permissions"] = value;
-					//alert(window.localStorage.getItem("permissions")+"--selecetd permission");
-					//window.localStorage["permissions"] = value;
-					//alert(window.localStorage.getItem("permissions"));
+					alert(window.localStorage.getItem("permissions"));
+					$userRolesUlObj.find("li#"+value+"").show();
+					$('ul#userRolesUl li#'+value+'').addClass('active');
+					var currentUserRoleText = $('ul#userRolesUl li#'+value+'').text();
+					$('#userRoleShow').html(currentUserRoleText);
 				}
 			}
 			else {
 				alert('removing'+value);
-				$userRolesUlObj.find("li#"+value+"").remove();
+				$userRolesUlObj.find("li#"+value+"").hide();
 			}
 		});
 		
 		if(window.localStorage["permissions"] ==''){
 			logoutUnAuthorisedUser();
 		}
-		alert(window.localStorage.getItem("permissions"));
 	}
 	else{
 		logoutUnAuthorisedUser();
