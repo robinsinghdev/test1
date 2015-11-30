@@ -1178,7 +1178,7 @@ function successCBTimeCatTbodyObj() {
 
 //Transaction error callback
 function errorCBTimeCatTbodyObj(err) {
-	alert("Time Category Error processing SQL: "+err.code);
+	//alert("Time Category Error processing SQL: "+err.code);
 }
 
 function populateSalesOrders(tbodyObj){
