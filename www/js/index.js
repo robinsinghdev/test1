@@ -601,19 +601,15 @@ function checkingUserAssignedRoles(){
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
 				if(window.localStorage["permissions"]== ''){
-					alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage["permissions"]);
+					var permissionValue=value;
+					window.localStorage["permissions"]=''+permissionValue+'';
+					//alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage["permissions"]);
 					//window.localStorage["permissions"]='5';
 					//window.localStorage["permissions"] = value;
 					//alert(window.localStorage.getItem("permissions")+"--selecetd permission");
 					//window.localStorage["permissions"] = value;
 					//alert(window.localStorage.getItem("permissions"));
-					
-					$('ul#userRolesUl li#'+value).addClass('active');
-					var currentUserRoleText = $('ul#userRolesUl li#'+value).text();
-					$('#userRoleShow').html(currentUserRoleText);
-					window.localStorage["permissions"]=value;
 				}
-				
 			}
 			else {
 				alert('removing'+value);
@@ -621,10 +617,10 @@ function checkingUserAssignedRoles(){
 			}
 		});
 		
-		if(window.localStorage.getItem("permissions") ==''){
+		if(window.localStorage["permissions"] ==''){
 			logoutUnAuthorisedUser();
 		}
-		
+		alert(window.localStorage.getItem("permissions"));
 	}
 	else{
 		logoutUnAuthorisedUser();
