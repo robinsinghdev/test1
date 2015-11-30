@@ -1,37 +1,48 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.example.tracker" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" 
-xmlns:gap   = "http://phonegap.com/ns/1.0"
+<widget id="com.example.tracker" 
+version="0.1.0" 
+versionCode = "2" 
+xmlns="http://www.w3.org/ns/widgets" 
+xmlns:gap   = "http://phonegap.com/ns/1.0" 
 xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>BP</name>
+    <name>BP Metrics</name>
     <description>
-        A sample application that track time.
+        BP Metrics Application for time tracking offline and online.
     </description>
-    <author email="dev@cordova.apache.org" href="http://phonegap.com">
-        R Team
+    <author email="hdekkers@dynaread.com" href="https://dev.bpmetrics.com/grn/">
+        Hans Dekkers
     </author>
     
     <content src="index.html" />
     
     <preference name="permissions" value="none"/>
 
-    <!-- to enable individual permissions use the following examples -->
+    <!-- Enabling individual permissions -->
     <feature name="http://api.phonegap.com/1.0/file"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
     <feature name="http://api.phonegap.com/1.0/notification"/>
     
+     <!--    Phonegap Cloud Build Plugin Defination -->
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
 	<gap:plugin name="io.litehelpers.cordova.sqlite" source="pgb" version="0.7.10" />
 	<gap:plugin name="org.apache.cordova.dialogs" source="pgb" version="0.2.10" />
 	<gap:plugin name="org.apache.cordova.network-information" source="pgb" version="0.2.12" />
     
-    <!-- <gap:plugin name="cordova-plugin-whitelist" source="npm" />
+     
+    <gap:plugin name="cordova-plugin-whitelist" source="npm" />
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
     <gap:plugin name="org.apache.cordova.network-information" version="0.2.12" />
     <gap:plugin name="org.apache.cordova.dialogs" version="0.2.10" />
-    <gap:plugin name="io.litehelpers.cordova.sqlite" version="0.7.10" /> -->
-<!--     <gap:plugin name="com.brodysoft.sqliteplugin" version="1.0.6" /> -->
+    <gap:plugin name="io.litehelpers.cordova.sqlite" version="0.7.10" />
+    <gap:plugin name="com.brodysoft.sqliteplugin" version="1.0.6" />
     
-    <!-- <plugin name="cordova-plugin-whitelist" version="1" /> -->
+    <!--    Cordova Phonegap Build Plugin Defination -->
+    <!-- 
+    <plugin name="cordova-plugin-whitelist" version="1" />
+    <plugin name="cordova-plugin-network-information" />
+    <plugin name="cordova-plugin-dialogs"  />
+    <plugin name="cordova-sqlite-storage"  />
+     -->
     
     <access origin="*" />
     <allow-intent href="http://*/*" />
