@@ -619,7 +619,6 @@ function checkingUserAssignedRoles(){
 				}
 			}
 			else {
-				alert('removing'+value);
 				$userRolesUlObj.find("li#"+value+"").hide();
 			}
 		});
