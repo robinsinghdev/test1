@@ -599,7 +599,7 @@ function checkingUserAssignedRoles(){
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
 				if(window.localStorage.getItem("permissions")== ''){
-					//alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage.getItem("permissions"));
+					alert("for loop index"+index+"---"+value+"---permissions----"+window.localStorage.getItem("permissions"));
 						//window.localStorage["permissions"]='5';
 						window.localStorage["permissions"] = value;
 						//alert(window.localStorage.getItem("permissions")+"--selecetd permission");
@@ -607,6 +607,7 @@ function checkingUserAssignedRoles(){
 					//alert(window.localStorage.getItem("permissions"));
 				}
 			}else {
+				alert('removing'+value);
 				$userRolesUlObj.find("li#"+value+"").remove();
 			}
 		});
