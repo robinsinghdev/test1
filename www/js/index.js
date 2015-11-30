@@ -326,6 +326,7 @@ function alertexit(button){
 }
 
 function doLogout() {
+	
 	var connectionType=checkConnection();
 	//var connectionType="Unknown connection";//For Testing
 	
@@ -452,7 +453,7 @@ function handleLogin() {
 			   data:{action:'userLogin',email:u,password:p,check:'1'},
 			   success:function(data,t,f){
 				var responseJson=jQuery.parseJSON(data);
-				alert(responseJson);
+				alert("responseJson login.."+JSON.stringify(responseJson));
 				if(responseJson.status == "success" ){
 					var grnUser=responseJson.grn_user;
 					window.localStorage["username"] = u;
@@ -549,9 +550,8 @@ function checkingUserAssignedRoles(){
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
 	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
 	var tempArr = new Array();
-	if(grn_roles_id_string.length > 0){
-		
-		tempArr = grn_roles_id_string.split(",");
+	tempArr = grn_roles_id_string.split(",");
+	if(tempArr.length > 0){
 		
 		var $userRolesUlObj = $("#userRolesUl");
 		var rolesArr=['5','7','9','10'];
