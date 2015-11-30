@@ -587,7 +587,7 @@ function checkingUserAssignedRoles(){
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
 	
-	//alert("grn_roles_id_string---"+tempArr.length+"--"+grn_roles_id_string+"---tempArr---"+tempArr);
+	alert("grn_roles_id_string---"+tempArr.length+"--"+grn_roles_id_string+"---tempArr---"+tempArr);
 	if(tempArr.length > 0){
 		
 		var $userRolesUlObj = $("#userRolesUl");
