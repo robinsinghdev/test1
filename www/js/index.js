@@ -409,6 +409,14 @@ function dataSyncCheck() {
 }
 
 function logout() {
+	if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
+		
+	}
+	else{
+		showSaveRunningTimerDialog();
+		return false;
+	}
+	
 	showModal();
 	checkConnectionForSync();
 	
