@@ -432,6 +432,7 @@ function handleLogin() {
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			
 			if(window.localStorage["user_logged_in"] ==1) {
+				$('#userFullName').html(window.localStorage.getItem("full_name"));
 				checkingUserAssignedRoles();
 				$.mobile.changePage('#home-page',{ transition: "slideup"});
 			}
@@ -539,38 +540,47 @@ function handleLogin() {
 }
 
 function checkingUserAssignedRoles(){
-	if(window.localStorage.getItem("permissions")== ''){
-		window.localStorage["permissions"]='5';
-	}
+	
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
 	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
 	var tempArr = new Array();
-	tempArr = grn_roles_id_string.split(",");
-	
-	var $userRolesUlObj = $("#userRolesUl");
-	var rolesArr=['5','7','9','10'];
-	
-	jQuery.each(rolesArr, function(index,value) {
-		if ( $.inArray(value, tempArr) > -1 ) {
-			/*if(index==0){
-				window.localStorage["permissions"] = value;
-				alert(window.localStorage.getItem("permissions"));
-			}*/
-		}else {
-			$userRolesUlObj.find("li#"+value+"").remove();
-		}
-	});
-	
-	/*if ( $.inArray(window.localStorage.getItem("permissions"), rolesArr) > -1 ) {
-		alert("found---"+window.localStorage.getItem("permissions"));
-	}else{
-		//window.localStorage["permissions"]='5';
-		window.localStorage.setItem("permissions")='5';
-	}*/
-	
-	$('ul#userRolesUl li').removeClass('active');
-	$('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').addClass('active');
-	//	/$('#userRolesUl').listview();
+	if(grn_roles_id_string.length > 0){
+		
+		tempArr = grn_roles_id_string.split(",");
+		
+		var $userRolesUlObj = $("#userRolesUl");
+		var rolesArr=['5','7','9','10'];
+		
+		jQuery.each(rolesArr, function(index,value) {
+			if ( $.inArray(value, tempArr) > -1 ) {
+				if(index==0){
+					if(window.localStorage.getItem("permissions")== ''){
+						//window.localStorage["permissions"]='5';
+						window.localStorage["permissions"] = value;
+						alert(window.localStorage.getItem("permissions"));
+					}
+					//window.localStorage["permissions"] = value;
+					//alert(window.localStorage.getItem("permissions"));
+				}
+			}else {
+				$userRolesUlObj.find("li#"+value+"").remove();
+			}
+		});
+		
+		/*if ( $.inArray(window.localStorage.getItem("permissions"), rolesArr) > -1 ) {
+			alert("found---"+window.localStorage.getItem("permissions"));
+		}else{
+			//window.localStorage["permissions"]='5';
+			window.localStorage.setItem("permissions")='5';
+		}*/
+		
+		$('ul#userRolesUl li').removeClass('active');
+		$('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').addClass('active');
+		//	/$('#userRolesUl').listview();
+		
+		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
+		$('#userRoleShow').html(currentUserRoleText);
+	}	
 }
 
 function getSOBySONumber(){
@@ -988,7 +998,7 @@ function getSalesOrders(){
 										                    		'<span style="">&nbsp;</span>'+
 										                        '</div>'+
 										                        '<div class="so-name-box" >'+
-										                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
+										                        	'<span class="" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</span>'+
 										                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 										                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 													                 '</a>'+
@@ -1478,7 +1488,7 @@ function getLogTimeListLocal(oid){
 	                    else{
 	                    	$('#logTimeHistoryLocalDiv').html('');
 	                    	var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">'+
-												'<div class="process-name">This order has no previous logged time history.</div>'+
+												'<div class="process-name">No unsynced local time history.</div>'+
 											'</div>';
 							$('#logTimeHistoryLocalDiv').append(logTimeDiv);
 	                    }
@@ -1746,6 +1756,7 @@ function updateLogTimeToServer(dataObj){
 	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		hideModal();
 		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
 	}
 	else if(connectionType=="WiFi connection"){
