@@ -1372,7 +1372,7 @@ function getLogTimeListOfOrder(data){
 			   		
 			   		if(records_arr==null || records_arr.length==0) {
 			   			var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">'+
-												'<div class="process-name">This order has no previous logged time history.</div>'+
+												'<div class="process-name">This order has no previous logged time history</div>'+
 										'</div>';
 			   			$('#logTimeHistoryDiv').append(logTimeDiv);
 			   		}
@@ -1539,7 +1539,7 @@ function getLogTimeListLocal(oid){
 	                    else{
 	                    	$('#logTimeHistoryLocalDiv').html('');
 	                    	var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 text-align-center">'+
-												'<div class="process-name">No unsynced local time history.</div>'+
+												'<div class="process-name">No unsynced local time history</div>'+
 											'</div>';
 							$('#logTimeHistoryLocalDiv').append(logTimeDiv);
 	                    }
