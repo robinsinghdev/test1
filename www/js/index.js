@@ -187,6 +187,9 @@ function callSyncWithServer() {
 	       },errorCB,successCB
 	   );
 	
+	//navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
+	$("#callSyncNowBtn").removeAttr("disabled");
+	
 }
 
 function checkDataForSync() {
@@ -196,10 +199,12 @@ function checkDataForSync() {
 	                    var len = results.rows.length;
 	                    if(len == 0){
 	                    	window.localStorage["sync_flag"] = 0;
+	                    	$("#callSyncNowBtn").removeAttr("disabled");
 	                    }
 	                    
 	                    if(len>0){
 	                    	window.localStorage["sync_flag"] = 1;
+	            	    	checkConnectionForSync();
 	                    }
 	                }, errorCB
 	            );
@@ -215,15 +220,16 @@ function callSyncNow() {
 		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		showModal();
+		
+		$("#callSyncNowBtn").attr("disabled","disabled");
 		checkDataForSync();
+		
+		showModal();
 		if (window.localStorage.getItem("sync_flag") == 1 ) {
 			checkConnectionForSync();
 		}
 	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
-	    	hideModal();
-	    	navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
-	    	return false;
+	    	//$("#callSyncNowBtn").removeAttr("disabled");
 	    }
 		hideModal();
 	}
@@ -454,10 +460,11 @@ function logout() {
 		return false;
 	}
 	showModal();
+	
 	checkDataForSync();
 	
     if (window.localStorage.getItem("sync_flag") == 1 ) {
-    	checkConnectionForSync();
+    	//checkConnectionForSync();
     	setTimeout(dataSyncCheck, 4000);
     	hideModal();
 	}
