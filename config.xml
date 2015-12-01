@@ -23,19 +23,17 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <feature name="http://api.phonegap.com/1.0/notification"/>
     
      <!--    Phonegap Cloud Build Plugin Defination -->
-    <!-- 
-    <gap:plugin name="cordova-plugin-whitelist" source="npm"  />
-    <gap:plugin name="org.apache.cordova.network-information" version="0.2.12" />
-    <gap:plugin name="org.apache.cordova.dialogs" version="0.2.10" />
-    <gap:plugin name="io.litehelpers.cordova.sqlite" version="0.7.10" />
-    <gap:plugin name="com.brodysoft.sqliteplugin" version="1.0.6" />
-     -->
-    <plugin name="cordova-plugin-whitelist" spec="1.0.0" />
-    <plugin name="com.brodysoft.sqliteplugin" source="pgb" spec="n/a" />
+     <!-- 
+    <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
+	<gap:plugin name="io.litehelpers.cordova.sqlite" source="pgb" version="0.7.10" />
+	<gap:plugin name="org.apache.cordova.dialogs" source="pgb" version="0.2.10" />
+	<gap:plugin name="org.apache.cordova.network-information" source="pgb" version="0.2.12" />
+ 	-->
+	<plugin name="cordova-plugin-whitelist" spec="1.0.0" />
 	<plugin name="io.litehelpers.cordova.sqlite" source="pgb" spec="0.7.10" />
 	<plugin name="org.apache.cordova.dialogs" source="pgb" spec="0.2.10" />
 	<plugin name="org.apache.cordova.network-information" source="pgb" spec="0.2.12" />
-    
+	    
     <!--    Cordova Phonegap Build Plugin Defination -->
     <!-- 
     <plugin name="cordova-plugin-whitelist" version="1" />
