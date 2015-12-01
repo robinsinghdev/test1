@@ -225,9 +225,7 @@ function callSyncNow() {
 	    	navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
 	    	return false;
 	    }
-		
 		hideModal();
-		navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
 	}
 }
 
