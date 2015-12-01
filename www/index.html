@@ -49,7 +49,7 @@
 					</div>
                 </div>
             </div>
-            
+             
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
 					<a href="#overlayPanel" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext">Roles Menu</a>
@@ -72,7 +72,7 @@
                 		<div>
                 			<h4>Welcome, <span id="userFullName"></span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span id="userRoleShow"></span></h4>
                 		</div>	
-                		<div>
+                		<div class="home-links-div" >
 	                		<ul class="home-page-menu-ul" data-role="listview"  data-divider-theme="a">
 	                			<li data-role="list-divider">Sales Order</li> 
 							    <li data-icon="bars"><a href="#" onclick="getCategoriesForTimeTracking();">Open Sales Orders</a></li>
@@ -80,7 +80,12 @@
 							    <li data-role="list-divider">User Roles</li>
 							    <li data-icon="action"><a href="#overlayPanel" >Select Role </a></li>
 							</ul>
+							<br/>
 						</div>
+						<br/>
+						<div class="sync-btn-div">
+	                	    <a href="#" class="mini-btn" data-theme="a" data-role="button"  onclick="callSyncNow();">Set <img src='img/wifi-icon-16px.png' class='wifi-icon' /></a>
+	                    </div>
 						
 						<div class="display-none">
 							<div id="syncCallTimerDiv"> </div>

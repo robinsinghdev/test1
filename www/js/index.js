@@ -1,6 +1,3 @@
-/*$( document ).ready(function() {
-	$("#loginForm").on("submit",handleLogin);
-});*/
 
 $( document ).on( "mobileinit", function() {
     // Make your jQuery Mobile framework configuration changes here!
@@ -20,7 +17,7 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.tapToggle = false;
 });
 
-var appUrl='https://www.bpmetrics.com/grn/m_app/';
+var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
@@ -190,6 +187,48 @@ function callSyncWithServer() {
 	       },errorCB,successCB
 	   );
 	
+}
+
+function checkDataForSync() {
+	db.transaction(
+	       function (tx){
+	            tx.executeSql('SELECT soTimeId,date,time FROM TIMETRACKER',[],function(tx,results){
+	                    var len = results.rows.length;
+	                    if(len == 0){
+	                    	window.localStorage["sync_flag"] = 0;
+	                    }
+	                    
+	                    if(len>0){
+	                    	window.localStorage["sync_flag"] = 1;
+	                    }
+	                }, errorCB
+	            );
+	       },errorCB,successCB
+	   );
+}
+
+function callSyncNow() {
+	var connectionType=checkConnection();
+	//var connectionType="WiFi connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+	}
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		showModal();
+		checkDataForSync();
+		if (window.localStorage.getItem("sync_flag") == 1 ) {
+			checkConnectionForSync();
+		}
+	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
+	    	hideModal();
+	    	navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
+	    	return false;
+	    }
+		
+		hideModal();
+		navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
+	}
 }
 
 //Query the success callback
@@ -416,11 +455,11 @@ function logout() {
 		showSaveRunningTimerDialog();
 		return false;
 	}
-	
 	showModal();
-	checkConnectionForSync();
+	checkDataForSync();
 	
     if (window.localStorage.getItem("sync_flag") == 1 ) {
+    	checkConnectionForSync();
     	setTimeout(dataSyncCheck, 4000);
     	hideModal();
 	}
