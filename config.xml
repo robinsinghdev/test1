@@ -52,6 +52,8 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <icon src="res/AndroidApp_launcher_icon.png"/>
     <platform name="android">
         <allow-intent href="market:*" />
+        <preference name="android-minSdkVersion" value="10"/> 
+ 		<preference name="android-targetSdkVersion" value="22"/> 
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
