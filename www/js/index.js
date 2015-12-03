@@ -1052,7 +1052,9 @@ function getSalesOrders(){
 							                     '</span>'+
 							                 '</td>'+
 							                 '<td class="timecat-total-time-td">'+
-							                     '<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" onclick="getTotalTimeForCategory(this);"><span class="time-img" ><img src="img/wifi-icon-24px.png" class="wifi-icon" /></span>&nbsp;<span class="time-data">--:-- hrs</span></span>'+
+							                 	'<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" ><span class="time-cat-title">'+title+'</span></span>'+
+
+							                    //'<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" onclick="getTotalTimeForCategory(this);"><span class="time-img" ><img src="img/wifi-icon-24px.png" class="wifi-icon" /></span>&nbsp;<span class="time-data">--:-- hrs</span></span>'+
 							                     //'<br/><span id="orderId_spOrderIdReplace" class="timer">LCL &nbsp;<span class="lcl">--:-- hrs</span></span>'+
 	
 							                 '</td>'+
@@ -1205,8 +1207,9 @@ function successCBTimeCatTbodyObj() {
                          '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
                      '</span>'+
                  '</td>'+
-                 '<td>'+
-                     '<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+                 '<td class="time-cat-title-td">'+
+                     //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+	                 '<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" ><span class="time-cat-title">'+title+'</span></span>'+
                  '</td>'+
                  '<td class="order-t-icon">'+
                      '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
