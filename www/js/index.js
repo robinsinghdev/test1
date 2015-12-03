@@ -17,7 +17,7 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.tapToggle = false;
 });
 
-var appUrl='https://www.bpmetrics.com/grn/m_app/';
+var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
