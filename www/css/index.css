@@ -396,3 +396,7 @@ ul#userRolesUl li.active a{
 .history-tabs .wifi-icon,.sync-btn-div .wifi-icon{
 	vertical-align: top;
 }
+
+.time-cat-title-td{
+	text-align: left;
+}
