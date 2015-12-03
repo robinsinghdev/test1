@@ -400,3 +400,6 @@ ul#userRolesUl li.active a{
 .time-cat-title-td{
 	text-align: left;
 }
+.version-number-text{
+	text-align: right;
+}
