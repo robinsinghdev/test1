@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.example.tracker" 
+<widget id="com.bpmetrics.tracker" 
 version="1.3.0"
 versionCode = "3" 
 xmlns="http://www.w3.org/ns/widgets" 
