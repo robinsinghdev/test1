@@ -17,7 +17,7 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.tapToggle = false;
 });
 
-var appUrl='https://dev.bpmetrics.com/grn/m_app/';
+var appUrl='https://www.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
@@ -1207,7 +1207,7 @@ function successCBTimeCatTbodyObj() {
                          '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
                      '</span>'+
                  '</td>'+
-                 '<td class="time-cat-title-td">'+
+                 '<td class="timecat-total-time-td">'+
                      //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
 	                 '<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" ><span class="time-cat-title">'+title+'</span></span>'+
                  '</td>'+

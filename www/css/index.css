@@ -388,6 +388,7 @@ ul#userRolesUl li.active a{
 
 .timecat-total-time-td {
 	font-size: 15px;
+	text-align: left !important;
 }
 .timecat-total-time-td img.wifi-icon,.time-data{
 	vertical-align: top;
@@ -397,9 +398,6 @@ ul#userRolesUl li.active a{
 	vertical-align: top;
 }
 
-.time-cat-title-td{
-	text-align: left;
-}
 .version-number-text{
 	text-align: right;
 }
