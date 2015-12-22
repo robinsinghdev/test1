@@ -232,6 +232,27 @@ function checkDataForSync() {
    );
 }
 
+function checkDataForNotification() {
+	db.transaction(
+       function (tx){
+            tx.executeSql('SELECT soTimeId,date,time FROM TIMETRACKER',[],function(tx,results){
+                    var len = results.rows.length;
+                    if(len == 0){
+                    	window.localStorage["sync_flag"] = 0;
+                    	$("#callSyncNowBtn").removeAttr("disabled");
+                    	$("#callSyncNowBtn").parent().attr('style', '');
+                    }
+                    
+                    if(len>0){
+                    	window.localStorage["sync_flag"] = 1;                    	
+                    	$("#callSyncNowBtn").parent().attr('style', 'background: #ed9c28 !important;border: 1px solid #ed9c28;');
+                    }
+                }, errorCB
+            );
+       },errorCB,successCB
+   );
+}
+
 function callSyncNow() {
 	//$("#callSyncNowBtn").parent().attr('style', 'background: #ed9c28 !important;border: 1px solid #ed9c28;'); 
 	checkDataForSync();
@@ -389,6 +410,7 @@ function onBackKeyDown() {
 	}
 	else if($.mobile.activePage.is('#view-all-sales-order')){
 		$.mobile.changePage('#home-page','slide');
+		checkDataForNotification();
 	}
 	else{
 		window.history.back();
