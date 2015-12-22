@@ -219,6 +219,9 @@ function checkDataForSync() {
                     	window.localStorage["sync_flag"] = 0;
                     	$("#callSyncNowBtn").removeAttr("disabled");
                     	$("#callSyncNowBtn").parent().attr('style', '');
+                    	
+                    	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'});
+                		$("#syncStatusMsg").fadeOut(20000,function() {});
                     }
                     
                     if(len>0){
@@ -1154,7 +1157,7 @@ function getSalesOrders(){
 										                    		'<span style="">&nbsp;</span>'+
 										                        '</div>'+
 										                        '<div class="so-name-box" >'+
-										                        	'<div class="" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</div>'+
+										                        	'<div class="text-align-left" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</div>'+
 										                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 										                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 													                 '</a>'+
@@ -1345,7 +1348,7 @@ function successCBPopulateSalesOrders(){
 				                    		'<span style="">&nbsp;</span>'+
 				                        '</div>'+
 				                        '<div class="so-name-box" >'+
-				                        	'<div class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</div>'+
+				                        	'<div class="text-align-left" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</div>'+
 				                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 				                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 							                 '</a>'+
