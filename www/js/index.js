@@ -1094,7 +1094,7 @@ function getSalesOrders(){
 										                    		'<span style="">&nbsp;</span>'+
 										                        '</div>'+
 										                        '<div class="so-name-box" >'+
-										                        	'<span class="" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</span>'+
+										                        	'<span class="pull-left" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</span>'+
 										                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 										                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 													                 '</a>'+
@@ -1285,7 +1285,7 @@ function successCBPopulateSalesOrders(){
 				                    		'<span style="">&nbsp;</span>'+
 				                        '</div>'+
 				                        '<div class="so-name-box" >'+
-				                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
+				                        	'<span class="pull-left" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
 				                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 				                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 							                 '</a>'+
