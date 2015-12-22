@@ -93,6 +93,7 @@ var app = {
 		    duration: '5m',
 		    callback: function() {
 		        $('#syncCallTimerDiv').timer('reset');
+		        showRunningTimeTracker();
 		        checkConnectionForSync();
 		    },
 		    repeat: true //repeatedly call the callback
