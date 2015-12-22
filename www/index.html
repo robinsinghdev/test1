@@ -50,9 +50,10 @@
                 </div>
                 
                 <div data-position="fixed"   class="app-footer-section" class="footer-div">
-                    <div class="version-number-text">v1.3.2HQ</div>
+                    <div class="version-number-text">v1.4.0</div>
                 </div>
             </div>
+             
              
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -88,8 +89,13 @@
 						</div>
 						<br/>
 						
-						<div class="sync-btn-div">
-							<input type="button" value="Reconnect <img src='img/wifi-icon-24px.png' class='wifi-icon' />"  onclick="callSyncNow();" id="callSyncNowBtn" class="app-link" data-theme="a" />
+						<div class="reconnect-div">
+							<input type="button" value="Reconnect <img src='img/wifi-icon-16px.png' class='wifi-icon' />"  onclick="callReconnectNow();" class="app-link" data-theme="a" data-mini="true" />
+	                    	<div class="sync-msg-div" ><p style="display: none;" id="syncStatusMsg"></p></div>
+	                    </div>
+	                    <br/>
+	                    <div class="sync-btn-div">
+							<input type="button" value="Sync Data <img src='img/wifi-icon-16px.png' class='wifi-icon' />"  onclick="callSyncNow();" id="callSyncNowBtn" class="app-link" data-theme="a" data-mini="true" />
 	                    </div>
 						
 						<div class="display-none">

@@ -88,7 +88,9 @@ var app = {
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
 		
+		checkConnectionForSync();
 		//DYNAREAD HQ = start a timer & execute a function every 90000 minutes and then rest the timer at the end of 90000 minutes. The 90000 min value is for troubleshoot only 
+		/*
 		$('#syncCallTimerDiv').timer({
 		    duration: '90000m',
 		    callback: function() {
@@ -97,7 +99,7 @@ var app = {
 		    },
 		    repeat: true //repeatedly call the callback
 		});
-		
+		*/
 		//setInterval(checkConnectionForSync, 900000);
     },
 	// Update DOM on a Received Event
@@ -121,7 +123,7 @@ function resetSyncTimer(){
 }
 
 function checkConnectionForSync() {
-	resetSyncTimer();
+	//resetSyncTimer();
 	var connectionType=checkConnection();
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		callSyncWithServer();
@@ -190,30 +192,36 @@ function callSyncWithServer() {
 	
 	//navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
 	$("#callSyncNowBtn").removeAttr("disabled");
+	$("#callSyncNowBtn").parent().attr('style', '');
 	
 }
 
 function checkDataForSync() {
 	db.transaction(
-	       function (tx){
-	            tx.executeSql('SELECT soTimeId,date,time FROM TIMETRACKER',[],function(tx,results){
-	                    var len = results.rows.length;
-	                    if(len == 0){
-	                    	window.localStorage["sync_flag"] = 0;
-	                    	$("#callSyncNowBtn").removeAttr("disabled");
-	                    }
-	                    
-	                    if(len>0){
-	                    	window.localStorage["sync_flag"] = 1;
-	            	    	checkConnectionForSync();
-	                    }
-	                }, errorCB
-	            );
-	       },errorCB,successCB
-	   );
+       function (tx){
+            tx.executeSql('SELECT soTimeId,date,time FROM TIMETRACKER',[],function(tx,results){
+                    var len = results.rows.length;
+                    if(len == 0){
+                    	window.localStorage["sync_flag"] = 0;
+                    	$("#callSyncNowBtn").removeAttr("disabled");
+                    	$("#callSyncNowBtn").parent().attr('style', '');
+                    }
+                    
+                    if(len>0){
+                    	window.localStorage["sync_flag"] = 1;                    	
+                    	$("#callSyncNowBtn").parent().attr('style', 'background: #a8bc7b !important;border: 1px solid #a8bc7b;');
+            	    	checkConnectionForSync();
+                    }
+                }, errorCB
+            );
+       },errorCB,successCB
+   );
 }
 
 function callSyncNow() {
+	//$("#callSyncNowBtn").parent().attr('style', 'background: #ed9c28 !important;border: 1px solid #ed9c28;'); 
+	checkDataForSync();
+	
 	var connectionType=checkConnection();
 	//var connectionType="WiFi connection";//For Testing
 	
@@ -223,7 +231,7 @@ function callSyncNow() {
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		
 		$("#callSyncNowBtn").attr("disabled","disabled");
-		checkDataForSync();
+		//checkDataForSync();
 		
 		showModal();
 		if (window.localStorage.getItem("sync_flag") == 1 ) {
@@ -233,6 +241,21 @@ function callSyncNow() {
 	    	//$("#callSyncNowBtn").removeAttr("disabled");
 	    }
 		hideModal();
+	}
+}
+
+function callReconnectNow() {
+	$("#syncStatusMsg").html("Establishing Internet Connection").show();
+	var connectionType=checkConnection();
+	//var connectionType="WiFi connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		$("#syncStatusMsg").html("Unable to Establish Internet Connection").show();
+		$("#syncStatusMsg").fadeOut(20000,function() {});
+	}
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		$("#syncStatusMsg").html("Internet Connection Successfully Established").show();
+		$("#syncStatusMsg").fadeOut(20000,function() {});
 	}
 }
 
@@ -1094,7 +1117,7 @@ function getSalesOrders(){
 										                    		'<span style="">&nbsp;</span>'+
 										                        '</div>'+
 										                        '<div class="so-name-box" >'+
-										                        	'<span class="pull-left" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</span>'+
+										                        	'<span class="" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</span>'+
 										                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 										                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 													                 '</a>'+
@@ -1285,7 +1308,7 @@ function successCBPopulateSalesOrders(){
 				                    		'<span style="">&nbsp;</span>'+
 				                        '</div>'+
 				                        '<div class="so-name-box" >'+
-				                        	'<span class="pull-left" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
+				                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
 				                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 				                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 							                 '</a>'+
@@ -1350,7 +1373,7 @@ function changeLoginRole(roleId,roleName){
 		}
 		
 		showModal();
-		checkConnectionForSync()
+		checkConnectionForSync();
 		
 		window.localStorage["permissions"] = ''+roleId+'';
 		window.localStorage["solocal"] = 0;

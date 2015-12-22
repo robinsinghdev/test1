@@ -397,8 +397,14 @@ ul#userRolesUl li.active a{
 	vertical-align: top;
 }
 
-.history-tabs .wifi-icon,.sync-btn-div .wifi-icon{
+.history-tabs .wifi-icon, .sync-btn-div .wifi-icon, .reconnect-div .wifi-icon{
 	vertical-align: top;
+}
+
+.reconnect-div .sync-msg-div p{
+	font-size: 11px;
+	margin: 0.446em;
+	text-align: center;
 }
 
 .version-number-text{
