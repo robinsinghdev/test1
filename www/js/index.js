@@ -90,9 +90,10 @@ var app = {
 		
 		//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
 		$('#syncCallTimerDiv').timer({
-		    duration: '2m',
+		    duration: '1m',
 		    callback: function() {
 		        $('#syncCallTimerDiv').timer('reset');
+		        alert('syncCallTimerDiv reset');
 		        showRunningTimeTracker();
 		        checkConnectionForSync();
 		    },
