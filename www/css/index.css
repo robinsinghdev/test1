@@ -401,10 +401,14 @@ ul#userRolesUl li.active a{
 	vertical-align: top;
 }
 
-.reconnect-div .sync-msg-div p{
+.sync-btn-div .sync-msg-div p, .reconnect-div .reconnect-msg-div p{
 	font-size: 11px;
 	margin: 0.446em;
 	text-align: center;
+}
+
+.reconnect-div {
+	margin-bottom: 10px;
 }
 
 .version-number-text{

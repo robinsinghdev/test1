@@ -187,13 +187,27 @@ function callSyncWithServer() {
 	                    }
 	                }, errorCB
 	            );
-	       },errorCB,successCB
+	       },errorCBSyncWithServer,successSyncWithServer
 	   );
 	
 	//navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
+}
+
+//Transaction error callback
+function errorCBSyncWithServer() {
+	$("#callSyncNowBtn").removeAttr("disabled");
+	
+	$("#syncStatusMsg").html("Sync Failed: Try again").fadeIn().stop().animate({opacity:'100'});
+	$("#syncStatusMsg").fadeOut(20000,function() {});
+}
+
+//Transaction success callback
+function successSyncWithServer() {
 	$("#callSyncNowBtn").removeAttr("disabled");
 	$("#callSyncNowBtn").parent().attr('style', '');
 	
+	$("#syncStatusMsg").html("Sync Successful").fadeIn().stop().animate({opacity:'100'});
+	$("#syncStatusMsg").fadeOut(20000,function() {});
 }
 
 function checkDataForSync() {
@@ -226,7 +240,8 @@ function callSyncNow() {
 	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'});
+		$("#syncStatusMsg").fadeOut(20000,function() {});
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		
@@ -245,17 +260,17 @@ function callSyncNow() {
 }
 
 function callReconnectNow() {
-	$("#syncStatusMsg").html("Establishing Internet Connection").fadeIn();
+	$("#reconnectStatusMsg").html("Establishing Internet Connection").fadeIn().stop().animate({opacity:'100'});
 	var connectionType=checkConnection();
 	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		$("#syncStatusMsg").html("Unable to Establish Internet Connection").fadeIn();
-		$("#syncStatusMsg").fadeOut(20000,function() {});
+		$("#reconnectStatusMsg").html("Unable to Establish Internet Connection").fadeIn().stop().animate({opacity:'100'});
+		$("#reconnectStatusMsg").fadeOut(20000,function() {});
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		$("#syncStatusMsg").html("Internet Connection Successfully Established").fadeIn();
-		$("#syncStatusMsg").fadeOut(20000,function() {});
+		$("#reconnectStatusMsg").html("Internet Connection Successfully Established").fadeIn().stop().animate({opacity:'100'});
+		$("#reconnectStatusMsg").fadeOut(20000,function() {});
 	}
 }
 
@@ -376,7 +391,7 @@ function onBackKeyDown() {
 		$.mobile.changePage('#home-page','slide');
 	}
 	else{
-		$.mobile.changePage('#home-page','slide');
+		window.history.back();
 	}
 }
 

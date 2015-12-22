@@ -31,7 +31,7 @@
 	<body>
 		
         <div id="app">
-        
+        <!-- 
         	<div  id="login-page" data-role="page">
                 <div data-role="content">
 					<div  class="login-box">
@@ -53,7 +53,7 @@
                     <div class="version-number-text">v1.4.0</div>
                 </div>
             </div>
-             
+              -->
              
 			<div id="home-page" data-role="page">
 				<div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
@@ -91,11 +91,11 @@
 						
 						<div class="reconnect-div">
 							<input type="button" value="Reconnect <img src='img/wifi-icon-16px.png' class='wifi-icon' />"  onclick="callReconnectNow();" class="app-link" data-theme="a" data-mini="true" />
-	                    	<div class="sync-msg-div" ><p style="display: none;" id="syncStatusMsg"></p></div>
+	                    	<div class="reconnect-msg-div" ><p style="display: none;" id="reconnectStatusMsg"></p></div>
 	                    </div>
-	                    <br/>
 	                    <div class="sync-btn-div">
 							<input type="button" value="Sync Data <img src='img/wifi-icon-16px.png' class='wifi-icon' />"  onclick="callSyncNow();" id="callSyncNowBtn" class="app-link" data-theme="a" data-mini="true" />
+	                    	<div class="sync-msg-div" ><p style="display: none;" id="syncStatusMsg"></p></div>
 	                    </div>
 						
 						<div class="display-none">
@@ -116,7 +116,7 @@
 			
 			<div id="view-all-sales-order" data-role="page">
                 <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
-                	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
+                	<a href="#" onclick="onBackKeyDown();" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
                     <h1>Sales Order</h1>
 					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
                 </div>
@@ -201,7 +201,7 @@
 			
 			<div id="view-log-time-history" data-role="page">
                 <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
-                	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
+                	<a href="#" onclick="onBackKeyDown();" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
                     <h1>Log Time History</h1>
 					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
                 </div>
@@ -260,7 +260,7 @@
              
             <div id="add-log-time" data-role="page">
                 <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
-                	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
+                	<a href="#" onclick="onBackKeyDown();" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
                     <h1>Log Time Entry</h1>
 					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
                 </div>
