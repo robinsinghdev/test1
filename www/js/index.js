@@ -226,7 +226,7 @@ function checkDataForSync() {
                     
                     if(len>0){
                     	window.localStorage["sync_flag"] = 1;                    	
-                    	$("#callSyncNowBtn").parent().attr('style', 'background: #ed9c28 !important;border: 1px solid #ed9c28;');
+                    	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
             	    	checkConnectionForSync();
                     }
                 }, errorCB
@@ -248,7 +248,7 @@ function checkDataForNotification() {
                     
                     if(len>0){
                     	window.localStorage["sync_flag"] = 1;                    	
-                    	$("#callSyncNowBtn").parent().attr('style', 'background: #ed9c28 !important;border: 1px solid #ed9c28;');
+                    	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
                     }
                 }, errorCB
             );
@@ -257,7 +257,7 @@ function checkDataForNotification() {
 }
 
 function callSyncNow() {
-	//$("#callSyncNowBtn").parent().attr('style', 'background: #ed9c28 !important;border: 1px solid #ed9c28;'); 
+	//$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;'); 
 	checkDataForSync();
 	
 	var connectionType=checkConnection();
