@@ -245,6 +245,9 @@ function checkDataForNotification() {
                     	window.localStorage["sync_flag"] = 0;
                     	$("#callSyncNowBtn").removeAttr("disabled");
                     	$("#callSyncNowBtn").parent().attr('style', '');
+                    	
+                    	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'});
+                		$("#syncStatusMsg").fadeOut(20000,function() {});
                     }
                     
                     if(len>0){
