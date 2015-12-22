@@ -88,12 +88,11 @@ var app = {
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
 		
-		//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
+		//DYNAREAD HQ = start a timer & execute a function every 90000 minutes and then rest the timer at the end of 90000 minutes. The 90000 min value is for troubleshoot only 
 		$('#syncCallTimerDiv').timer({
-		    duration: '9000m',
+		    duration: '90000m',
 		    callback: function() {
 		        $('#syncCallTimerDiv').timer('reset');
-		        showRunningTimeTracker();
 		        checkConnectionForSync();
 		    },
 		    repeat: true //repeatedly call the callback
@@ -109,12 +108,12 @@ var app = {
 
 function resetSyncTimer(){
 	$('#syncCallTimerDiv').timer('remove');
-	//start a timer & execute a function every 30 seconds and then reset the timer at the end of 30 seconds.
+	
+	//DYNAREAD HQ = start a timer & execute a function every 90000 minutes and then rest the timer at the end of 90000 minutes. The 90000 min value is for troubleshoot only 
 	$('#syncCallTimerDiv').timer({
-	    duration: '9000m',
+	    duration: '90000m',
 	    callback: function() {
 	        $('#syncCallTimerDiv').timer('reset');
-	        showRunningTimeTracker();
 	        checkConnectionForSync();
 	    },
 	    repeat: true //repeatedly call the callback

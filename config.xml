@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.bpmetrics.tracker" 
 version="1.3.2"
-versionCode = "4" 
+versionCode = "5" 
 xmlns="http://www.w3.org/ns/widgets" 
 xmlns:gap   = "http://phonegap.com/ns/1.0" 
 xmlns:cdv="http://cordova.apache.org/ns/1.0">
@@ -9,7 +9,7 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <description>
         BP Metrics Application for time tracking offline and online.
     </description>
-    <author email="hdekkers@dynaread.com" href="https://dev.bpmetrics.com/grn/">
+    <author email="hdekkers@dynaread.com" href="https://bpmetrics.com/">
         Hans Dekkers
     </author>
     

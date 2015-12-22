@@ -342,12 +342,15 @@ hr.style {
 	    width: 70px;
 	 */
  }
+ 
+/* 
 .process-icon img.play {
     background: #00a651 none repeat scroll 0 0;
 }
 .process-icon img.pause {
     background: #f8c326 none repeat scroll 0 0;
 }
+*/
 
 .ui-field-contain{
 	border-bottom: 0px !important;
