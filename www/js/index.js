@@ -88,7 +88,8 @@ var app = {
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
 		
-		checkConnectionForSync();
+		//checkConnectionForSync();
+		
 		//DYNAREAD HQ = start a timer & execute a function every 90000 minutes and then rest the timer at the end of 90000 minutes. The 90000 min value is for troubleshoot only 
 		/*
 		$('#syncCallTimerDiv').timer({
@@ -257,8 +258,7 @@ function checkDataForNotification() {
 }
 
 function callSyncNow() {
-	//$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;'); 
-	checkDataForSync();
+	checkDataForNotification();
 	
 	var connectionType=checkConnection();
 	//var connectionType="WiFi connection";//For Testing
@@ -270,14 +270,14 @@ function callSyncNow() {
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		
 		$("#callSyncNowBtn").attr("disabled","disabled");
-		//checkDataForSync();
 		
 		showModal();
 		if (window.localStorage.getItem("sync_flag") == 1 ) {
-			//checkConnectionForSync();
+			checkConnectionForSync();
+			//checkDataForSync();
 		}
 	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
-	    	//$("#callSyncNowBtn").removeAttr("disabled");
+	    	$("#callSyncNowBtn").removeAttr("disabled");
 	    }
 		hideModal();
 	}
@@ -525,7 +525,7 @@ function logout() {
 	}
 	showModal();
 	
-	checkDataForSync();
+	checkDataForNotification();
 	
     if (window.localStorage.getItem("sync_flag") == 1 ) {
     	//checkConnectionForSync();
@@ -1157,7 +1157,7 @@ function getSalesOrders(){
 										                    		'<span style="">&nbsp;</span>'+
 										                        '</div>'+
 										                        '<div class="so-name-box" >'+
-										                        	'<div class="text-align-left" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</div>'+
+										                        	'<div class="so-name-block" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</div>'+
 										                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 										                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 													                 '</a>'+
@@ -1348,7 +1348,7 @@ function successCBPopulateSalesOrders(){
 				                    		'<span style="">&nbsp;</span>'+
 				                        '</div>'+
 				                        '<div class="so-name-box" >'+
-				                        	'<div class="text-align-left" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</div>'+
+				                        	'<div class="so-name-block" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</div>'+
 				                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 				                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 							                 '</a>'+

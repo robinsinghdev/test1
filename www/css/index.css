@@ -285,6 +285,12 @@ hr.style {
 	 padding: 0.4em 60px 0.4em 0.7em;
 	position: relative;
 }
+
+.so-name-box .so-name-block{
+	text-align: left;
+	padding-left: 10px;	
+}
+
 .process-report.pull-right{
 	 position: absolute;
     right: 10px;
