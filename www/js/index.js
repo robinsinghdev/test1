@@ -209,7 +209,7 @@ function checkDataForSync() {
                     
                     if(len>0){
                     	window.localStorage["sync_flag"] = 1;                    	
-                    	$("#callSyncNowBtn").parent().attr('style', 'background: #a8bc7b !important;border: 1px solid #a8bc7b;');
+                    	$("#callSyncNowBtn").parent().attr('style', 'background: #ed9c28 !important;border: 1px solid #ed9c28;');
             	    	checkConnectionForSync();
                     }
                 }, errorCB
@@ -235,7 +235,7 @@ function callSyncNow() {
 		
 		showModal();
 		if (window.localStorage.getItem("sync_flag") == 1 ) {
-			checkConnectionForSync();
+			//checkConnectionForSync();
 		}
 	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
 	    	//$("#callSyncNowBtn").removeAttr("disabled");
@@ -245,16 +245,16 @@ function callSyncNow() {
 }
 
 function callReconnectNow() {
-	$("#syncStatusMsg").html("Establishing Internet Connection").show();
+	$("#syncStatusMsg").html("Establishing Internet Connection").fadeIn();
 	var connectionType=checkConnection();
 	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		$("#syncStatusMsg").html("Unable to Establish Internet Connection").show();
+		$("#syncStatusMsg").html("Unable to Establish Internet Connection").fadeIn();
 		$("#syncStatusMsg").fadeOut(20000,function() {});
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		$("#syncStatusMsg").html("Internet Connection Successfully Established").show();
+		$("#syncStatusMsg").html("Internet Connection Successfully Established").fadeIn();
 		$("#syncStatusMsg").fadeOut(20000,function() {});
 	}
 }
@@ -371,13 +371,13 @@ function onBackKeyDown() {
        //e.preventDefault();
        //navigator.app.exitApp();
        showExitDialog();
-   }
+	}
 	else if($.mobile.activePage.is('#view-all-sales-order')){
-       $.mobile.changePage('#home-page','slide');
-   }
+		$.mobile.changePage('#home-page','slide');
+	}
 	else{
-		window.history.back();
-   }
+		$.mobile.changePage('#home-page','slide');
+	}
 }
 
 function showExitDialog() {
@@ -1117,7 +1117,7 @@ function getSalesOrders(){
 										                    		'<span style="">&nbsp;</span>'+
 										                        '</div>'+
 										                        '<div class="so-name-box" >'+
-										                        	'<span class="" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</span>'+
+										                        	'<div class="" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</div>'+
 										                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 										                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 													                 '</a>'+
@@ -1308,7 +1308,7 @@ function successCBPopulateSalesOrders(){
 				                    		'<span style="">&nbsp;</span>'+
 				                        '</div>'+
 				                        '<div class="so-name-box" >'+
-				                        	'<span class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</span>'+
+				                        	'<div class="" id="so_name">'+sp_jobName+' #'+sp_salesorderNumber+'</div>'+
 				                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
 				                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
 							                 '</a>'+
