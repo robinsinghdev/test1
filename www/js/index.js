@@ -1727,7 +1727,7 @@ function showDeleteLogTimeDialog(dataObj) {
         ("Are you sure to delete this log time ?"), // message
         deleteLogTimeAction, // callback
         'Log Time ', // title
-        'Cancel' // buttonName
+        'Cancel,Delete' // buttonName
     );
 }
 
@@ -2575,10 +2575,10 @@ function resetTracker() {
 
 function showDeleteTrackerDialog() {
     navigator.notification.confirm(
-            ("Are you sure to delete this time ?"), // message
-            deleteTrackerAction, // callback
-            'Time Tracker ', // title
-            'Cancel,Delete' // buttonName
+        ("Are you sure to delete this time ?"), // message
+        deleteTrackerAction, // callback
+        'Time Tracker ', // title
+        'Cancel,Delete' // buttonName
     );
 }
 
