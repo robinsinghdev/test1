@@ -1758,7 +1758,7 @@ function successCBDeleteLogTimeLocal() {
 	var $dataObj=$(deleteLogTimeLocalObj);
 	var id=$dataObj.data('id');
 	$('.logTimeLocalDiv'+id).remove();
-	
+	deleteLogTimeLocalObj=null;
 	navigator.notification.alert('Log time deleted successfully.',alertConfirm,'BP Metrics','Ok');
 }
 
