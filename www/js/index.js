@@ -207,7 +207,7 @@ function successSyncWithServer() {
 	$("#callSyncNowBtn").removeAttr("disabled");
 	$("#callSyncNowBtn").parent().attr('style', '');
 	
-	$("#syncStatusMsg").html("Sync Successful").fadeIn().stop().animate({opacity:'100'});
+	$("#syncStatusMsg").html("Sync Successful").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
 	$("#syncStatusMsg").fadeOut(20000,function() {});
 }
 
@@ -221,7 +221,7 @@ function checkDataForSync() {
                     	$("#callSyncNowBtn").removeAttr("disabled");
                     	$("#callSyncNowBtn").parent().attr('style', '');
                     	
-                    	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'});
+                    	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
                 		$("#syncStatusMsg").fadeOut(20000,function() {});
                     }
                     
@@ -246,7 +246,7 @@ function checkDataForNotification() {
                     	$("#callSyncNowBtn").removeAttr("disabled");
                     	$("#callSyncNowBtn").parent().attr('style', '');
                     	
-                    	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'});
+                    	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
                 		$("#syncStatusMsg").fadeOut(20000,function() {});
                     }
                     
@@ -267,7 +267,7 @@ function callSyncNow() {
 	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');;
+		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
 		$("#syncStatusMsg").fadeOut(20000,function() {});
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -287,7 +287,7 @@ function callSyncNow() {
 }
 
 function callReconnectNow() {
-	$("#reconnectStatusMsg").html("Establishing Internet Connection").fadeIn().stop().animate({opacity:'100'});
+	$("#reconnectStatusMsg").html("Establishing Internet Connection").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
 	var connectionType=checkConnection();
 	//var connectionType="WiFi connection";//For Testing
 	
@@ -296,7 +296,7 @@ function callReconnectNow() {
 		$("#reconnectStatusMsg").fadeOut(20000,function() {});
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		$("#reconnectStatusMsg").html("Internet Connection Successfully Established").fadeIn().stop().animate({opacity:'100'});
+		$("#reconnectStatusMsg").html("Internet Connection Successfully Established").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
 		$("#reconnectStatusMsg").fadeOut(20000,function() {});
 	}
 }
@@ -761,11 +761,10 @@ function getSOBySONumber(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			var sp_salesOrderNumber=$('#sp_salesOrderNumber').val();
 			showModal();
-			if(typeof sp_salesOrderNumber === "undefined" || sp_salesOrderNumber==""){
-				//navigator.notification.alert("Please input Sales Order Number.", function() {});
+			if(typeof sp_salesOrderNumber === "undefined" || sp_salesOrderNumber=="" 
+				||  Math.floor(sp_salesOrderNumber) != sp_salesOrderNumber || !$.isNumeric(sp_salesOrderNumber) ){
 				navigator.notification.alert('Please input Sales Order Number.',alertConfirm,'BP Metrics','Ok');
-				
-			}
+ 			}
 			else{
 				$.ajax({
 					type : 'POST',
@@ -1728,23 +1727,17 @@ function deleteLogTimeLocal(dataObj){
 	var $dataObj=$(dataObj);
 	var id=$dataObj.data('id');
 	var soTimeId=$dataObj.data('sotimeid');
-	/*
-	db.transaction(function(tx) {
-		alert("current id---- "+id);
-		tx.executeSql("DELETE FROM TIMETRACKER WHERE id=' "+id+" '");
-	});
-	*/
+	
 	db.transaction(
        function (tx){
-    	   alert("current id---- "+id);
-    	   tx.executeSql('DELETE FROM TIMETRACKER WHERE id=?',[id], errorCBDeleteLogTimeLocal);
-       }, successCBDeleteLogTimeLocal, errorCB
+    	   tx.executeSql('DELETE FROM TIMETRACKER WHERE id=?',[id], errorCB);
+       }, successCBDeleteLogTimeLocal, errorCBDeleteLogTimeLocal
 	);
 }
 
 //Transaction error callback
 function errorCBDeleteLogTimeLocal() {
-	alert('errorCBDeleteLogTimeLocal');
+	navigator.notification.alert('Unable to delete.',alertConfirm,'BP Metrics','Ok');
 }
 
 //Transaction success callback
@@ -1814,7 +1807,18 @@ function callAddUpadteLogTime(obj,logTimeType){
 		
 		var logHoursInt=parseInt(logHours);
 		var logMinutes=parseInt(logMinutes);
-		if(time=='00:00' || ( logHoursInt==0 && logMinutes==0) ){
+		
+	    if (logMinutes > 59 || !$.isNumeric(logMinutes) || !$.isNumeric(logHoursInt) ) {
+	    	navigator.notification.alert(
+    		    'Please fill correct time details.',  // message
+    		    alertConfirm,
+    		    'Log Time',            // title
+    		    'Ok'                  // buttonName
+    		);
+			return false;
+	    }
+		
+		if(time=='00:00' || ( logHoursInt==0 && logMinutes==0)  ){
 			navigator.notification.alert(
     		    'Please fill Time Details.',  // message
     		    alertConfirm,
