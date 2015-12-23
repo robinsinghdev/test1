@@ -1820,11 +1820,11 @@ function callAddUpadteLogTime(obj,logTimeType){
 		dataObj.time=time;
 		
 		var logHoursInt=parseInt(logHours);
-		var logMinutes=parseInt(logMinutes);
+		var logMinutesInt=parseInt(logMinutes);
 		
-	    if (logMinutes > 59 || !$.isNumeric(logMinutes) || !$.isNumeric(logHoursInt) ) {
+	    if (logMinutes > 59 || !$.isNumeric(logMinutes) || !$.isNumeric(logHours) ) {
 	    	navigator.notification.alert(
-    		    'Please fill correct time details.',  // message
+    		    'Please fill valid time details.',  // message
     		    alertConfirm,
     		    'Log Time',            // title
     		    'Ok'                  // buttonName
@@ -1832,7 +1832,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 			return false;
 	    }
 		
-		if(time=='00:00' || ( logHoursInt==0 && logMinutes==0)  ){
+		if(time=='00:00' || ( logHoursInt==0 && logMinutesInt==0)  ){
 			navigator.notification.alert(
     		    'Please fill time details.',  // message
     		    alertConfirm,
@@ -1844,7 +1844,6 @@ function callAddUpadteLogTime(obj,logTimeType){
 		
 		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
-		
 		
 		if($(obj).attr('data-flag')=='add'){
 			dataObj.grn_staffTime_id= '';
