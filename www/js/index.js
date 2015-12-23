@@ -25,7 +25,7 @@ var salse_orders_arr=[];
 var time_cats_arr=[];
 var globalLogTimeObj={};
 var db;
-var closeSalesOrderDataObj;
+var closeSalesOrderDataObj,var deleteLogTimeLocalObj;
 
 var colorArray=[{"id":"1","HexColor":"FFD700"},{"id":"2","HexColor":"FFC0CB"},{"id":"3","HexColor":"FFA500"},{"id":"4","HexColor":"FFA07A"},
                 {"id":"5","HexColor":"FF69B4"},{"id":"6","HexColor":"FF1493"},{"id":"7","HexColor":"FF0000"},
@@ -1628,7 +1628,7 @@ function getLogTimeListLocal(oid){
 														 
 														  '<div class="ui-block-b text-align-right">'+
 																'<span class="link-custom-span">'+
-																	'<a onclick="deleteLogTimeLocal(this);" class="delete-link" href="#" data-sotimeid="'+grn_salesorderTime_id+'"  '+
+																	'<a onclick="showDeleteLogTimeDialog(this);" class="delete-link" href="#" data-sotimeid="'+grn_salesorderTime_id+'"  '+
 																	' data-id="'+id+'" data-date="'+date+'" >Delete</a>'+
 																'</span>'+	
 														  '</div>'+
@@ -1721,7 +1721,22 @@ function editLogTime(dataObj){
 	$.mobile.changePage('#add-log-time','slide');
 }
 
+function showDeleteLogTimeDialog(dataObj) {
+	deleteLogTimeLocalObj=dataObj;
+    navigator.notification.confirm(
+        ("Are you sure to delete this log time ?"), // message
+        deleteLogTimeAction, // callback
+        'Log Time ', // title
+        'Cancel' // buttonName
+    );
+}
 
+//Call exit function
+function deleteLogTimeAction(button){
+	if(button=="2" || button==2){
+		deleteLogTimeLocal(deleteLogTimeLocalObj);
+	}
+}
 
 function deleteLogTimeLocal(dataObj){
 	var $dataObj=$(dataObj);
@@ -1731,19 +1746,14 @@ function deleteLogTimeLocal(dataObj){
 	db.transaction(
        function (tx){
     	   tx.executeSql('DELETE FROM TIMETRACKER WHERE id=?',[id], errorCB);
-       }, successCBDeleteLogTimeLocal, errorCBDeleteLogTimeLocal
+       }, successCBDeleteLogTimeLocal, errorCB
 	);
-}
-
-//Transaction error callback
-function errorCBDeleteLogTimeLocal() {
-	navigator.notification.alert('Unable to delete.',alertConfirm,'BP Metrics','Ok');
 }
 
 //Transaction success callback
 function successCBDeleteLogTimeLocal() {
 	$.mobile.changePage('#view-all-sales-order','slide');
-	alert('success CB Delete Log Time Local');
+	navigator.notification.alert('Log time deleted successfully.',alertConfirm,'BP Metrics','Ok');
 }
 
 function refreshSelect(ele,currentValue){
@@ -1820,7 +1830,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 		
 		if(time=='00:00' || ( logHoursInt==0 && logMinutes==0)  ){
 			navigator.notification.alert(
-    		    'Please fill Time Details.',  // message
+    		    'Please fill time details.',  // message
     		    alertConfirm,
     		    'Log Time',            // title
     		    'Ok'                  // buttonName
