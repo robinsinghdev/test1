@@ -25,7 +25,7 @@ var salse_orders_arr=[];
 var time_cats_arr=[];
 var globalLogTimeObj={};
 var db;
-var closeSalesOrderDataObj,var deleteLogTimeLocalObj;
+var closeSalesOrderDataObj,deleteLogTimeLocalObj;
 
 var colorArray=[{"id":"1","HexColor":"FFD700"},{"id":"2","HexColor":"FFC0CB"},{"id":"3","HexColor":"FFA500"},{"id":"4","HexColor":"FFA07A"},
                 {"id":"5","HexColor":"FF69B4"},{"id":"6","HexColor":"FF1493"},{"id":"7","HexColor":"FF0000"},
