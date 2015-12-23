@@ -198,7 +198,7 @@ function callSyncWithServer() {
 function errorCBSyncWithServer() {
 	$("#callSyncNowBtn").removeAttr("disabled");
 	
-	$("#syncStatusMsg").html("Sync Failed: Try again").fadeIn().stop().animate({opacity:'100'});
+	$("#syncStatusMsg").html("Sync Failed: Try again").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
 	$("#syncStatusMsg").fadeOut(20000,function() {});
 }
 
@@ -267,7 +267,7 @@ function callSyncNow() {
 	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'});
+		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');;
 		$("#syncStatusMsg").fadeOut(20000,function() {});
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -292,7 +292,7 @@ function callReconnectNow() {
 	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		$("#reconnectStatusMsg").html("Unable to Establish Internet Connection").fadeIn().stop().animate({opacity:'100'});
+		$("#reconnectStatusMsg").html("Unable to Establish Internet Connection").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
 		$("#reconnectStatusMsg").fadeOut(20000,function() {});
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -1174,7 +1174,7 @@ function getSalesOrders(){
 											     '<tfoot>'+
 											         '<tr>'+
 											             '<td colspan="3" class="td-danger">'+
-											             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrderDialog(this)"><span>CLOSE</span></a>'+
+											             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrderDialog(this)"><span>REMOVE Sales Order</span></a>'+
 											             '</td>'+ 
 											         '</tr>'+
 											     '</tfoot>'+
@@ -1365,7 +1365,7 @@ function successCBPopulateSalesOrders(){
 					     '<tfoot>'+
 					         '<tr>'+
 					             '<td colspan="3" class="td-danger">'+
-					             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrderDialog(this)"><span>CLOSE</span></a>'+
+					             	'<a href="#" class="order-close" data-order="'+sp_salesorderNumber+'" data-id="'+id+'" onclick="closeSalesOrderDialog(this)"><span>REMOVE Sales Order</span></a>'+
 					             '</td>'+ 
 					         '</tr>'+
 					     '</tfoot>'+
@@ -1534,7 +1534,7 @@ function getLogTimeListOfOrder(data){
 														'<div class="process-name">'+title+'</div>'+
 												  '</div>'+
 												  '<div class="ui-block-b text-align-right">'+
-														'<span class="link-custom-spam">'+
+														'<span class="link-custom-span">'+
 															'<a onclick="editLogTime(this);" href="#" data-sotimeid="'+grn_salesorderTime_id+'" data-comment="'+commentsData+'"  '+
 															' data-id="'+id+'" data-date="'+date+'" data-time="'+timeInHours+'" data-crewSize="'+crew_size+'"  data-category="'+grn_timeCat_trimmed+'" >Edit</a>'+
 														'</span>'+	
@@ -1616,36 +1616,36 @@ function getLogTimeListLocal(oid){
 					   			
 						   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
 											   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
-													'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
-												'</div>'+
-												'<div class="process-details">'+
-													'<div class="ui-grid-a my-breakpoint">'+
-													  '<div class="ui-block-a">'+
-															'<div class="process-img">'+
-																'<img src="img/'+grn_timeCat_img+'.png">'+            				 
-															'</div>'+
-															'<div class="process-name">'+title.toUpperCase()+'</div>'+
-													  '</div>'+
-													 /* 
-													  '<div class="ui-block-b text-align-right">'+
-															'<span class="link-custom-spam">'+
-																'<a onclick="editLogTime(this);" href="#" data-sotimeid="'+grn_salesorderTime_id+'" data-comment="'+commentsData+'"  '+
-																' data-id="'+id+'" data-date="'+date+'" data-time="'+timeInHours+'" data-crewSize="'+crew_size+'"  data-category="'+grn_timeCat_trimmed+'" >Edit</a>'+
-															'</span>'+	
-													  '</div>'+
-													  */
+														'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
 													'</div>'+
-													'<div class="more-process-details-main ">'+
-														'<div class="text-align-right">'+
-															'<a onclick="moreProcessDetails(this);" href="#" class="link">Show Details</a>'+
+													'<div class="process-details">'+
+														'<div class="ui-grid-a my-breakpoint">'+
+														  '<div class="ui-block-a">'+
+																'<div class="process-img">'+
+																	'<img src="img/'+grn_timeCat_img+'.png">'+            				 
+																'</div>'+
+																'<div class="process-name">'+title.toUpperCase()+'</div>'+
+														  '</div>'+
+														 
+														  '<div class="ui-block-b text-align-right">'+
+																'<span class="link-custom-span">'+
+																	'<a onclick="deleteLogTimeLocal(this);" class="delete-link" href="#" data-sotimeid="'+grn_salesorderTime_id+'"  '+
+																	' data-id="'+id+'" data-date="'+date+'" >Delete</a>'+
+																'</span>'+	
+														  '</div>'+
+														  
 														'</div>'+
-														'<div class="more-process-details moreDetailsDiv12" style="display: none;">'+
-															'<p class="process-comment">Revision: '+revisionSpan+'</p>'+
-															'<p class="process-comment">Comment: <span>'+comments+'</span></p>'+
-														'</div>'+
-													'</div>'+    
-												'</div>'+
-											'</div>';
+														'<div class="more-process-details-main ">'+
+															'<div class="text-align-right">'+
+																'<a onclick="moreProcessDetails(this);" href="#" class="link">Show Details</a>'+
+															'</div>'+
+															'<div class="more-process-details moreDetailsDiv12" style="display: none;">'+
+																'<p class="process-comment">Revision: '+revisionSpan+'</p>'+
+																'<p class="process-comment">Comment: <span>'+comments+'</span></p>'+
+															'</div>'+
+														'</div>'+    
+													'</div>'+
+												'</div>';
 							   		
 							   	$('#logTimeHistoryLocalDiv').append(logTimeDiv);
 	                    	}
@@ -1720,6 +1720,37 @@ function editLogTime(dataObj){
 	changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	
 	$.mobile.changePage('#add-log-time','slide');
+}
+
+
+
+function deleteLogTimeLocal(dataObj){
+	var $dataObj=$(dataObj);
+	var id=$dataObj.data('id');
+	var soTimeId=$dataObj.data('sotimeid');
+	/*
+	db.transaction(function(tx) {
+		alert("current id---- "+id);
+		tx.executeSql("DELETE FROM TIMETRACKER WHERE id=' "+id+" '");
+	});
+	*/
+	db.transaction(
+       function (tx){
+    	   alert("current id---- "+id);
+    	   tx.executeSql('DELETE FROM TIMETRACKER WHERE id=?',[id], errorCBDeleteLogTimeLocal);
+       }, successCBDeleteLogTimeLocal, errorCB
+	);
+}
+
+//Transaction error callback
+function errorCBDeleteLogTimeLocal() {
+	alert('errorCBDeleteLogTimeLocal');
+}
+
+//Transaction success callback
+function successCBDeleteLogTimeLocal() {
+	$.mobile.changePage('#view-all-sales-order','slide');
+	alert('success CB Delete Log Time Local');
 }
 
 function refreshSelect(ele,currentValue){
@@ -2270,6 +2301,10 @@ function calculateDateTimeDiff(old_date,new_date) {
      
      //alert('total seconds--' +totalSeconds);
      return totalSeconds;
+}
+
+function homePageActions(){
+	checkDataForNotification();
 }
 
 /* ----------------  Time Tracker Code Starts -------------------------  */

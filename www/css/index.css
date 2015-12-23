@@ -255,10 +255,11 @@ hr.style {
 	color: #5d5d5d;
 }
 
-.link-custom-spam{
+.link-custom-span{
 }
 
-.link-custom-spam a{
+.link-custom-span a.delete-link{
+	color: #ff0000;
 }
 
 .so-details-box {
