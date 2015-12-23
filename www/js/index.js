@@ -1746,10 +1746,8 @@ function deleteLogTimeLocal(dataObj){
 	db.transaction(
        function (tx){
     	   tx.executeSql('DELETE FROM TIMETRACKER WHERE id=?',[id], errorCB);
-       }, successCBDeleteLogTimeLocal, errorCB
+       }, errorCB,successCBDeleteLogTimeLocal
 	);
-	
-	logTimeLocalDiv
 }
 
 //Transaction success callback
