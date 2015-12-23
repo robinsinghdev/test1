@@ -1613,7 +1613,7 @@ function getLogTimeListLocal(oid){
 					   				comments="No Comments Yet.";
 					   			}
 					   			
-						   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
+						   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 logTimeLocalDiv'+id+' ">'+
 											   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
 														'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
 													'</div>'+
@@ -1748,11 +1748,17 @@ function deleteLogTimeLocal(dataObj){
     	   tx.executeSql('DELETE FROM TIMETRACKER WHERE id=?',[id], errorCB);
        }, successCBDeleteLogTimeLocal, errorCB
 	);
+	
+	logTimeLocalDiv
 }
 
 //Transaction success callback
 function successCBDeleteLogTimeLocal() {
-	$.mobile.changePage('#view-all-sales-order','slide');
+	//$.mobile.changePage('#view-all-sales-order','slide');
+	var $dataObj=$(deleteLogTimeLocalObj);
+	var id=$dataObj.data('id');
+	$('.logTimeLocalDiv'+id).remove();
+	
 	navigator.notification.alert('Log time deleted successfully.',alertConfirm,'BP Metrics','Ok');
 }
 
