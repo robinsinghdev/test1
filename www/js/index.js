@@ -1529,6 +1529,7 @@ function showChangeRoleBlockedDialog() {
 function changeRoleBlockedDialogAction(button){
     if(button=="1" || button==1){
     	$.mobile.changePage('#home-page','slide');
+    	$( "#overlayPanel" ).panel( "close" );
     }
 }
 
@@ -1562,11 +1563,13 @@ function getLogTimeListOfOrder(data){
 			$('#logTimeHistoryDiv').append(logTimeDiv);
 			
 			hideModal();
-	   		$.mobile.changePage('#view-log-time-history','slide');
 	   		
 	   		// Tabs Selection
 	   		$('.ui-navbar').find('li').find('a').removeClass('ui-btn-active');
 	   		$('.ui-navbar').find('li:nth-child(2)').find('a').addClass('ui-btn-active');
+	   		$('#historyLocalTab').show().siblings('.history-tab-content-div').hide();
+	   		
+	   		$.mobile.changePage('#view-log-time-history','slide');
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
@@ -1665,6 +1668,7 @@ function getLogTimeListOfOrder(data){
 			// Tabs Selection
 	   		$('.ui-navbar').find('li').find('a').removeClass('ui-btn-active');
 	   		$('.ui-navbar').find('li:nth-child(1)').find('a').addClass('ui-btn-active');
+	   		$('#historyTab').show().siblings('.history-tab-content-div').hide();
 		}
 	}
 	else{
