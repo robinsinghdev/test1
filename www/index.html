@@ -50,7 +50,7 @@
                 </div>
                 
                 <div data-position="fixed"   class="app-footer-section" class="footer-div">
-                    <div class="version-number-text">v1.4.0</div>
+                    <div class="version-number-text">v1.4.1</div>
                 </div>
             </div>
              
@@ -94,7 +94,7 @@
 	                    	<div class="reconnect-msg-div" ><p style="display: none;" id="reconnectStatusMsg"></p></div>
 	                    </div>
 	                    <div class="sync-btn-div">
-							<input type="button" value="Sync Data <img src='img/wifi-icon-16px.png' class='wifi-icon' />"  onclick="callSyncNow();" id="callSyncNowBtn" class="app-link" data-theme="a" data-mini="true" />
+							<input type="button" value="Sync Data <img src='img/wifi-icon-16px.png' class='wifi-icon' />"  onclick="callSyncData();" id="callSyncNowBtn" class="app-link" data-theme="a" data-mini="true" />
 	                    	<div class="sync-msg-div" ><p style="display: none;" id="syncStatusMsg"></p></div>
 	                    </div>
 						
@@ -224,8 +224,8 @@
                     <div data-role="tabs" id="tabs">
 						  <div data-role="navbar">
 						    <ul class="history-tabs">
-						      <li><a href="#historyTab" data-ajax="false" class="ui-btn-active"><span>TT Report</span> <span><img src='img/wifi-icon-16px.png' class='wifi-icon' /></span></a></li>
-						      <li><a href="#historyLocalTab" data-ajax="false" >LCL Report</a></li>
+						      <li><a href="#historyTab" data-ajax="false" class="ui-btn-active"><span>All Timelogs</span> <span><img src='img/wifi-icon-16px.png' class='wifi-icon' /></span></a></li>
+						      <li><a href="#historyLocalTab" data-ajax="false" >App Timelogs</a></li>
 						    </ul>
 						  </div>
 						  <div id="historyTab" class="ui-body-d ui-content">
@@ -306,9 +306,9 @@
 								<label for="Time">Time</label>
 								<div class="input-div">
 									<span>Hour</span>
-									<input type="text" data-mini="true" onchange="getDataForTotalTimeCalc();" id="logHours" name ="logHours" />
+									<input type="text" data-mini="true" onchange="getDataForTotalTimeCalc();" id="logHours" name ="logHours" maxlength="2" />
 									<span>Min</span>
-									<input type="text" data-mini="true" onchange="getDataForTotalTimeCalc();" id="logMinutes" name ="logMinutes">
+									<input type="text" data-mini="true" onchange="getDataForTotalTimeCalc();" id="logMinutes" name ="logMinutes" maxlength="2" />
 								</div>
 								<!-- 
 		                    	<input onchange="getDataForTotalTimeCalc();" type="text" data-mini="true" data-role="datebox" id="logTime" name="logTime" readonly="readonly"

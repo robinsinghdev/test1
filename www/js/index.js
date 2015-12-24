@@ -17,7 +17,7 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.tapToggle = false;
 });
 
-var appUrl='https://www.bpmetrics.com/grn/m_app/';
+var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
@@ -117,7 +117,7 @@ function resetSyncTimer(){
 	    duration: '90000m',
 	    callback: function() {
 	        $('#syncCallTimerDiv').timer('reset');
-	        checkConnectionForSync();
+	        //checkConnectionForSync();
 	    },
 	    repeat: true //repeatedly call the callback
 	});
@@ -228,7 +228,7 @@ function checkDataForSync() {
                     if(len>0){
                     	window.localStorage["sync_flag"] = 1;                    	
                     	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
-            	    	checkConnectionForSync();
+            	    	//checkConnectionForSync();
                     }
                 }, errorCB
             );
@@ -258,6 +258,43 @@ function checkDataForNotification() {
             );
        },errorCB,successCB
    );
+}
+
+function callSyncData() {
+	checkDataForNotification();
+	
+	var connectionType=checkConnection();
+	//var connectionType="WiFi connection";//For Testing
+	
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
+		$("#syncStatusMsg").fadeOut(20000,function() {});
+		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+	}
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		if (window.localStorage.getItem("sync_flag") == 1 ) {
+			showSyncDataDialog();
+		}
+		else if (window.localStorage.getItem("sync_flag") == 0 ) {
+	    	$("#callSyncNowBtn").removeAttr("disabled");
+	    }
+	}
+}
+
+function showSyncDataDialog() {
+    navigator.notification.confirm(
+        ("Confirm ready to sync time entries to office?"), // message
+        syncDataDialogAction, // callback
+        'BP METRICS', // title
+        'Yes,Cancel' // buttonName
+    );
+}
+
+//Call logout function
+function syncDataDialogAction(button){
+    if(button=="1" || button==1){
+    	callSyncNow();
+    }
 }
 
 function callSyncNow() {
@@ -455,7 +492,24 @@ function doLogout() {
 		);
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		showLogoutDialog();
+		checkDataForNotification();
+		if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
+			
+		}
+		else{
+			showSaveRunningTimerDialog();
+			return false;
+		}
+		
+		if (window.localStorage.getItem("sync_flag") == 1 ) {
+			// to-do
+			// show dialog for sync data
+			callSyncData();
+		}
+	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
+			//checkConnectionForSync();
+	    	showLogoutDialog();
+	    }
 	}
 }
 
@@ -519,13 +573,6 @@ function dataSyncCheck() {
 }
 
 function logout() {
-	if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
-		
-	}
-	else{
-		showSaveRunningTimerDialog();
-		return false;
-	}
 	showModal();
 	
 	checkDataForNotification();
@@ -536,7 +583,7 @@ function logout() {
     	hideModal();
 	}
     else if (window.localStorage.getItem("sync_flag") == 0 ) {
-		checkConnectionForSync();
+		//checkConnectionForSync();
 	
 		window.localStorage["password"] = '';
 		window.localStorage["user_logged_in"] = 0;
@@ -629,7 +676,8 @@ function handleLogin() {
 					}
 					
 					checkingUserAssignedRoles();
-					checkConnectionForSync();
+					checkDataForNotification();
+					//checkConnectionForSync();
 					
 					//$.mobile.changePage('#home-page','slide');					
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
@@ -1415,7 +1463,7 @@ function changeLoginRole(roleId,roleName){
 		}
 		
 		showModal();
-		checkConnectionForSync();
+		//checkConnectionForSync();
 		
 		window.localStorage["permissions"] = ''+roleId+'';
 		window.localStorage["solocal"] = 0;
@@ -1678,6 +1726,7 @@ function addLogTime(){
 	$addUpdateLogTimeForm.find('#logMinutes').val('00');
 	$addUpdateLogTimeForm.find('#staffTimeId').val('');
 	$addUpdateLogTimeForm.find('#soTimeId').val(currDataOrder);
+	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
 	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add');
 	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','add');
 	
@@ -1863,7 +1912,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 				//window.localStorage.getItem("trackerValueSave") == 1
 				window.localStorage["trackerValueSave"] = 0;
 				// Call Sync
-		        checkConnectionForSync();
+		        //checkConnectionForSync();
 			}
 		}
 		else if($(obj).attr('data-flag')=='update'){
