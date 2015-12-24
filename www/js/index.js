@@ -17,18 +17,10 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.tapToggle = false;
 });
 
-/*
-$(document).delegate('.history-tabs a', 'tap', function (){
-  $('.history-tabs').find('li').find('a').removeClass('ui-btn-active');
-  $('.history-tabs').find('li:nth-child(' + ($(this).parent().index() + 1) + ')').find('a').addClass('ui-btn-active');
-  $('#' + $(this).attr('data-href')).show().siblings('.content_div').hide();
-});
-*/
-
-$(document).delegate('.history-tabs a', 'click', function () {
+$(document).delegate('.history-tabs a', 'tap', function () {
 	$('.history-tabs').find('li').find('a').removeClass('ui-btn-active');
     $(this).addClass('ui-btn-active');
-    $('#' + $(this).attr('data-href')).show().siblings('.history-tab-content-div').hide();;
+    $($(this).attr('href')).show().siblings('.history-tab-content-div').hide();
 });
 
 var appUrl='https://dev.bpmetrics.com/grn/m_app/';
@@ -218,6 +210,11 @@ function errorCBSyncWithServer() {
 
 //Transaction success callback
 function successSyncWithServer() {
+	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
+	setTimeout(changeSyncStatusMsg, 4000);
+}
+
+function changeSyncStatusMsg(){
 	$("#callSyncNowBtn").removeAttr("disabled");
 	$("#callSyncNowBtn").parent().attr('style', '');
 	
@@ -666,6 +663,7 @@ function handleLogin() {
 			if(window.localStorage["user_logged_in"] ==1) {
 				$('#userFullName').html(window.localStorage.getItem("full_name"));
 				checkingUserAssignedRoles();
+				checkDataForNotification();
 				$.mobile.changePage('#home-page',{ transition: "slideup"});
 			}
 			else{
