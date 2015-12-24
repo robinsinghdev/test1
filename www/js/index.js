@@ -211,7 +211,7 @@ function errorCBSyncWithServer() {
 //Transaction success callback
 function successSyncWithServer() {
 	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
-	setTimeout(changeSyncStatusMsg, 4000);
+	setTimeout(changeSyncStatusMsg, 6000);
 }
 
 function changeSyncStatusMsg(){
@@ -262,7 +262,8 @@ function checkDataForNotification() {
                     }
                     
                     if(len>0){
-                    	window.localStorage["sync_flag"] = 1;                    	
+                    	window.localStorage["sync_flag"] = 1;
+                    	$("#syncStatusMsg").html("");
                     	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
                     }
                 }, errorCB
