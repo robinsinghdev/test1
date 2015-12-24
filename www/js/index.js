@@ -483,7 +483,7 @@ function alertexit(button){
 }
 
 function doLogout() {
-	
+	checkDataForNotification();
 	var connectionType=checkConnection();
 	//var connectionType="Unknown connection";//For Testing
 	
@@ -497,7 +497,7 @@ function doLogout() {
 		);
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		checkDataForNotification();
+		
 		if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
 			
 		}
@@ -507,9 +507,8 @@ function doLogout() {
 		}
 		
 		if (window.localStorage.getItem("sync_flag") == 1 ) {
-			// to-do
-			// show dialog for sync data
-			callSyncData();
+			// to-do callSyncData();
+			showLogoutBlockedDialog();
 		}
 	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
 			//checkConnectionForSync();
@@ -517,6 +516,23 @@ function doLogout() {
 	    }
 	}
 }
+
+function showLogoutBlockedDialog() {
+    navigator.notification.confirm(
+        ("Please first Sync Data"), // message
+        logoutBlockedDialogAction, // callback
+        'Logout Blocked', // title
+        'Ok,Cancel' // buttonName
+    );
+}
+
+//Call logoutBlockedDialogAction function
+function logoutBlockedDialogAction(button){
+    if(button=="1" || button==1){
+    	$.mobile.changePage('#home-page','slide');
+    }
+}
+
 
 function alertConfirm(buttonIndex){
 	
@@ -1455,6 +1471,7 @@ function  hideAllTablesData(){
 }
 
 function changeLoginRole(roleId,roleName){
+	checkDataForNotification();
 	var connectionType=checkConnection();
 	//var connectionType="WiFi connection";//For Testing
 	
@@ -1466,6 +1483,14 @@ function changeLoginRole(roleId,roleName){
 			showSaveRunningTimerDialog();
 			return false;
 		}
+		
+		if (window.localStorage.getItem("sync_flag") == 1 ) {
+			showChangeRoleBlockedDialog();
+			return false;
+		}
+	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
+	    	// To-Do required actions
+	    }
 		
 		showModal();
 		//checkConnectionForSync();
@@ -1483,12 +1508,28 @@ function changeLoginRole(roleId,roleName){
 		time_cats_arr=[];
 		getCategoriesForTimeTracking();
 		hideModal();
-		//navigator.notification.alert("Role = "+roleName+".", function() {});
 		navigator.notification.alert('Role = '+roleName+'.',alertConfirm,'BP Metrics','Ok');
 	}
 	else{
 		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
 	}
+}
+
+//callSyncData();
+function showChangeRoleBlockedDialog() {
+    navigator.notification.confirm(
+        ("Please first Sync Data"), // message
+        changeRoleBlockedDialogAction, // callback
+        'Switch Role Blocked', // title
+        'Ok,Cancel' // buttonName
+    );
+}
+
+//Call changeRoleBlockedDialogAction function
+function changeRoleBlockedDialogAction(button){
+    if(button=="1" || button==1){
+    	$.mobile.changePage('#home-page','slide');
+    }
 }
 
 function getLogTimeListOfOrder(data){
@@ -1908,7 +1949,8 @@ function callAddUpadteLogTime(obj,logTimeType){
 		
 		if($(obj).attr('data-flag')=='add'){
 			dataObj.grn_staffTime_id= '';
-			addLogTimeToServer(dataObj);
+			//addLogTimeToServer(dataObj);
+			addLogTimeToApp(dataObj);
 		}
 		else if($(obj).attr('data-flag')=='addTT'){
 			dataObj.grn_staffTime_id= '';
