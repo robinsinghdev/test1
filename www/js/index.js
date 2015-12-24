@@ -17,6 +17,11 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.tapToggle = false;
 });
 
+$(document).delegate('.ui-navbar a', 'tap', function (){
+  $('.ui-navbar').find('li').find('a').removeClass('ui-btn-active');
+  $('.ui-navbar').find('li:nth-child(' + ($(this).parent().index() + 1) + ')').find('a').addClass('ui-btn-active');
+});
+
 var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
