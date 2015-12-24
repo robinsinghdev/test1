@@ -211,7 +211,7 @@ function errorCBSyncWithServer() {
 //Transaction success callback
 function successSyncWithServer() {
 	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
-	setTimeout(changeSyncStatusMsg, 6000);
+	setTimeout(changeSyncStatusMsg, 5000);
 }
 
 function changeSyncStatusMsg(){
