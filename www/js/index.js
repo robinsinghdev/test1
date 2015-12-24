@@ -1523,6 +1523,9 @@ function getLogTimeListOfOrder(data){
 			hideModal();
 	   		$.mobile.changePage('#view-log-time-history','slide');
 	   		
+	   		// Tabs Selection
+	   		$('.ui-navbar').find('li').find('a').removeClass('ui-btn-active');
+	   		$('.ui-navbar').find('li:nth-child(2)').find('a').addClass('ui-btn-active');
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
@@ -1617,6 +1620,10 @@ function getLogTimeListOfOrder(data){
 					navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
 				}
 			});
+			
+			// Tabs Selection
+	   		$('.ui-navbar').find('li').find('a').removeClass('ui-btn-active');
+	   		$('.ui-navbar').find('li:nth-child(1)').find('a').addClass('ui-btn-active');
 		}
 	}
 	else{
