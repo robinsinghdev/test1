@@ -23,7 +23,7 @@ $(document).delegate('.history-tabs a', 'tap', function () {
     $($(this).attr('href')).show().siblings('.history-tab-content-div').hide();
 });
 
-var appUrl='https://www.bpmetrics.com/grn/m_app/';
+var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
@@ -149,7 +149,7 @@ function callSyncWithServer() {
 	  (
 	       function (tx){
 	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime text,secondsData integer
-	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus FROM TIMETRACKER',[],function(tx,results){
+	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,appTimestamp FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
 	                    //alert(" TIMETRACKER table length...."+len);
 	                    if(len == 0){
@@ -178,7 +178,8 @@ function callSyncWithServer() {
 	                        		dataObj.crew_size= results.rows.item(i)['crewSize'];
 	                        		dataObj.comments= results.rows.item(i)['comment'];
 	                        		dataObj.lid= currid;
-	                        		
+	                        		dataObj.log_timestamp=results.rows.item(i)['appTimestamp'];
+	                        		dataObj.sender ="aapp";
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
@@ -1966,9 +1967,10 @@ function callAddUpadteLogTime(obj,logTimeType){
 		}
 		else if($(obj).attr('data-flag')=='addTT'){
 			dataObj.grn_staffTime_id= '';
+			var appTimestamp=dateTimestamp();
 			
 			var currtimetrackerid = window.localStorage.getItem("trackerkey");
-			var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' WHERE id=' "+currtimetrackerid+" '";
+			var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' ,appTimestamp='"+appTimestamp+"' WHERE id=' "+currtimetrackerid+" '";
 			
 			var result=addUpadteLogTimeTT(dataObj,updateQuery);
 			
@@ -2118,9 +2120,10 @@ function updateLogTimeToServer(dataObj){
 
 function addLogTimeToApp(dataObj){
 	var secondsVal=0;
+	var appTimestamp=dateTimestamp();
 	db.transaction(function(tx) {
 		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
-		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData) VALUES (?,?,?,?,?,?,?,?,?,?)'
+		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData, appTimestamp) VALUES (?,?,?,?,?,?,?,?,?,?,?)'
 				,[dataObj.grn_salesorderTime_id,
 				  dataObj.date,
 				  dataObj.time,
@@ -2130,7 +2133,8 @@ function addLogTimeToApp(dataObj){
 				  dataObj.comments,
 				  "complete",
 				  "0",
-				  secondsVal]
+				  secondsVal,
+				  appTimestamp]
 			,function(tx, results){
 					//alert('Returned ID: ' + results.insertId);
 					navigator.notification.alert(
@@ -2417,6 +2421,30 @@ function padStr(i) {
     return (i < 10) ? "0" + i : "" + i;
 }
 
+function addZero(x,n) {
+    while (x.toString().length < n) {
+        x = "0" + x;
+    }
+    return x;
+}
+
+function dateTimestamp() {
+    var d = new Date();
+    
+    var yyyy = addZero(d.getFullYear(), 4);
+    var month = addZero(d.getMonth()+1, 2);
+    var dd = addZero(d.getDate(), 2);
+    
+    
+    var hh = addZero(d.getHours(), 2);
+    var mm = addZero(d.getMinutes(), 2);
+    var ss = addZero(d.getSeconds(), 2);
+    var mss = addZero(d.getMilliseconds(), 3);
+    
+    var dateTimeStampTemp = yyyy + month + dd +"_"+ hh + mm + ss + mss;
+    return dateTimeStampTemp;
+}
+
 function calculateDateTimeDiff(old_date,new_date) {
 	// The number of milliseconds in one second
      var ONE_SECOND = 1000;
@@ -2503,12 +2531,13 @@ function startTimer() {
         
         var currtimetrackerid;
         var currentDateTimeValue=currentDateTime();
+        var appTimestamp=dateTimestamp();
     	
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData) VALUES (?,?,?,?,?,?,?,?,?,?)'
-    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTimeValue,0]
+    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData,appTimestamp) VALUES (?,?,?,?,?,?,?,?,?,?,?)'
+    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTimeValue,0,appTimestamp]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
@@ -2857,7 +2886,7 @@ function initializeDB(tx) {
 	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,revision integer,status integer)');
 	
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer, appTimestamp text)');
 }
 
 //Transaction success callback
