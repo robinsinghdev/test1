@@ -55,8 +55,10 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
         <preference name="android-minSdkVersion" value="10"/> 
  		<preference name="android-targetSdkVersion" value="22"/> 
     </platform>
+    <!-- 
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+     -->
 </widget>
