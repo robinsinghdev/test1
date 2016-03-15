@@ -1055,8 +1055,9 @@ function createNewSO(){
 
 function scrollToSalesOrder(){
 	$( "#getSOBySONumberDialog" ).dialog( "close" );
-	
-	$("html,body").animate({scrollTop: $("#after_hello").offset().top}, 500);
+	var targetSalesTableDiv="#sales-table-div_"+100 ;
+//	/$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
+	$("html,body").animate({scrollTop: $( targetSalesTableDiv ).offset().top}, 500);
 	tryAgainSOBySONumber();
 }
 
