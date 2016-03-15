@@ -87,7 +87,7 @@ var app = {
     // Phonegap is now ready...
     onDeviceReady: function() {
     	cordova.getAppVersion.getVersionNumber(function (version) {
-			$(".version-number-text").html(version);
+			$(".version-number-text").html("v"+version);
     	});
     	
         //console.log("device ready, start making you custom calls!");
@@ -735,18 +735,9 @@ function handleLogin() {
 					    	//window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
 						    //window.open('market://details?id=com.bpmetrics.tracker');
 							//window.open("market://details?id="+packageName);
-					    	alert("appPlatform details");
-						    appPlatform = device.platform.toLowerCase();
-						    alert("appPlatform----"+appPlatform);
-						    launchAppStore();
-						    
 						    showAppUpdateAvailableDialog();
 					    }
 					});
-					
-					appPlatform = device.platform.toLowerCase();
-				    alert("appPlatform----"+appPlatform);
-				    launchAppStore();
 					
 					cordova.getAppVersion.getPackageName(function (packageName) {
 					    alert(packageName);
@@ -830,12 +821,10 @@ function showAppUpdateAvailableDialog() {
 //Call showAppUpdateAvailableDialogAction function
 function showAppUpdateAvailableDialogAction(button){
     if(button=="1" || button==1){
-    	$.mobile.changePage('#home-page','slide');
     	alert('update app and go to play store');
     	
-    	alert("appPlatform details");
-	    appPlatform = device.platform.toLowerCase();
-	    alert("appPlatform----"+appPlatform);
+	    //appPlatform = device.platform.toLowerCase();
+	    //alert("appPlatform----"+appPlatform);
 	    launchAppStore();
     }
 }
@@ -843,7 +832,7 @@ function showAppUpdateAvailableDialogAction(button){
 
 function launchAppStore(){
     LaunchReview.launch("com.bpmetrics.tracker", launchAppStoreSuccessCB);
-    LaunchReview.launch(APP_ID[appPlatform], launchAppStoreSuccessCB);
+    //LaunchReview.launch(APP_ID[appPlatform], launchAppStoreSuccessCB);
 }
 
 function launchAppStoreSuccessCB(){
@@ -894,6 +883,7 @@ function checkingUserAssignedRoles(){
 	}
 }
 
+var sp_salesOrderNumber_for_scroll;
 function getSOBySONumber(){
 	//var grnUserObj=window.localStorage.getItem("grnUser");
 	
@@ -958,7 +948,9 @@ function getSOBySONumber(){
 				   			$(".sales-order-msg").html(responseMsg);
 				   			
 				   			$('a#tryAgainBtn').removeClass('display-none');
+				   			$('a#getSOBySONumberBtn').addClass('display-none');
 				   			$('a#scrollToSalesOrderBtn').parent().show();
+				   			sp_salesOrderNumber_for_scroll =sp_salesOrderNumber;
 				   		} 
 				   		else if(responseJson.status=="fail"){
 				   			$sp_details_div.hide();
@@ -1054,11 +1046,15 @@ function createNewSO(){
 }
 
 function scrollToSalesOrder(){
+	alert("scrollToSalesOrder fn");
 	$( "#getSOBySONumberDialog" ).dialog( "close" );
-	var targetSalesTableDiv="#sales-table-div_"+100 ;
+	alert(sp_salesOrderNumber_for_scroll);
+	var targetSalesTableDiv="#sales-table-div_"+sp_salesOrderNumber_for_scroll ;
 //	/$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
 	$("html,body").animate({scrollTop: $( targetSalesTableDiv ).offset().top}, 500);
 	tryAgainSOBySONumber();
+	
+	return false;
 }
 
 function getCategoriesForTimeTracking(){

@@ -21,7 +21,7 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <feature name="http://api.phonegap.com/1.0/file"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
     <feature name="http://api.phonegap.com/1.0/notification"/>
-    <feature name="http://api.phonegap.com/1.0/device" />
+    <feature name="http://api.phonegap.com/1.0/device"/>
     
      <!--    Phonegap Cloud Build Plugin Defination -->
      <!-- 
