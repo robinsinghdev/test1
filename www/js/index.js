@@ -23,7 +23,7 @@ $(document).delegate('.history-tabs a', 'tap', function () {
     $($(this).attr('href')).show().siblings('.history-tab-content-div').hide();
 });
 
-var appUrl='https://www.bpmetrics.com/grn/m_app/';
+var appUrl='https://dev.bpmetrics.com/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
@@ -93,6 +93,18 @@ var app = {
         
         checkPreAuth();
 		$("#loginForm").on("submit",handleLogin);
+		
+		navigator.appInfo.getAppInfo(function(appInfo) {
+		  console.log('identifier: %s', appInfo.identifier);
+		  console.log('version: %s', appInfo.version);
+		  console.log('build: %s', appInfo.build);
+		  
+		  alert('identifier: %s', appInfo.identifier);
+		  alert('version: %s', appInfo.version);
+		  alert('build: %s', appInfo.build);
+		}, function(err) {
+			alert(err);
+		});
 		
 		//checkConnectionForSync();
 		
