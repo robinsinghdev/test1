@@ -33,7 +33,7 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
 	<plugin name="io.litehelpers.cordova.sqlite" source="pgb" spec="0.7.10" />
 	<plugin name="org.apache.cordova.dialogs" source="pgb" spec="0.2.10" />
 	<plugin name="org.apache.cordova.network-information" source="pgb" spec="0.2.12" />
-	<plugin name="cordova-plugin-app-version" source="npm" spec="0.1.8 " />
+	<plugin name="cordova-plugin-appinfo" source="npm" spec="2.0.3" />
 	
     <!--    Cordova Phonegap Build Plugin Defination -->
     <!-- 
