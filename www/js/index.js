@@ -15,10 +15,11 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.updatePagePadding = false;
      $.mobile.toolbar.prototype.options.hideDuringFocus = "";
      $.mobile.toolbar.prototype.options.tapToggle = false;
-     
+     /*
      $.extend($.mobile, {
          minScrollBack: 90000 // turn off scrolling to position on last page
      });
+     */
 });
 
 $(document).delegate('.history-tabs a', 'tap', function () {
@@ -663,8 +664,8 @@ function handleLogin() {
 	$("#submitButton",form).attr("disabled","disabled");
 	var u = $("#username", form).val();
 	var p = $("#password", form).val();
-	u='it@bpm.com';
-	p='323f16';
+	//u=''; // For testing
+	//p=''; // For testing
 	
 	if(u != '' && p!= '') {
 		
@@ -723,11 +724,7 @@ function handleLogin() {
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
 					
 					var versionJson = responseJson.version;
-					
 					cordova.getAppVersion.getVersionNumber(function (version) {
-					    var appVersion = parseFloat(version);
-					    var appStoreVersion = parseFloat(versionJson["App"]);
-					    
 					    if(version !== versionJson["App"]){
 						    showAppUpdateAvailableDialog();
 					    }
@@ -1034,13 +1031,14 @@ function createNewSO(){
 }
 
 function scrollToSalesOrder(){
-	alert("scrollToSalesOrder fn");
+	//alert("scrollToSalesOrder fn");
 	$( "#getSOBySONumberDialog" ).dialog( "close" );
 	var targetSalesTableDiv="#sales-table-div_"+sp_salesOrderNumber_for_scroll ;
 	//	$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
-	
 	//$("html,body").animate({scrollTop: $( targetSalesTableDiv ).offset().top}, 500);
-	$.mobile.silentScroll( $(targetSalesTableDiv).offset().top );
+	//$.mobile.silentScroll( $(targetSalesTableDiv).offset().top );
+	
+	$("html,body").animate({scrollTop: $(targetSalesTableDiv).offset().top}, 500);
 	tryAgainSOBySONumber();
 	
 	return false;
