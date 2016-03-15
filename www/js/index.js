@@ -83,16 +83,8 @@ var app = {
     // Phonegap is now ready...
     onDeviceReady: function() {
         //console.log("device ready, start making you custom calls!");
-        document.addEventListener("backbutton", onBackKeyDown, false);
-        // Start adding your code here....
-		//app.receivedEvent('deviceready');
-		
-		//db = window.sqlitePlugin.openDatabase("Database", "1.0", "BPMETR", 200000);
-		db = window.sqlitePlugin.openDatabase({name: "bpmetr.db", location: 2});
-		db.transaction(initializeDB, errorCB, successCB);
-        
-        checkPreAuth();
-		$("#loginForm").on("submit",handleLogin);
+    	
+    	$("#loginForm").on("submit",handleLogin);
 		
 		navigator.appInfo.getAppInfo(function(appInfo) {
 		  console.log('identifier: %s', appInfo.identifier);
@@ -105,6 +97,16 @@ var app = {
 		}, function(err) {
 			alert(err);
 		});
+    	
+        document.addEventListener("backbutton", onBackKeyDown, false);
+        // Start adding your code here....
+		//app.receivedEvent('deviceready');
+		
+		//db = window.sqlitePlugin.openDatabase("Database", "1.0", "BPMETR", 200000);
+		db = window.sqlitePlugin.openDatabase({name: "bpmetr.db", location: 2});
+		db.transaction(initializeDB, errorCB, successCB);
+        
+        checkPreAuth();
 		
 		//checkConnectionForSync();
 		
