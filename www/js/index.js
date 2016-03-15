@@ -733,6 +733,7 @@ function handleLogin() {
 					    }
 					    
 					    appPlatform = device.platform.toLowerCase();
+					    alert("appPlatform----"+appPlatform);
 					    launchAppStore();
 					});
 					
