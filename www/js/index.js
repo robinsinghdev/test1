@@ -86,6 +86,10 @@ var app = {
     },
     // Phonegap is now ready...
     onDeviceReady: function() {
+    	cordova.getAppVersion.getVersionNumber(function (version) {
+			$(".version-number-text").html(version);
+    	});
+    	
         //console.log("device ready, start making you custom calls!");
     	
     	$("#loginForm").on("submit",handleLogin);
@@ -728,16 +732,16 @@ function handleLogin() {
 					    
 					    if(version !== versionJson["App"]){
 					    	alert("update app");
-					    	window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
-						    window.open('market://details?id=com.bpmetrics.tracker');
+					    	//window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
+						    //window.open('market://details?id=com.bpmetrics.tracker');
 							//window.open("market://details?id="+packageName);
-						    
+					    	alert("appPlatform details");
 						    appPlatform = device.platform.toLowerCase();
 						    alert("appPlatform----"+appPlatform);
 						    launchAppStore();
+						    
+						    showAppUpdateAvailableDialog();
 					    }
-					    
-
 					});
 					
 					appPlatform = device.platform.toLowerCase();
@@ -813,6 +817,29 @@ function handleLogin() {
 	}
 	return false;
 }
+
+function showAppUpdateAvailableDialog() {
+    navigator.notification.confirm(
+        ("New version of the app is available, update ?"), // message
+        showAppUpdateAvailableDialogAction, // callback
+        'Update', // title
+        'Update,Later' // buttonName
+    );
+}
+
+//Call showAppUpdateAvailableDialogAction function
+function showAppUpdateAvailableDialogAction(button){
+    if(button=="1" || button==1){
+    	$.mobile.changePage('#home-page','slide');
+    	alert('update app and go to play store');
+    	
+    	alert("appPlatform details");
+	    appPlatform = device.platform.toLowerCase();
+	    alert("appPlatform----"+appPlatform);
+	    launchAppStore();
+    }
+}
+
 
 function launchAppStore(){
     LaunchReview.launch("com.bpmetrics.tracker", launchAppStoreSuccessCB);
@@ -898,6 +925,8 @@ function getSOBySONumber(){
 				   		hideModal();
 				   		var responseJson = $.parseJSON(data);
 				   		//{"status":"success","soInfo":{"SO#":"192","Job":"Cheryl & Marvin Fisher"}}
+				   		var responseMsg =responseJson.msg;
+				   		alert(responseMsg);
 				   		var $sp_details_div=$('#sp_details_div');
 				   		if(responseJson.status=="success"){
 				   			var soInfo=responseJson.soInfo;
@@ -920,7 +949,12 @@ function getSOBySONumber(){
 				   		}
 				   		else if(responseJson.status=="exist"){
 				   			$sp_details_div.hide();
-				   			$(".sales-order-msg").html("Sales order already exist.");
+				   			$(".sales-order-msg").html(responseMsg);
+				   			$('a#showOrderBtn').parent().show();
+				   		} 
+				   		else if(responseJson.status=="exist_open"){
+				   			$sp_details_div.hide();
+				   			$(".sales-order-msg").html(responseMsg);
 				   			$('a#showOrderBtn').parent().show();
 				   		} 
 				   		else if(responseJson.status=="fail"){
