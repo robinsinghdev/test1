@@ -86,21 +86,6 @@ var app = {
     	
     	$("#loginForm").on("submit",handleLogin);
 		
-		cordova.getAppVersion.getVersionNumber(function (version) {
-		    alert(version);
-		});
-		
-		cordova.getAppVersion.getPackageName(function (version) {
-		    alert(version);
-		    window.open('market://details?id=com.bpmetrics.tracker');
-		    //window.location.href("market://details?id="+version);
-			window.open("market://details?id="+version);
-		});
-		
-		cordova.getAppVersion.getVersionCode(function (version) {
-		    alert(version);
-		});
-		
         document.addEventListener("backbutton", onBackKeyDown, false);
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
@@ -670,8 +655,8 @@ function handleLogin() {
 	$("#submitButton",form).attr("disabled","disabled");
 	var u = $("#username", form).val();
 	var p = $("#password", form).val();
-	//u='support@dynaread.com';
-	//p='marbleF16XS';
+	u='it@bpm.com';
+	p='323f16';
 	
 	if(u != '' && p!= '') {
 		
@@ -728,6 +713,34 @@ function handleLogin() {
 					
 					//$.mobile.changePage('#home-page','slide');					
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
+					
+					alert(JSON.stringify(responseJson.version));
+					
+					cordova.getAppVersion.getVersionNumber(function (version) {
+					    alert(version);
+					    var appVersion = parseFloat(version);
+					    var appStoreVersion = parseFloat("1.6.1");
+						//TO-DO check version
+					    
+					    if(appVersion < appStoreVersion){
+					    	alert("parse compare");
+					    	window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
+						    window.open('market://details?id=com.bpmetrics.tracker');
+							//window.open("market://details?id="+packageName);
+					    }
+					    
+					    if(version !== "1.6.1"){
+					    	alert("string compare");
+					    	window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
+						    window.open('market://details?id=com.bpmetrics.tracker');
+							//window.open("market://details?id="+packageName);
+					    }
+					});
+					
+					cordova.getAppVersion.getPackageName(function (packageName) {
+					    alert(packageName);
+					});
+					
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
