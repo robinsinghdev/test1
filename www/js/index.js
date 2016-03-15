@@ -732,10 +732,14 @@ function handleLogin() {
 							//window.open("market://details?id="+packageName);
 					    }
 					    
-					    appPlatform = device.platform.toLowerCase();
-					    alert("appPlatform----"+appPlatform);
-					    launchAppStore();
+//					    appPlatform = device.platform.toLowerCase();
+//					    alert("appPlatform----"+appPlatform);
+//					    launchAppStore();
 					});
+					
+					appPlatform = device.platform.toLowerCase();
+				    alert("appPlatform----"+appPlatform);
+				    launchAppStore();
 					
 					cordova.getAppVersion.getPackageName(function (packageName) {
 					    alert(packageName);
