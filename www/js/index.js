@@ -87,6 +87,7 @@ var app = {
     	$("#loginForm").on("submit",handleLogin);
 		
 		navigator.appInfo.getAppInfo(function(appInfo) {
+			alert(appInfo);
 		  console.log('identifier: %s', appInfo.identifier);
 		  console.log('version: %s', appInfo.version);
 		  console.log('build: %s', appInfo.build);
@@ -96,6 +97,10 @@ var app = {
 		  alert('build: %s', appInfo.build);
 		}, function(err) {
 			alert(err);
+		});
+		
+		cordova.getAppVersion.getVersionNumber(function (version) {
+		    alert(version);
 		});
     	
         document.addEventListener("backbutton", onBackKeyDown, false);
