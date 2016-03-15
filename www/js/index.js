@@ -812,8 +812,8 @@ function handleLogin() {
 }
 
 function launchAppStore(){
-    LaunchReview.launch(APP_ID[appPlatform], launchAppStoreSuccessCB);
     LaunchReview.launch("com.bpmetrics.tracker", launchAppStoreSuccessCB);
+    LaunchReview.launch(APP_ID[appPlatform], launchAppStoreSuccessCB);
 }
 
 function launchAppStoreSuccessCB(){
