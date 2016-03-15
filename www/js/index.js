@@ -800,7 +800,7 @@ function handleLogin() {
 
 function showAppUpdateAvailableDialog() {
     navigator.notification.confirm(
-        ("New version of the app is available, update ?"), // message
+        ("App Version Outdated, please update to latest version."), // message
         showAppUpdateAvailableDialogAction, // callback
         'Update', // title
         'Update,Later' // buttonName
@@ -814,10 +814,8 @@ function showAppUpdateAvailableDialogAction(button){
     }
 }
 
-
 function launchAppStore(){
 	cordova.getAppVersion.getPackageName(function (packageName) {
-	    alert(packageName);
 	    LaunchReview.launch(packageName, launchAppStoreSuccessCB);
 	});
 }
@@ -1038,10 +1036,11 @@ function createNewSO(){
 function scrollToSalesOrder(){
 	alert("scrollToSalesOrder fn");
 	$( "#getSOBySONumberDialog" ).dialog( "close" );
-	alert(sp_salesOrderNumber_for_scroll);
 	var targetSalesTableDiv="#sales-table-div_"+sp_salesOrderNumber_for_scroll ;
-//	/$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
-	$("html,body").animate({scrollTop: $( targetSalesTableDiv ).offset().top}, 500);
+	//	$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
+	
+	//$("html,body").animate({scrollTop: $( targetSalesTableDiv ).offset().top}, 500);
+	$.mobile.silentScroll($(targetSalesTableDiv).offset().top);
 	tryAgainSOBySONumber();
 	
 	return false;
