@@ -727,14 +727,17 @@ function handleLogin() {
 						//TO-DO check version
 					    
 					    if(version !== versionJson["App"]){
+					    	alert("update app");
 					    	window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
 						    window.open('market://details?id=com.bpmetrics.tracker');
 							//window.open("market://details?id="+packageName);
+						    
+						    appPlatform = device.platform.toLowerCase();
+						    alert("appPlatform----"+appPlatform);
+						    launchAppStore();
 					    }
 					    
-//					    appPlatform = device.platform.toLowerCase();
-//					    alert("appPlatform----"+appPlatform);
-//					    launchAppStore();
+
 					});
 					
 					appPlatform = device.platform.toLowerCase();
