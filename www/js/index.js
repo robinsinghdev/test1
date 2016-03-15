@@ -86,30 +86,15 @@ var app = {
     	
     	$("#loginForm").on("submit",handleLogin);
 		
-		navigator.appInfo.getAppInfo(function(appInfo) {
-			alert(appInfo+"--"+JSON.stringify(appInfo));
-			
-			
-			var appInfoJsonObj = appInfo;
-			alert('identifier: %s', appInfoJsonObj["identifier"]);
-			alert('version: %s', appInfoJsonObj["version"]);
-			alert('build: %s', appInfoJsonObj["build"]);
-			
-			var appInfoJsonObj2 = JSON.parse(JSON.stringify(appInfo));
-			
-			alert('identifier: %s', appInfoJsonObj2["identifier"]);
-			alert('version: %s', appInfoJsonObj2["version"]);
-			alert('build: %s', appInfoJsonObj2["build"]);
-		}, function(err) {
-			alert(err);
-		});
-		
 		cordova.getAppVersion.getVersionNumber(function (version) {
 		    alert(version);
 		});
 		
 		cordova.getAppVersion.getPackageName(function (version) {
 		    alert(version);
+		    window.location.href("market://details?id="+version);
+
+			window.open("market://details?id="+version);
 		});
 		
 		cordova.getAppVersion.getVersionCode(function (version) {
