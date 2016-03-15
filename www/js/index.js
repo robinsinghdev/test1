@@ -725,24 +725,13 @@ function handleLogin() {
 					var versionJson = responseJson.version;
 					
 					cordova.getAppVersion.getVersionNumber(function (version) {
-					    alert(version+"-----"+versionJson["App"]+"--"+JSON.stringify(responseJson.version));
 					    var appVersion = parseFloat(version);
 					    var appStoreVersion = parseFloat(versionJson["App"]);
-						//TO-DO check version
 					    
 					    if(version !== versionJson["App"]){
-					    	alert("update app");
-					    	//window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
-						    //window.open('market://details?id=com.bpmetrics.tracker');
-							//window.open("market://details?id="+packageName);
 						    showAppUpdateAvailableDialog();
 					    }
 					});
-					
-					cordova.getAppVersion.getPackageName(function (packageName) {
-					    alert(packageName);
-					});
-					
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
@@ -821,22 +810,20 @@ function showAppUpdateAvailableDialog() {
 //Call showAppUpdateAvailableDialogAction function
 function showAppUpdateAvailableDialogAction(button){
     if(button=="1" || button==1){
-    	alert('update app and go to play store');
-    	
-	    //appPlatform = device.platform.toLowerCase();
-	    //alert("appPlatform----"+appPlatform);
 	    launchAppStore();
     }
 }
 
 
 function launchAppStore(){
-    LaunchReview.launch("com.bpmetrics.tracker", launchAppStoreSuccessCB);
-    //LaunchReview.launch(APP_ID[appPlatform], launchAppStoreSuccessCB);
+	cordova.getAppVersion.getPackageName(function (packageName) {
+	    alert(packageName);
+	    LaunchReview.launch(packageName, launchAppStoreSuccessCB);
+	});
 }
 
 function launchAppStoreSuccessCB(){
-    alert("Successfully launched review app");
+    //alert("Successfully launched review app");
 }
 
 function checkingUserAssignedRoles(){
@@ -934,14 +921,15 @@ function getSOBySONumber(){
 					   		$('a#addNewSalesOrderBtn').removeClass('display-none');
 					   		$('a#getSOBySONumberBtn').addClass('display-none');
 					   		$('a#showOrderBtn').parent().hide();
-					   		$('a#scrollToSalesOrderBtn').parent().hide();
+					   		$('a#scrollToSalesOrderBtn').removeClass('display-none').addClass('display-none');
 					   		$(".sales-order-msg").html('');
 				   		}
 				   		else if(responseJson.status=="exist"){
 				   			$sp_details_div.hide();
 				   			$(".sales-order-msg").html(responseMsg);
 				   			$('a#showOrderBtn').parent().show();
-				   			$('a#scrollToSalesOrderBtn').parent().hide();
+				   			//$('a#scrollToSalesOrderBtn').parent().hide();
+				   			$('a#scrollToSalesOrderBtn').removeClass('display-none').addClass('display-none');
 				   		} 
 				   		else if(responseJson.status=="exist_open"){
 				   			$sp_details_div.hide();
@@ -949,7 +937,8 @@ function getSOBySONumber(){
 				   			
 				   			$('a#tryAgainBtn').removeClass('display-none');
 				   			$('a#getSOBySONumberBtn').addClass('display-none');
-				   			$('a#scrollToSalesOrderBtn').parent().show();
+				   			//$('a#scrollToSalesOrderBtn').parent().show();
+				   			$('a#scrollToSalesOrderBtn').removeClass('display-none')
 				   			sp_salesOrderNumber_for_scroll =sp_salesOrderNumber;
 				   		} 
 				   		else if(responseJson.status=="fail"){
@@ -985,7 +974,8 @@ function tryAgainSOBySONumber(){
 	$('a#addNewSalesOrderBtn').addClass('display-none');
 	$('a#showOrderBtn').parent().hide();
 	$('a#getSOBySONumberBtn').removeClass('display-none');
-	$('a#scrollToSalesOrderBtn').parent().hide();
+	//$('a#scrollToSalesOrderBtn').parent().hide();
+	$('a#scrollToSalesOrderBtn').removeClass('display-none').addClass('display-none');
 	$(".sales-order-msg").html('');
 }
 
