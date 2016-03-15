@@ -88,13 +88,18 @@ var app = {
 		
 		navigator.appInfo.getAppInfo(function(appInfo) {
 			alert(appInfo+"--"+JSON.stringify(appInfo));
-		  console.log('identifier: %s', appInfo.identifier);
-		  console.log('version: %s', appInfo.version);
-		  console.log('build: %s', appInfo.build);
-		  
-		  alert('identifier: %s', appInfo.identifier);
-		  alert('version: %s', appInfo.version);
-		  alert('build: %s', appInfo.build);
+			
+			
+			var appInfoJsonObj = appInfo;
+			alert('identifier: %s', appInfoJsonObj["identifier"]);
+			alert('version: %s', appInfoJsonObj["version"]);
+			alert('build: %s', appInfoJsonObj["build"]);
+			
+			var appInfoJsonObj2 = JSON.parse(JSON.stringify(appInfo));
+			
+			alert('identifier: %s', appInfoJsonObj2["identifier"]);
+			alert('version: %s', appInfoJsonObj2["version"]);
+			alert('build: %s', appInfoJsonObj2["build"]);
 		}, function(err) {
 			alert(err);
 		});
