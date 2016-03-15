@@ -1,3 +1,7 @@
+var appPlatform;
+var APP_ID = {
+        "android": "com.bpmetrics.tracker",
+    };
 
 $( document ).on( "mobileinit", function() {
     // Make your jQuery Mobile framework configuration changes here!
@@ -714,27 +718,22 @@ function handleLogin() {
 					//$.mobile.changePage('#home-page','slide');					
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
 					
-					alert(JSON.stringify(responseJson.version));
+					var versionJson = responseJson.version;
 					
 					cordova.getAppVersion.getVersionNumber(function (version) {
-					    alert(version);
+					    alert(version+"-----"+versionJson["App"]+"--"+JSON.stringify(responseJson.version));
 					    var appVersion = parseFloat(version);
-					    var appStoreVersion = parseFloat("1.6.1");
+					    var appStoreVersion = parseFloat(versionJson["App"]);
 						//TO-DO check version
 					    
-					    if(appVersion < appStoreVersion){
-					    	alert("parse compare");
+					    if(version !== versionJson["App"]){
 					    	window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
 						    window.open('market://details?id=com.bpmetrics.tracker');
 							//window.open("market://details?id="+packageName);
 					    }
 					    
-					    if(version !== "1.6.1"){
-					    	alert("string compare");
-					    	window.open("https://play.google.com/store/apps/details?id=com.bpmetrics.tracker", "_blank", "location=no"); 
-						    window.open('market://details?id=com.bpmetrics.tracker');
-							//window.open("market://details?id="+packageName);
-					    }
+					    appPlatform = device.platform.toLowerCase();
+					    launchAppStore();
 					});
 					
 					cordova.getAppVersion.getPackageName(function (packageName) {
@@ -805,6 +804,15 @@ function handleLogin() {
 		$("#submitButton").removeAttr("disabled");
 	}
 	return false;
+}
+
+function launchAppStore(){
+    LaunchReview.launch(APP_ID[appPlatform], launchAppStoreSuccessCB);
+    LaunchReview.launch("com.bpmetrics.tracker", launchAppStoreSuccessCB);
+}
+
+function launchAppStoreSuccessCB(){
+    alert("Successfully launched review app");
 }
 
 function checkingUserAssignedRoles(){
