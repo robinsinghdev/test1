@@ -926,7 +926,6 @@ function getSOBySONumber(){
 				   		var responseJson = $.parseJSON(data);
 				   		//{"status":"success","soInfo":{"SO#":"192","Job":"Cheryl & Marvin Fisher"}}
 				   		var responseMsg =responseJson.msg;
-				   		alert(responseMsg);
 				   		var $sp_details_div=$('#sp_details_div');
 				   		if(responseJson.status=="success"){
 				   			var soInfo=responseJson.soInfo;
@@ -945,17 +944,21 @@ function getSOBySONumber(){
 					   		$('a#addNewSalesOrderBtn').removeClass('display-none');
 					   		$('a#getSOBySONumberBtn').addClass('display-none');
 					   		$('a#showOrderBtn').parent().hide();
+					   		$('a#scrollToSalesOrderBtn').parent().hide();
 					   		$(".sales-order-msg").html('');
 				   		}
 				   		else if(responseJson.status=="exist"){
 				   			$sp_details_div.hide();
 				   			$(".sales-order-msg").html(responseMsg);
 				   			$('a#showOrderBtn').parent().show();
+				   			$('a#scrollToSalesOrderBtn').parent().hide();
 				   		} 
 				   		else if(responseJson.status=="exist_open"){
 				   			$sp_details_div.hide();
 				   			$(".sales-order-msg").html(responseMsg);
-				   			$('a#showOrderBtn').parent().show();
+				   			
+				   			$('a#tryAgainBtn').removeClass('display-none');
+				   			$('a#scrollToSalesOrderBtn').parent().show();
 				   		} 
 				   		else if(responseJson.status=="fail"){
 				   			$sp_details_div.hide();
@@ -985,15 +988,13 @@ function tryAgainSOBySONumber(){
 	$sp_details_div.find('#chooseColorForSalesOrder').val('');
 	$sp_details_div.find('#salesOrderColorId').val('');
 	
-	
 	$sp_details_div.hide();
 	$('a#tryAgainBtn').addClass('display-none');
 	$('a#addNewSalesOrderBtn').addClass('display-none');
 	$('a#showOrderBtn').parent().hide();
 	$('a#getSOBySONumberBtn').removeClass('display-none');
+	$('a#scrollToSalesOrderBtn').parent().hide();
 	$(".sales-order-msg").html('');
-	
-	//getTimeTrackerList();
 }
 
 function getSOBySONumberOpen(){
@@ -1050,6 +1051,13 @@ function createNewSO(){
 		logout();
 		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
 	}
+}
+
+function scrollToSalesOrder(){
+	$( "#getSOBySONumberDialog" ).dialog( "close" );
+	
+	$("html,body").animate({scrollTop: $("#after_hello").offset().top}, 500);
+	tryAgainSOBySONumber();
 }
 
 function getCategoriesForTimeTracking(){
