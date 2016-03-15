@@ -1,7 +1,3 @@
-var appPlatform;
-var APP_ID = {
-        "android": "com.bpmetrics.tracker",
-    };
 
 $( document ).on( "mobileinit", function() {
     // Make your jQuery Mobile framework configuration changes here!
@@ -19,6 +15,10 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.updatePagePadding = false;
      $.mobile.toolbar.prototype.options.hideDuringFocus = "";
      $.mobile.toolbar.prototype.options.tapToggle = false;
+     
+     $.extend($.mobile, {
+         minScrollBack: 90000 // turn off scrolling to position on last page
+     });
 });
 
 $(document).delegate('.history-tabs a', 'tap', function () {
@@ -1040,7 +1040,7 @@ function scrollToSalesOrder(){
 	//	$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
 	
 	//$("html,body").animate({scrollTop: $( targetSalesTableDiv ).offset().top}, 500);
-	$.mobile.silentScroll($(targetSalesTableDiv).offset().top);
+	$.mobile.silentScroll( $(targetSalesTableDiv).offset().top );
 	tryAgainSOBySONumber();
 	
 	return false;
