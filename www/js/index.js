@@ -92,8 +92,8 @@ var app = {
 		
 		cordova.getAppVersion.getPackageName(function (version) {
 		    alert(version);
-		    window.location.href("market://details?id="+version);
-
+		    window.open('market://details?id=com.bpmetrics.tracker');
+		    //window.location.href("market://details?id="+version);
 			window.open("market://details?id="+version);
 		});
 		
