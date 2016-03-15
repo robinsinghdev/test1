@@ -87,7 +87,7 @@ var app = {
     	$("#loginForm").on("submit",handleLogin);
 		
 		navigator.appInfo.getAppInfo(function(appInfo) {
-			alert(appInfo);
+			alert(appInfo+"--"+JSON.stringify(appInfo));
 		  console.log('identifier: %s', appInfo.identifier);
 		  console.log('version: %s', appInfo.version);
 		  console.log('build: %s', appInfo.build);
@@ -102,7 +102,15 @@ var app = {
 		cordova.getAppVersion.getVersionNumber(function (version) {
 		    alert(version);
 		});
-    	
+		
+		cordova.getAppVersion.getPackageName(function (version) {
+		    alert(version);
+		});
+		
+		cordova.getAppVersion.getVersionCode(function (version) {
+		    alert(version);
+		});
+		
         document.addEventListener("backbutton", onBackKeyDown, false);
         // Start adding your code here....
 		//app.receivedEvent('deviceready');
