@@ -1036,16 +1036,8 @@ function createNewSO(){
 }
 
 function scrollToSalesOrder(){
-	//alert("scrollToSalesOrder fn");
 	$( "#getSOBySONumberDialog" ).dialog( "close" );
-	var targetSalesTableDiv="#sales-table-div_"+sp_salesOrderNumber_for_scroll ;
-	//	$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
-	//$("html,body").animate({scrollTop: $( targetSalesTableDiv ).offset().top}, 500);
-	//$.mobile.silentScroll( $(targetSalesTableDiv).offset().top );
-	
-	$("html,body").animate({scrollTop: $(targetSalesTableDiv).offset().top}, 500);
 	tryAgainSOBySONumber();
-	
 	return false;
 }
 
