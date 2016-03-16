@@ -15,11 +15,6 @@ $( document ).on( "mobileinit", function() {
      $.mobile.toolbar.prototype.options.updatePagePadding = false;
      $.mobile.toolbar.prototype.options.hideDuringFocus = "";
      $.mobile.toolbar.prototype.options.tapToggle = false;
-     /*
-     $.extend($.mobile, {
-         minScrollBack: 90000 // turn off scrolling to position on last page
-     });
-     */
 });
 
 $(document).delegate('.history-tabs a', 'tap', function () {
