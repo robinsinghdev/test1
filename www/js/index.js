@@ -899,6 +899,7 @@ function getSOBySONumber(){
 				   		//{"status":"success","soInfo":{"SO#":"192","Job":"Cheryl & Marvin Fisher"}}
 				   		var responseMsg =responseJson.msg;
 				   		var $sp_details_div=$('#sp_details_div');
+				   		var $sp_salesOrderNumber_input_div=$('#sp_salesOrderNumber_input_div');
 				   		if(responseJson.status=="success"){
 				   			var soInfo=responseJson.soInfo;
 					   		$sp_details_div.find('#sp_jobName').val(soInfo["Job"]);
@@ -921,18 +922,21 @@ function getSOBySONumber(){
 				   		}
 				   		else if(responseJson.status=="exist"){
 				   			$sp_details_div.hide();
+				   			$sp_salesOrderNumber_input_div.hide();
 				   			$(".sales-order-msg").html(responseMsg);
 				   			$('a#showOrderBtn').parent().show();
-				   			//$('a#scrollToSalesOrderBtn').parent().hide();
+				   			$('a#tryAgainBtn').removeClass('display-none');
+				   			$('a#getSOBySONumberBtn').addClass('display-none');
 				   			$('a#scrollToSalesOrderBtn').removeClass('display-none').addClass('display-none');
 				   		} 
 				   		else if(responseJson.status=="exist_open"){
 				   			$sp_details_div.hide();
+				   			$sp_salesOrderNumber_input_div.hide();
 				   			$(".sales-order-msg").html(responseMsg);
 				   			
 				   			$('a#tryAgainBtn').removeClass('display-none');
 				   			$('a#getSOBySONumberBtn').addClass('display-none');
-				   			//$('a#scrollToSalesOrderBtn').parent().show();
+				   			$('a#showOrderBtn').parent().hide();
 				   			$('a#scrollToSalesOrderBtn').removeClass('display-none')
 				   			sp_salesOrderNumber_for_scroll =sp_salesOrderNumber;
 				   		} 
@@ -964,12 +968,13 @@ function tryAgainSOBySONumber(){
 	$sp_details_div.find('#chooseColorForSalesOrder').val('');
 	$sp_details_div.find('#salesOrderColorId').val('');
 	
-	$sp_details_div.hide();
+	var $sp_salesOrderNumber_input_div=$('#sp_salesOrderNumber_input_div');
+	$sp_salesOrderNumber_input_div.show();
+	
 	$('a#tryAgainBtn').addClass('display-none');
 	$('a#addNewSalesOrderBtn').addClass('display-none');
 	$('a#showOrderBtn').parent().hide();
 	$('a#getSOBySONumberBtn').removeClass('display-none');
-	//$('a#scrollToSalesOrderBtn').parent().hide();
 	$('a#scrollToSalesOrderBtn').removeClass('display-none').addClass('display-none');
 	$(".sales-order-msg").html('');
 }
