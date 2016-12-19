@@ -603,8 +603,8 @@ function handleLogin() {
 	$("#submitButton",form).attr("disabled","disabled");
 	var u = $("#username", form).val();
 	var p = $("#password", form).val();
-	u=''; // For testing
-	p=''; // For testing
+//	 u='cto@bpm.com'; // For testing
+//	 p='cto'; // For testing
 	
 	if(u != '' && p!= '') {
 		
