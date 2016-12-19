@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.test1.test1" 
+<widget id="com.test2.test2" 
 version="1.0.2"
 versionCode = "2" 
 xmlns="http://www.w3.org/ns/widgets" 
 xmlns:gap   = "http://phonegap.com/ns/1.0" 
 xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Test1</name>
+    <name>Test2</name>
     <description>
         Application
     </description>
     <author email="Test1@d.com" href="http://www.stavyah.com/">
-        Test1
+        Test2
     </author>
     
     <content src="index.html" />
