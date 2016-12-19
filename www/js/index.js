@@ -23,10 +23,9 @@ $(document).delegate('.history-tabs a', 'tap', function () {
     $($(this).attr('href')).show().siblings('.history-tab-content-div').hide();
 });
 
-var appName='BP METRICS';
+// Variables Declaration
+var appName='T2B';
 var appUrl='https://dev.bpmetrics.net/grn/m_app/';
-var appRequiresWiFi='This action requires internet.';
-var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
 var salse_orders_arr=[];
 var time_cats_arr=[];
@@ -35,6 +34,9 @@ var db;
 var closeSalesOrderDataObj,deleteLogTimeLocalObj;
 var devTestingFlag=true;
 var notiAlertOkBtnText='Ok';
+// Common Message 
+var appRequiresWiFi='This action requires internet.';
+var serverBusyMsg='Server is busy, please try again later.';
 
 var colorArray=[{"id":"1","HexColor":"FFD700"},{"id":"2","HexColor":"FFC0CB"},{"id":"3","HexColor":"FFA500"},{"id":"4","HexColor":"FFA07A"},
                 {"id":"5","HexColor":"FF69B4"},{"id":"6","HexColor":"FF1493"},{"id":"7","HexColor":"FF0000"},
@@ -60,7 +62,7 @@ var colorArray=[{"id":"1","HexColor":"FFD700"},{"id":"2","HexColor":"FFC0CB"},{"
                 {"id":"65","HexColor":"20B2AA"},{"id":"66","HexColor":"1E90FF"},{"id":"67","HexColor":"191970"},
                 {"id":"68","HexColor":"00FF7F"},{"id":"69","HexColor":"00FF00"},{"id":"70","HexColor":"00FA9A"},
                 {"id":"71","HexColor":"00BFFF"},{"id":"72","HexColor":"008080"},{"id":"73","HexColor":"006400"},{"id":"74","HexColor":"0000CD"}
-               ];
+                ];
 
 var app = {
     SOME_CONSTANTS : false,  // some constant
@@ -89,8 +91,7 @@ var app = {
     	
     	$("#loginForm").on("submit",handleLogin);
         document.addEventListener("backbutton", onBackKeyDown, false);
-		
-		//db = window.sqlitePlugin.openDatabase("Database", "1.0", "bpmetrv2", 200000);
+		//Initialize Database
 		db = window.sqlitePlugin.openDatabase({name: "bpmetrv2.db", location: 2});
 		db.transaction(initializeDB, errorCB, successCB);
         // Check if user is also authorized
@@ -324,25 +325,6 @@ function callReconnectNow() {
 	}
 }
 
-//Query the success callback
-function successSyncCall(tx,results) {
-	var len = results.rows.length;
-	//alert("successSyncCall: " + len + " rows found.");
-	for (var i=0; i<len; i++){
-		//alert("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
-		//console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
-		//alert(results.rows.item(i)['time']+"--"+results.rows.item(i)['localStatus']);
-		//$('#resultList').append('<li><a href="#">' + results.rows.item(i)['localStatus'] + '--' +results.rows.item(i)['time']+'</a></li>');
-	}
-	 //$('#resultList').listview();
-	// this will be true since it was a select statement and so rowsAffected was 0
-	if (!results.rowsAffected) {
-		//alert('No rows affected!');
-		return false;
-	}
-	//console.log("Last inserted row ID = " + results.insertId);
-}
-
 function callSaveLogTime(obj){
 	var connectionType=checkConnection();
 	
@@ -385,7 +367,6 @@ function callSaveLogTime(obj){
 
 function updateTrackerVariable(){
 	window.localStorage["trackerValueSave"] = 1;
-	//window.localStorage.getItem("trackerValueSave")
 }
 
 function saveLogTime(dataObj){
@@ -529,6 +510,7 @@ function alertlogout(button){
     }
 }
 
+// Check Data Connection Common Function
 function checkConnection() {
 	if(devTestingFlag){
 		connectionType="WiFi connection";//For Testing
@@ -545,9 +527,15 @@ function checkConnection() {
     states[Connection.CELL_4G]  = 'Cell 4G connection';
     states[Connection.CELL]     = 'Cell generic connection';
     states[Connection.NONE]     = 'No network connection';
+    
+    if(typeof states[networkState] === 'undefined'){
+    	return 'Unknown connection';
+    }
+    
     return states[networkState];
 }
-    
+
+// Check User Authorication
 function checkPreAuth() {
 	var form = $("#loginForm");
 	if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined && window.localStorage.getItem("user_logged_in")==1) {
@@ -566,9 +554,9 @@ function dataSyncCheck() {
     }
 }
 
+// Logout Function
 function logout() {
 	showModal();
-	
 	checkDataForNotification();
 	
     if (window.localStorage.getItem("sync_flag") == 1 ) {
@@ -615,8 +603,8 @@ function handleLogin() {
 	$("#submitButton",form).attr("disabled","disabled");
 	var u = $("#username", form).val();
 	var p = $("#password", form).val();
-	//u=''; // For testing
-	//p=''; // For testing
+	u=''; // For testing
+	p=''; // For testing
 	
 	if(u != '' && p!= '') {
 		
