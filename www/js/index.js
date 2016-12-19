@@ -23,7 +23,8 @@ $(document).delegate('.history-tabs a', 'tap', function () {
     $($(this).attr('href')).show().siblings('.history-tab-content-div').hide();
 });
 
-var appUrl='https://dev.bpmetrics.com/grn/m_app/';
+var appName='BP METRICS';
+var appUrl='https://dev.bpmetrics.net/grn/m_app/';
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
 var currDataHexcolor,currDataOname,currDataOrder;
@@ -32,6 +33,8 @@ var time_cats_arr=[];
 var globalLogTimeObj={};
 var db;
 var closeSalesOrderDataObj,deleteLogTimeLocalObj;
+var devTestingFlag=true;
+var notiAlertOkBtnText='Ok';
 
 var colorArray=[{"id":"1","HexColor":"FFD700"},{"id":"2","HexColor":"FFC0CB"},{"id":"3","HexColor":"FFA500"},{"id":"4","HexColor":"FFA07A"},
                 {"id":"5","HexColor":"FF69B4"},{"id":"6","HexColor":"FF1493"},{"id":"7","HexColor":"FF0000"},
@@ -64,12 +67,10 @@ var app = {
 
     // Application Constructor
     initialize: function() {
-        //console.log("console log init");
         this.bindEvents();
         this.initFastClick();
     },
     // Bind Event Listeners
-    //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
@@ -86,34 +87,14 @@ var app = {
 			$(".version-number-text").html("v"+version);
     	});
     	
-        //console.log("device ready, start making you custom calls!");
-    	
     	$("#loginForm").on("submit",handleLogin);
-		
         document.addEventListener("backbutton", onBackKeyDown, false);
-        // Start adding your code here....
-		//app.receivedEvent('deviceready');
 		
-		//db = window.sqlitePlugin.openDatabase("Database", "1.0", "BPMETR", 200000);
-		db = window.sqlitePlugin.openDatabase({name: "bpmetr.db", location: 2});
+		//db = window.sqlitePlugin.openDatabase("Database", "1.0", "bpmetrv2", 200000);
+		db = window.sqlitePlugin.openDatabase({name: "bpmetrv2.db", location: 2});
 		db.transaction(initializeDB, errorCB, successCB);
-        
+        // Check if user is also authorized
         checkPreAuth();
-		
-		//checkConnectionForSync();
-		
-		//DYNAREAD HQ = start a timer & execute a function every 90000 minutes and then rest the timer at the end of 90000 minutes. The 90000 min value is for troubleshoot only 
-		/*
-		$('#syncCallTimerDiv').timer({
-		    duration: '90000m',
-		    callback: function() {
-		        $('#syncCallTimerDiv').timer('reset');
-		        checkConnectionForSync();
-		    },
-		    repeat: true //repeatedly call the callback
-		});
-		*/
-		//setInterval(checkConnectionForSync, 900000);
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -123,20 +104,19 @@ var app = {
 
 function resetSyncTimer(){
 	$('#syncCallTimerDiv').timer('remove');
-	
-	//DYNAREAD HQ = start a timer & execute a function every 90000 minutes and then rest the timer at the end of 90000 minutes. The 90000 min value is for troubleshoot only 
+
+	// DYNAREAD HQ = start a timer & execute a function every 90000 minutes and then rest the timer at the end of 90000 minutes. 
+	// The 90000 min value is for troubleshoot only 
 	$('#syncCallTimerDiv').timer({
-	    duration: '90000m',
-	    callback: function() {
-	        $('#syncCallTimerDiv').timer('reset');
-	        //checkConnectionForSync();
-	    },
-	    repeat: true //repeatedly call the callback
+		duration: '90000m',
+		callback: function() {
+			$('#syncCallTimerDiv').timer('reset');
+		},
+		repeat: true //repeatedly call the callback
 	});
 }
 
 function checkConnectionForSync() {
-	//resetSyncTimer();
 	var connectionType=checkConnection();
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		callSyncWithServer();
@@ -147,17 +127,13 @@ var successTimeTrackerIdArr=[];
 
 function callSyncWithServer() {
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
-	//window.localStorage["permissions"]
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	db.transaction
-	  (
-	       function (tx){
+	db.transaction(function (tx){
 	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime text,secondsData integer
 	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,appTimestamp FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
-	                    //alert(" TIMETRACKER table length...."+len);
 	                    if(len == 0){
 	                    	window.localStorage["sync_flag"] = 0;
 	                    }
@@ -203,19 +179,16 @@ function callSyncWithServer() {
 	            );
 	       },errorCBSyncWithServer,successSyncWithServer
 	   );
-	
-	//navigator.notification.alert('All data is synced now',alertConfirm,'BP Metrics','Ok');
 }
 
-//Transaction error callback
+//Transaction error callback for SyncWithServer
 function errorCBSyncWithServer() {
 	$("#callSyncNowBtn").removeAttr("disabled");
-	
 	$("#syncStatusMsg").html("Sync Failed: Try again").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
 	$("#syncStatusMsg").fadeOut(20000,function() {});
 }
 
-//Transaction success callback
+//Transaction success callback for SyncWithServer
 function successSyncWithServer() {
 	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
 	setTimeout(changeSyncStatusMsg, 5000);
@@ -246,7 +219,6 @@ function checkDataForSync() {
                     if(len>0){
                     	window.localStorage["sync_flag"] = 1;                    	
                     	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
-            	    	//checkConnectionForSync();
                     }
                 }, errorCB
             );
@@ -283,12 +255,11 @@ function callSyncData() {
 	checkDataForNotification();
 	
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
 		$("#syncStatusMsg").fadeOut(20000,function() {});
-		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		if (window.localStorage.getItem("sync_flag") == 1 ) {
@@ -304,7 +275,7 @@ function showSyncDataDialog() {
     navigator.notification.confirm(
         ("Confirm ready to sync time entries to office?"), // message
         syncDataDialogAction, // callback
-        'BP METRICS', // title
+        appName, // title
         'Yes,Cancel' // buttonName
     );
 }
@@ -318,9 +289,7 @@ function syncDataDialogAction(button){
 
 function callSyncNow() {
 	checkDataForNotification();
-	
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
@@ -333,7 +302,6 @@ function callSyncNow() {
 		showModal();
 		if (window.localStorage.getItem("sync_flag") == 1 ) {
 			checkConnectionForSync();
-			//checkDataForSync();
 		}
 	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
 	    	$("#callSyncNowBtn").removeAttr("disabled");
@@ -345,7 +313,6 @@ function callSyncNow() {
 function callReconnectNow() {
 	$("#reconnectStatusMsg").html("Establishing Internet Connection").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		$("#reconnectStatusMsg").html("Unable to Establish Internet Connection").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
@@ -377,9 +344,7 @@ function successSyncCall(tx,results) {
 }
 
 function callSaveLogTime(obj){
-	
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
@@ -414,7 +379,7 @@ function callSaveLogTime(obj){
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -429,7 +394,6 @@ function saveLogTime(dataObj){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 	   return false;
@@ -483,7 +447,7 @@ function showExitDialog() {
     navigator.notification.confirm(
             ("Do you want to Exit?"), // message
             alertexit, // callback
-            'BP METRICS', // title
+            appName, // title
             'YES,NO' // buttonName
     );
 }
@@ -499,15 +463,13 @@ function alertexit(button){
 function doLogout() {
 	checkDataForNotification();
 	var connectionType=checkConnection();
-	//var connectionType="Unknown connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-		//navigator.notification.alert("Logout requires active internet connection.", function() {});
 		navigator.notification.alert(
 		    'Logout requires active internet connection',
 		    alertConfirm,
-		    'BP Metrics',            // title
-		    'Ok'                  // buttonName
+		    appName,            // title
+		    notiAlertOkBtnText                  // buttonName
 		);
 	}
 	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -525,7 +487,6 @@ function doLogout() {
 			showLogoutBlockedDialog();
 		}
 	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
-			//checkConnectionForSync();
 	    	showLogoutDialog();
 	    }
 	}
@@ -556,7 +517,7 @@ function showLogoutDialog() {
     navigator.notification.confirm(
             ("Are you sure to Logout?"), // message
             alertlogout, // callback
-            'BP METRICS', // title
+            appName, // title
             'YES,NO' // buttonName
     );
 }
@@ -569,6 +530,11 @@ function alertlogout(button){
 }
 
 function checkConnection() {
+	if(devTestingFlag){
+		connectionType="WiFi connection";//For Testing
+		return connectionType;
+	}
+	
     var networkState = navigator.connection.type;
     var states = {};
     states[Connection.UNKNOWN]  = 'Unknown connection';
@@ -581,13 +547,6 @@ function checkConnection() {
     states[Connection.NONE]     = 'No network connection';
     return states[networkState];
 }
-
-/*
-function init() {
-	document.addEventListener("deviceready", deviceReady, true);
-	delete init;
-}
-*/
     
 function checkPreAuth() {
 	var form = $("#loginForm");
@@ -600,7 +559,7 @@ function checkPreAuth() {
 
 function dataSyncCheck() {
 	if (window.localStorage.getItem("sync_flag") == 1 ) {
-		navigator.notification.alert('Data Syncing Problem, please logout after sometime.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Data Syncing Problem, please logout after sometime.',alertConfirm,appName,notiAlertOkBtnText);
 	}
     else if (window.localStorage.getItem("sync_flag") == 0 ) {
     	logout();
@@ -613,13 +572,10 @@ function logout() {
 	checkDataForNotification();
 	
     if (window.localStorage.getItem("sync_flag") == 1 ) {
-    	//checkConnectionForSync();
     	setTimeout(dataSyncCheck, 4000);
     	hideModal();
 	}
     else if (window.localStorage.getItem("sync_flag") == 0 ) {
-		//checkConnectionForSync();
-	
 		window.localStorage["password"] = '';
 		window.localStorage["user_logged_in"] = 0;
 		
@@ -647,7 +603,7 @@ function logout() {
 function logoutUnAuthorisedUser(){
 	logout();
 	hideModal();
-	navigator.notification.alert('You do not have authorized role for login.',alertConfirm,'BP Metrics','Ok');
+	navigator.notification.alert('You do not have authorized role for login.',alertConfirm,appName,notiAlertOkBtnText);
 	return false;
 }
 
@@ -665,7 +621,6 @@ function handleLogin() {
 	if(u != '' && p!= '') {
 		
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			
 			if(window.localStorage["user_logged_in"] ==1) {
@@ -675,7 +630,7 @@ function handleLogin() {
 				$.mobile.changePage('#home-page',{ transition: "slideup"});
 			}
 			else{
-				navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+				navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 			}	
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -713,9 +668,7 @@ function handleLogin() {
 					
 					checkingUserAssignedRoles();
 					checkDataForNotification();
-					//checkConnectionForSync();
 					
-					//$.mobile.changePage('#home-page','slide');					
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
 					
 					var versionJson = responseJson.version;
@@ -749,12 +702,11 @@ function handleLogin() {
 					//$("#username", form).val(window.localStorage["username"]);
 					$.mobile.changePage('#login-page','slide');
 					
-					//navigator.notification.alert("Invalid Credentials, please try again", function() {});
 					navigator.notification.alert(
 						'Invalid Credentials, please try again.',
 					    alertConfirm,
-					    'BP Metrics',            // title
-					    'Ok'                  // buttonName
+					    appName,            // title
+					    notiAlertOkBtnText                  // buttonName
 					);
 				}
 				hideModal();
@@ -762,28 +714,27 @@ function handleLogin() {
 			   },
 			   error:function(data,t,f){
 				   hideModal();
-				   navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+				   navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				 var responseJson = $.parseJSON(data);
 				 //alert(w+' '+t+' '+f);
 				 //console.log(data+' '+t+' '+f);
 				 if(responseJson.status==404){
-					 navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+					 navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				 }
 			   }
 			});
 		}
 		else{
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
 		$("#submitButton").removeAttr("disabled");
 	}
 	else{
-		//navigator.notification.alert("You must enter a username and password", function() {});
 		navigator.notification.alert(
 			'You must enter a username and password.',
 			alertConfirm,
-			'BP Metrics',            // title
-			'Ok'                  // buttonName
+			appName,            // title
+			notiAlertOkBtnText                  // buttonName
 		);
 		$("#submitButton").removeAttr("disabled");
 	}
@@ -871,17 +822,15 @@ function getSOBySONumber(){
 	if(grnUserObj != '') {
 		
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
-		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			var sp_salesOrderNumber=$('#sp_salesOrderNumber').val();
 			showModal();
 			if(typeof sp_salesOrderNumber === "undefined" || sp_salesOrderNumber=="" 
 				||  Math.floor(sp_salesOrderNumber) != sp_salesOrderNumber || !$.isNumeric(sp_salesOrderNumber) ){
-				navigator.notification.alert('Please input Sales Order Number.',alertConfirm,'BP Metrics','Ok');
+				navigator.notification.alert('Please input Sales Order Number.',alertConfirm,appName,notiAlertOkBtnText);
  			}
 			else{
 				$.ajax({
@@ -942,7 +891,7 @@ function getSOBySONumber(){
 					},
 					error:function(data,t,f){
 						hideModal();
-						navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+						navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 					}
 				});
 			}	
@@ -951,7 +900,7 @@ function getSOBySONumber(){
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -993,10 +942,8 @@ function createNewSO(){
 	if(grnUserObj != '') {
 		
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
-		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			var spJobName=$('#sp_jobName').val();
@@ -1019,14 +966,14 @@ function createNewSO(){
 				error:function(data,t,f){
 					hideModal();
 					//console.log(data+' '+t+' '+f);
-					navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+					navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				}
 			});
 		}
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -1044,14 +991,12 @@ function getCategoriesForTimeTracking(){
 	
 	if(grnUserObj != '') {
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
-		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
 				getSalesOrders();
 			}
 			else if(window.localStorage["tclocal"] == 0){
-				navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+				navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 			}
 			
 		}
@@ -1084,7 +1029,7 @@ function getCategoriesForTimeTracking(){
 					error:function(data,t,f){
 						hideModal();
 						//console.log(data+' '+t+' '+f);
-						navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+						navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 					}
 				});
 			}
@@ -1092,7 +1037,7 @@ function getCategoriesForTimeTracking(){
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -1108,10 +1053,8 @@ function getTotalTimeForCategory(dataObj){
 	
 	if(grnUserObj != '') {		
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
-		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
@@ -1140,14 +1083,14 @@ function getTotalTimeForCategory(dataObj){
 				error:function(data,t,f){
 					hideModal();
 					//console.log(data+' '+t+' '+f);
-					navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+					navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				}
 			});
 		}
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -1158,10 +1101,8 @@ function getAllColorsForSO(){
 	
 	if(grnUserObj != '') {		
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
-		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			$.ajax({
@@ -1175,14 +1116,14 @@ function getAllColorsForSO(){
 				error:function(data,t,f){
 					hideModal();
 					//console.log(data+' '+t+' '+f);
-					navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+					navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				}
 			});
 		}
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -1195,8 +1136,6 @@ function getSalesOrders(){
 	
 	if(grnUserObj != '') {
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
-		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
@@ -1210,7 +1149,7 @@ function getSalesOrders(){
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
 			else if(window.localStorage["solocal"] == 0){
-				navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+				navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 			}
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -1339,19 +1278,19 @@ function getSalesOrders(){
 					   		
 					   		hideModal();
 					   		if(salse_orders_arr.length <= 0){
-					   			navigator.notification.alert('No sales order to show or try again after sometime.',alertConfirm,'BP Metrics','Ok');
+					   			navigator.notification.alert('No sales order to show or try again after sometime.',alertConfirm,appName,notiAlertOkBtnText);
 					   		}
 					   		
 					   }
 					   else if(responseJson.status== "fail"){
-						   navigator.notification.alert('No sales order to show or try again after sometime.',alertConfirm,'BP Metrics','Ok');
+						   navigator.notification.alert('No sales order to show or try again after sometime.',alertConfirm,appName,notiAlertOkBtnText);
 					   }
 				   		
 				   		$.mobile.changePage('#view-all-sales-order','slide');
 					},
 					error:function(data,t,f){
 						hideModal();
-						navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');	
+						navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);	
 					}
 				});
 				
@@ -1361,7 +1300,7 @@ function getSalesOrders(){
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -1546,8 +1485,6 @@ function  hideAllTablesData(){
 function changeLoginRole(roleId,roleName){
 	checkDataForNotification();
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
-	
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
 			
@@ -1566,7 +1503,6 @@ function changeLoginRole(roleId,roleName){
 	    }
 		
 		showModal();
-		//checkConnectionForSync();
 		
 		window.localStorage["permissions"] = ''+roleId+'';
 		window.localStorage["solocal"] = 0;
@@ -1581,10 +1517,10 @@ function changeLoginRole(roleId,roleName){
 		time_cats_arr=[];
 		getCategoriesForTimeTracking();
 		hideModal();
-		navigator.notification.alert('Role = '+roleName+'.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 	else{
-		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -1614,7 +1550,6 @@ function getLogTimeListOfOrder(data){
 	
 	if(grnUserObj != '') {
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
 		
 		var $thisData=$(data);
 		currDataHexcolor=$thisData.attr("data-hexcolor");
@@ -1734,7 +1669,7 @@ function getLogTimeListOfOrder(data){
 				},
 				error:function(data,t,f){
 					hideModal();
-					navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+					navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				}
 			});
 			
@@ -1746,7 +1681,7 @@ function getLogTimeListOfOrder(data){
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -1936,7 +1871,7 @@ function successCBDeleteLogTimeLocal() {
 	var id=$dataObj.data('id');
 	$('.logTimeLocalDiv'+id).remove();
 	deleteLogTimeLocalObj=null;
-	navigator.notification.alert('Log time deleted successfully.',alertConfirm,'BP Metrics','Ok');
+	navigator.notification.alert('Log time deleted successfully.',alertConfirm,appName,notiAlertOkBtnText);
 }
 
 function refreshSelect(ele,currentValue){
@@ -1953,7 +1888,6 @@ function refreshSelect(ele,currentValue){
 function callAddUpadteLogTime(obj,logTimeType){
 	
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
@@ -2006,7 +1940,7 @@ function callAddUpadteLogTime(obj,logTimeType){
     		    'Please fill valid time details.',  // message
     		    alertConfirm,
     		    'Log Time',            // title
-    		    'Ok'                  // buttonName
+    		    notiAlertOkBtnText                  // buttonName
     		);
 			return false;
 	    }
@@ -2016,7 +1950,7 @@ function callAddUpadteLogTime(obj,logTimeType){
     		    'Please fill time details.',  // message
     		    alertConfirm,
     		    'Log Time',            // title
-    		    'Ok'                  // buttonName
+    		    notiAlertOkBtnText                  // buttonName
     		);
 			return false;
 		}
@@ -2040,11 +1974,8 @@ function callAddUpadteLogTime(obj,logTimeType){
 			
 			if(result=="appSave" ){
 				resetTracker();
-				//alert("trackerValueSave------"+window.localStorage.getItem("trackerValueSave"));
 				//window.localStorage.getItem("trackerValueSave") == 1
 				window.localStorage["trackerValueSave"] = 0;
-				// Call Sync
-		        //checkConnectionForSync();
 			}
 		}
 		else if($(obj).attr('data-flag')=='update'){
@@ -2055,7 +1986,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -2067,7 +1998,6 @@ function addUpadteLogTimeTT(dataObj,updateQuery){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	//if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		
@@ -2081,17 +2011,15 @@ function addUpadteLogTimeTT(dataObj,updateQuery){
 	    	//window.localStorage.removeItem("trackerkey");
 	    	window.localStorage["trackerkey"] = '';
 	    	$.mobile.changePage('#view-all-sales-order','slide');
-	    	//navigator.notification.alert("Time added successfully", function() {});
 	    	navigator.notification.alert(
     		    'Time added successfully.',  // message
     		    alertConfirm,
     		    'Time Tracker',            // title
-    		    'Ok'                  // buttonName
+    		    notiAlertOkBtnText                  // buttonName
     		);
 	    	return "appSave";
 	    }else{
-	    	//navigator.notification.alert("No proper data", function() {});
-	    	navigator.notification.alert('No proper data.',alertConfirm,'BP Metrics','Ok');
+	    	navigator.notification.alert('No proper data.',alertConfirm,appName,notiAlertOkBtnText);
 	    	return "false";
 	    }
 	//}
@@ -2105,7 +2033,6 @@ function addLogTimeToServer(dataObj){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		hideModal();
@@ -2121,12 +2048,10 @@ function addLogTimeToServer(dataObj){
 		   		var responseJson = $.parseJSON(data);
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
-		   			//navigator.notification.alert(responseJson.msg, function() {});
-		   			navigator.notification.alert(responseJson.msg,alertConfirm,'BP Metrics','Ok');
+		   			navigator.notification.alert(responseJson.msg,alertConfirm,appName,notiAlertOkBtnText);
 		   			$.mobile.changePage('#view-all-sales-order','slide');
 		   		}
 		   		else if(responseJson.status=='fail') {
-		   			//navigator.notification.alert(serverBusyMsg, function() {});
 		   			addLogTimeToApp(dataObj);
 		   		}
 		   		hideModal();
@@ -2147,11 +2072,10 @@ function updateLogTimeToServer(dataObj){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	var connectionType=checkConnection();
-	//var connectionType="WiFi connection";//For Testing
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		hideModal();
-		navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 	}
 	else if(connectionType=="WiFi connection"){
 		
@@ -2163,20 +2087,17 @@ function updateLogTimeToServer(dataObj){
 		   		var responseJson = $.parseJSON(data);
 		   		console.log(responseJson);
 		   		if(responseJson.status=='success') {
-		   			//navigator.notification.alert(responseJson.msg, function() {});
-		   			navigator.notification.alert(responseJson.msg,alertConfirm,'BP Metrics','Ok');
+		   			navigator.notification.alert(responseJson.msg,alertConfirm,appName,notiAlertOkBtnText);
 		   			$.mobile.changePage('#view-all-sales-order','slide');
 		   		}
 		   		else if(responseJson.status=='fail') {
-		   			//navigator.notification.alert(serverBusyMsg, function() {});
-		   			navigator.notification.alert(serverBusyMsg,alertConfirm,'BP Metrics','Ok');
+		   			navigator.notification.alert(serverBusyMsg,alertConfirm,appName,notiAlertOkBtnText);
 		   		}
 		   		hideModal();
 			},
 			error:function(data,t,f){
 				hideModal();
-				//navigator.notification.alert(serverBusyMsg, function() {});
-				navigator.notification.alert(serverBusyMsg,alertConfirm,'BP Metrics','Ok');1
+				navigator.notification.alert(serverBusyMsg,alertConfirm,appName,notiAlertOkBtnText);1
 			}
 		});
 	}
@@ -2205,7 +2126,7 @@ function addLogTimeToApp(dataObj){
 		    		    'Time added successfully.',  // message
 		    		    alertConfirm,
 		    		    'Time Tracker',            // title
-		    		    'Ok'                  // buttonName
+		    		    notiAlertOkBtnText                  // buttonName
 		    		);
 					$.mobile.changePage('#view-all-sales-order','slide');
 			 }
@@ -2243,11 +2164,10 @@ function closeSalesOrder(dataObj){
 		var salesId=$(dataObj).data('id');
 		
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			hideModal();
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			$.ajax({
@@ -2262,27 +2182,23 @@ function closeSalesOrder(dataObj){
 			   		var responseJson = $.parseJSON(data);
 			   		if(responseJson.status=='success') {
 			   			$('#salesOrderMainDiv').find('#sales-table-div_'+salesId).remove();
-			   			//navigator.notification.alert(responseJson.msg, function() {});
-			   			
-			   			navigator.notification.alert(''+responseJson.msg+'', alertConfirm,'Sales Order','Ok');
+			   			navigator.notification.alert(''+responseJson.msg+'', alertConfirm,'Sales Order',notiAlertOkBtnText);
 			   		}
 			   		else if(responseJson.status=='fail') {
-			   			//navigator.notification.alert(serverBusyMsg, function() {});
-			   			navigator.notification.alert(''+responseJson.msg+'', alertConfirm,'Sales Order','Ok');
+			   			navigator.notification.alert(''+responseJson.msg+'', alertConfirm,'Sales Order',notiAlertOkBtnText);
 			   		}
 			   		hideModal();
 				},
 				error:function(data,t,f){
 					hideModal();
-					//console.log(data+' '+t+' '+f);
-					navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+					navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				}
 			});
 		}
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -2294,16 +2210,11 @@ function showOrderSOBySONumber(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		
-		//var salesorderId=$(dataObj).data('order');
-		//console.log("salesorderId...."+salesorderId);
 		var salesorderId=$('#sp_salesOrderNumber').val();
 		
 		var connectionType=checkConnection();
-		//var connectionType="WiFi connection";//For Testing
-		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
@@ -2323,22 +2234,19 @@ function showOrderSOBySONumber(){
 			   		}
 			   		else if(responseJson.status=='fail') {
 			   			$(".sales-order-msg").html(responseJson.msg);
-			   			//navigator.notification.alert(serverBusyMsg, function() {});
 			   		}
 			   		hideModal();
-			   		//$.mobile.changePage('#view-log-time-history','slide');
 				},
 				error:function(data,t,f){
 					hideModal();
-					//console.log(data+' '+t+' '+f);
-					navigator.notification.alert(appRequiresWiFi,alertConfirm,'BP Metrics','Ok');
+					navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				}
 			});
 		}
 	}
 	else{
 		logout();
-		navigator.notification.alert('Please login again.',alertConfirm,'BP Metrics','Ok');
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
 
@@ -2362,6 +2270,7 @@ function convertDecimalTimeToHours(decimalTimeVal) {
 	var hours=splitDecimalTime[0];
 	var minutes=(decimalTime % 1).toFixed(4);
 	minutes=minutes*60;
+	
 	if(minutes<1){
 		minutesString="00";
 	} 
@@ -2382,7 +2291,6 @@ function changeTimeCatImage(obj){
 function getDataForTotalTimeCalc(){
 	var $addLogTimeForm=$('form#addLogTimeForm');
 	var crewSize = $addLogTimeForm.find("#crewSize option:selected").val();
-	
 	var logHours=$addLogTimeForm.find('#logHours').val().split(" ").join("");
 	var logMinutes=$addLogTimeForm.find('#logMinutes').val().split(" ").join("");
 	var timeDuration= logHours+":"+logMinutes;
@@ -2445,7 +2353,6 @@ function secondsTohhmm(totalSeconds) {
   //var seconds = totalSeconds - (hours * 3600) - (minutes * 60);
   // round seconds
   //seconds = Math.round(seconds * 100) / 100
-
   var result = (hours < 10 ? "0" + hours : hours);
       result += ":" + (minutes < 10 ? "0" + minutes : minutes);
       //result += ":" + (seconds  < 10 ? "0" + seconds : seconds);
@@ -2456,7 +2363,6 @@ function getTodayDate(){
 	var today = new Date();
 	var dd = today.getDate();
 	var mm = today.getMonth()+1;//January is 0, so always add + 1
-
 	var yyyy = today.getFullYear();
 	if(dd<10){dd='0'+dd}
 	if(mm<10){mm='0'+mm}
@@ -2482,49 +2388,40 @@ function currentDateTime() {
 }
 
 function padStr(i) {
-    return (i < 10) ? "0" + i : "" + i;
+	return (i < 10) ? "0" + i : "" + i;
 }
 
 function addZero(x,n) {
-    while (x.toString().length < n) {
-        x = "0" + x;
-    }
-    return x;
+	while (x.toString().length < n) {
+		x = "0" + x;
+	}
+	return x;
 }
 
 function dateTimestamp() {
     var d = new Date();
-    
     var yyyy = addZero(d.getFullYear(), 4);
     var month = addZero(d.getMonth()+1, 2);
     var dd = addZero(d.getDate(), 2);
-    
-    
     var hh = addZero(d.getHours(), 2);
     var mm = addZero(d.getMinutes(), 2);
     var ss = addZero(d.getSeconds(), 2);
     var mss = addZero(d.getMilliseconds(), 3);
-    
     var dateTimeStampTemp = yyyy + month + dd +"_"+ hh + mm + ss + mss;
     return dateTimeStampTemp;
 }
 
 function calculateDateTimeDiff(old_date,new_date) {
 	// The number of milliseconds in one second
-     var ONE_SECOND = 1000;
-     
-     // Convert both dates to milliseconds
-     var old_date_obj = new Date(old_date).getTime();
-     var new_date_obj = new Date(new_date).getTime();
-     
-     // Calculate the difference in milliseconds
-     var difference_ms = Math.abs(new_date_obj - old_date_obj)
-
-     // Convert back to totalSeconds
-     var totalSeconds = Math.round(difference_ms / ONE_SECOND);
-     
-     //alert('total seconds--' +totalSeconds);
-     return totalSeconds;
+	var ONE_SECOND = 1000;
+	// Convert both dates to milliseconds
+	var old_date_obj = new Date(old_date).getTime();
+	var new_date_obj = new Date(new_date).getTime();
+	// Calculate the difference in milliseconds
+	var difference_ms = Math.abs(new_date_obj - old_date_obj)
+	// Convert back to totalSeconds
+	var totalSeconds = Math.round(difference_ms / ONE_SECOND);
+	return totalSeconds;
 }
 
 function homePageActions(){
