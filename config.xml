@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.bpmetrics.tracker" 
-version="1.6.1"
-versionCode = "9" 
+<widget id="com.test1.test1" 
+version="1.0.2"
+versionCode = "2" 
 xmlns="http://www.w3.org/ns/widgets" 
 xmlns:gap   = "http://phonegap.com/ns/1.0" 
 xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>BP Metrics</name>
+    <name>Test1</name>
     <description>
-        BP Metrics Application for time tracking offline and online.
+        Application
     </description>
-    <author email="hdekkers@dynaread.com" href="https://bpmetrics.com/">
-        Hans Dekkers
+    <author email="Test1@d.com" href="http://www.stavyah.com/">
+        Test1
     </author>
     
     <content src="index.html" />
@@ -23,29 +23,12 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <feature name="http://api.phonegap.com/1.0/notification"/>
     <feature name="http://api.phonegap.com/1.0/device"/>
     
-     <!--    Phonegap Cloud Build Plugin Defination -->
-     <!-- 
-    <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
-	<gap:plugin name="io.litehelpers.cordova.sqlite" source="pgb" version="0.7.10" />
-	<gap:plugin name="org.apache.cordova.dialogs" source="pgb" version="0.2.10" />
-	<gap:plugin name="org.apache.cordova.network-information" source="pgb" version="0.2.12" />
- 	-->
-	<plugin name="cordova-plugin-whitelist" spec="1.0.0" />
-	<plugin name="io.litehelpers.cordova.sqlite" source="pgb" spec="0.7.10" />
-	<plugin name="org.apache.cordova.dialogs" source="pgb" spec="0.2.10" />
-	<plugin name="org.apache.cordova.network-information" source="pgb" spec="0.2.12" />
-	<plugin name="cordova-plugin-app-version" source="npm" spec="0.1.8" />
-	<plugin name="cordova-launch-review" source="npm" spec="1.0.2"/>
-	
-	
-	
-    <!--    Cordova Phonegap Build Plugin Defination -->
-    <!-- 
-    <plugin name="cordova-plugin-whitelist" version="1" />
-    <plugin name="cordova-plugin-network-information" />
-    <plugin name="cordova-plugin-dialogs"  />
-    <plugin name="cordova-sqlite-storage"  />
-     -->
+    <plugin name="cordova-plugin-whitelist" spec="1.3.0" source="npm" />
+	<plugin name="cordova-plugin-network-information" source="npm" spec="1.3.0" />
+	<plugin name="cordova-sqlite-evcore-extbuild-free" source="npm" spec="0.8.2" />
+	<plugin name="cordova-plugin-dialogs" source="npm" spec="1.3.0" />
+	<plugin name="cordova-plugin-app-version" source="npm" spec="0.1.9" />
+	<plugin name="cordova-launch-review" source="npm" spec="1.0.3"/>
     
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -54,11 +37,19 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
-    <icon src="res/AndroidApp_launcher_icon.png"/>
+    
+    <icon src="res/app_icon.png"/>
+    
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="android-minSdkVersion" value="10"/> 
  		<preference name="android-targetSdkVersion" value="22"/> 
+ 		
+ 		<!-- Icons By Resolutions -->
+ 		<icon src="res/android/app_icon_ldpi.png" platform="android" qualifier="ldpi" />
+        <icon src="res/android/app_icon_mdpi.png" platform="android" qualifier="mdpi" />
+        <icon src="res/android/app_icon_hdpi.png" platform="android" qualifier="hdpi" />
+        <icon src="res/android/app_icon_xhdpi.png" platform="android" qualifier="xhdpi" />
     </platform>
     <!-- 
     <platform name="ios">
