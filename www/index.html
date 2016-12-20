@@ -20,7 +20,7 @@
             app.initialize();
         </script>
         
-        <title>Test2Branch</title>
+        <title>T2B</title>
     </head>
 	<body>
 		
@@ -34,13 +34,13 @@
 						</div>
 						<form  id="loginForm" action="">
 							<label for="username">Username</label>
-							<input type="email" name="username" id="username" placeholder="Username" value="cto@bpm.com" />
+							<input type="email" name="username" id="username" placeholder="Username" value="som@som.com" />
 							<label for="password">Password </label>
-							<input type="password" name="password" id="password" placeholder="Password" autocomplete="off" value="cto" />
+							<input type="password" name="password" id="password" placeholder="Password" autocomplete="off" value="123" />
 							<br/> 
-							<input type="button"
+							<input type="submit"
 							value="Login <img src='img/wifi-icon-24px.png' class='wifi-icon' />"
-							id="submitButton" class="app-link" data-theme="a" onclick="handleLogin();" />
+							id="submitButton" class="app-link" data-theme="a" />
 					</form>
 					</div>
                 </div>
@@ -133,9 +133,11 @@
 					    <p class="running-tracker-info" style="text-align: center;">
 							<span id="logging_order_color_code" class="order-detail" style="background-color: #20B2AA;width: 50px;" class="">&nbsp;&nbsp;&nbsp;&nbsp;</span>
 							<span id="logging_detail" class="order-detail" class="">Dummy Data # </span>
+							<!-- 
 							<span class="" id="logging_proc_icon" >
 								<img class="icon-img" src="img/prod_handover.png" id="timer_img_1_" data-order="1" data-timecat="1" data-action="clock" onclick="logTimer(this);return false;">
-							</span> 
+							</span>
+							 --> 
 						</p>
 						 
 					    <div class="ui-grid-c" style="text-align: center;" id="currRunningTracker" class="current-running-tracker" >

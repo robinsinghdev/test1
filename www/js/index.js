@@ -30,6 +30,8 @@ var currDataHexcolor,currDataOname,currDataOrder;
 var salse_orders_arr=[];
 var time_cats_arr=[];
 var time_cats_arr_curr_role=[];
+var grnCompRolesArr=[];
+var rolesArr=[];
 var globalLogTimeObj={};
 var db;
 var closeSalesOrderDataObj,deleteLogTimeLocalObj;
@@ -351,7 +353,6 @@ function callSaveLogTime(obj){
 		dataObj.crew_size= $addUpdateLogTimeForm.find('#crewSize').val();
 		dataObj.comments= $addUpdateLogTimeForm.find('#logComment').val();
 		
-		
 		var result=saveLogTime(dataObj,updateQuery);
 		if(result=="serverSave"){
 			//resetTracker();
@@ -617,7 +618,8 @@ function handleLogin() {
 			
 			if(window.localStorage["user_logged_in"] ==1) {
 				$('#userFullName').html(window.localStorage.getItem("full_name"));
-				checkingUserAssignedRoles();
+				
+				getGrnCompanyRoles();
 				checkDataForNotification();
 				$.mobile.changePage('#home-page',{ transition: "slideup"});
 			}
@@ -658,7 +660,7 @@ function handleLogin() {
 						window.localStorage["sync_flag"] = 0;
 					}
 					
-					checkingUserAssignedRoles();
+					getGrnCompanyRoles();
 					checkDataForNotification();
 					
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
@@ -759,6 +761,8 @@ function launchAppStoreSuccessCB(){
     //alert("Successfully launched review app");
 }
 
+
+// rolesArr=['5','7','9','10'];
 function checkingUserAssignedRoles(){
 	
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
@@ -769,8 +773,6 @@ function checkingUserAssignedRoles(){
 	if(tempArr.length > 0){
 		
 		var $userRolesUlObj = $("#userRolesUl");
-		var rolesArr=['5','7','9','10'];
-		
 		$('ul#userRolesUl li').removeClass('active').show();
 		
 		$.each(rolesArr, function(index,value) {
@@ -828,7 +830,7 @@ function getSOBySONumber(){
 				$.ajax({
 					type : 'POST',
 				   url:appUrl,
-				   data:{action:'checkSOonSP',grn_user:grnUserObj,sp_salesorderNumber :sp_salesOrderNumber},
+				   data:{action:'checkSO',grn_user:grnUserObj,sp_salesorderNumber :sp_salesOrderNumber},
 				   success:function(data){
 				   		hideModal();
 				   		var responseJson = $.parseJSON(data);
@@ -1528,7 +1530,8 @@ function changeLoginRole(roleId,roleName){
 			showSaveRunningTimerDialog();
 			return false;
 		}
-		
+		/*
+		// Removing this condition for v2
 		if (window.localStorage.getItem("sync_flag") == 1 ) {
 			showChangeRoleBlockedDialog();
 			return false;
@@ -1536,7 +1539,7 @@ function changeLoginRole(roleId,roleName){
 	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
 	    	// To-Do required actions
 	    }
-		
+		*/
 		showModal();
 		
 		window.localStorage["permissions"] = ''+roleId+'';
@@ -1810,7 +1813,7 @@ function getLogTimeListLocal(oid){
 	       },errorCB,successCB
 	   );
 	$('#historyTab').trigger('click');
-	//$('#historyTab').addClass('ui-btn-active');
+	// $('#historyTab').addClass('ui-btn-active');
 }
 
 function addLogTime(){
@@ -2074,7 +2077,7 @@ function addLogTimeToServer(dataObj){
 		hideModal();
 		addLogTimeToApp(dataObj);
 	}
-	else if(connectionType=="WiFi connection"){
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection" ){
 		
 		$.ajax({
 			type : 'POST',
@@ -2113,7 +2116,7 @@ function updateLogTimeToServer(dataObj){
 		hideModal();
 		navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 	}
-	else if(connectionType=="WiFi connection"){
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		
 		$.ajax({
 			type : 'POST',
@@ -2474,6 +2477,111 @@ function timeCatTitleFormat(title){
     return title_formated;
 }
 
+function getGrnCompanyRoles(){
+	showModal();grnCompRolesArr=[];
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	var grnUserObj=JSON.stringify(grnUserData);
+	rolesArr=[];
+	
+	var $userRolesUlObj = $("#userRolesUl");
+	$userRolesUlObj.find('li').remove();
+	$userRolesUlObj.empty();
+	
+	var connectionType=checkConnection();
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+		hideModal();
+		// 
+		successCBGetGrnCompRoles();
+	}
+	else if(connectionType=="WiFi connection"  || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		db.transaction(function(tx) {
+			tx.executeSql("DELETE FROM GRNCOMPANYROLES ");
+		});
+		
+		$.ajax({
+			type : 'POST',
+			url:appUrl,
+			data:{action:'getAvailableRolesOnAPP',grn_user:grnUserObj},
+			success:function(data){
+				var responseJson = $.parseJSON(data);
+				console.log(responseJson);
+				if(responseJson.status=='success') {
+					grnCompRolesArr=responseJson["company_roles"];
+					db.transaction(insertGrnCompRolesJson, errorCB, successCB);// Insert Time Category
+					
+					successCBGetGrnCompRoles();
+				}
+				else if(responseJson.status=='fail') {
+					navigator.notification.alert(responseJson.msg,alertConfirm,appName,notiAlertOkBtnText);
+				}
+				hideModal();
+			},
+			error:function(data,t,f){
+				hideModal();
+				successCBGetGrnCompRoles();
+			}
+		});
+	}
+}
+
+function insertGrnCompRolesJson(tx) {
+	var grnCompRolesJsonCreateSql ='CREATE TABLE IF NOT EXISTS GRNCOMPANYROLES (id integer primary key autoincrement,jsonArr text,createTime text )';
+	var currentDateTimeValue=currentDateTime();
+	tx.executeSql(grnCompRolesJsonCreateSql,[], function (tx, results) {
+   		
+   		tx.executeSql('INSERT INTO GRNCOMPANYROLES(jsonArr, createTime) VALUES (?,?)',
+    		[JSON.stringify(grnCompRolesArr),currentDateTimeValue], function(tx, res) {
+   			//console("insertGrnCompRolesJson Id: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
+    	});
+    });
+}
+
+function deleteGrnCompRolesJson() {
+	db.transaction(function(tx) {
+		tx.executeSql("DELETE FROM GRNCOMPANYROLES ");
+	});
+}
+
+function getGrnCompRoles(tbodyObj){
+	if(salse_orders_arr.length==0){
+		db.transaction(function (tx){
+		            tx.executeSql('SELECT jsonArr,createTime FROM GRNCOMPANYROLES',[],function(tx,results){
+		                    var len = results.rows.length;
+		                    if(len>0){
+		                        for (var i = 0; i < len; i++) {
+		                            var jsonArrString=results.rows.item(i)['jsonArr'];
+		                            grnCompRolesArr= $.parseJSON(jsonArrString);
+		                        }
+		                    }
+		                }, errorCB
+		            );
+		       },errorCBGetGrnCompRoles,successCBGetGrnCompRoles
+		   );
+	}
+	else{
+		successCBGetGrnCompRoles();
+	}
+}
+
+function successCBGetGrnCompRoles(){
+	jQuery.each(grnCompRolesArr, function(index,value) {
+		var jsonObj=value;
+		var id=jsonObj["id"];
+		var role=jsonObj["role"];
+		rolesArr.push('"'+id+'"');//=['5','7','9','10'];
+
+		var currOnClickFn='changeLoginRole('+id+',"'+role+'"); return false;';
+		var liEleObj='<li id="'+id+'" onclick="'+currOnClickFn+'" ><a href="#">'+role+'</a></li>';
+		$('ul#userRolesUl').append(liEleObj);
+	});
+	
+	checkingUserAssignedRoles();
+}	
+
+function errorCBGetGrnCompRoles(err){
+	console.log("Get GRN Company Roles Error Code:"+err.code);
+}
+
 /* ----------------  Time Tracker Code Starts -------------------------  */
 
 var TimerFlag = 0;
@@ -2530,7 +2638,7 @@ function startTimer() {
         $('#timer_' + order + '_' + timecat).removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
         $('#timer_img_' + order + '_' + timecat).addClass('play').attr('data-action', 'logpauseOption');
         
-        $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
+        // $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
         
         timerId=2;
         $('#logging_play').hide();
@@ -2836,7 +2944,7 @@ function showRunningTimeTracker(){
 	                    	        $('#timer_' + order + '_' + timecat).removeClass('clock').addClass('play').attr('data-action', 'logpauseOption');
 	                    	        $('#timer_img_' + order + '_' + timecat).addClass('play').attr('data-action', 'logpauseOption');
 	                    	        
-	                    	        $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
+	                    	        // $('#logging_proc_icon').html('<img src="' + 'img/' + timecat + '.png" width="25px" />');
 	                    	        
 	                    	       
 	                    	        $('#logging_play').hide();
@@ -2892,6 +3000,8 @@ function initializeDB(tx) {
 	// tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,revision integer,status integer)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,grnrole text,revision integer,status integer, grn_companies_id integer, type text, cost text, comment text)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer, appTimestamp text)');
+	
+	tx.executeSql('CREATE TABLE IF NOT EXISTS GRNCOMPANYROLES (id integer primary key autoincrement,jsonArr text,createTime text)');
 }
 
 //Transaction success callback
