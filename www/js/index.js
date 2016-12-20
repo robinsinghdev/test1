@@ -1314,7 +1314,7 @@ function getSalesOrders(){
 						        	tbodyObj+='<tr>'+
 								                 '<td class="order-p-icon">'+
 								                     '<span class="process-icon cm-10">'+
-								                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+								                         '<img class="icon-img" src="#" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
 								                     '</span>'+
 								                 '</td>'+
 								                 '<td class="timecat-total-time-td">'+
@@ -1475,7 +1475,7 @@ function successCBTimeCatTbodyObj() {
 	tbodyObj+='<tr>'+
                  '<td class="order-p-icon">'+
                      '<span class="process-icon cm-10">'+
-                         '<img class="icon-img" src="img/'+timeCats+'.png" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+                         '<img class="icon-img" src="#" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
                      '</span>'+
                  '</td>'+
                  '<td class="timecat-total-time-td">'+
