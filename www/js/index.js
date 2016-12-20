@@ -780,6 +780,7 @@ function checkingUserAssignedRoles(){
 		
 		$.each(rolesArr, function(index,value) {
 			
+			var roleIdTemp= parseInt(value);
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
 				$userRolesUlObj.find("li#"+value+"").show();
@@ -789,13 +790,13 @@ function checkingUserAssignedRoles(){
 				}
 				
 				if(window.localStorage["permissions"]== value){
-					$('ul#userRolesUl li#'+value+'').addClass('active');
-					var currentUserRoleText = $('ul#userRolesUl li#'+value+'').text();
+					$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
+					var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
 					$('#userRoleShow').html(currentUserRoleText);
 				}
 			}
 			else {
-				$userRolesUlObj.find("li#"+value+"").hide();
+				$userRolesUlObj.find("li#"+roleIdTemp+"").hide();
 			}
 		});
 		
@@ -1936,10 +1937,7 @@ function refreshSelect(ele,currentValue){
 }
 
 function callAddUpadteLogTime(obj,logTimeType){
-	
 	var connectionType=checkConnection();
-	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -1954,9 +1952,11 @@ function callAddUpadteLogTime(obj,logTimeType){
 		var grnTimeCat=$addUpdateLogTimeForm.find('#timeCat option:selected').val();
 		if(logTimeType=='logTime'){
 			dataObj.grn_timeCat= grnTimeCat;
+			dataObj.revision= 0;
 		}
 		else if(logTimeType=='logTimeRevision'){
 			dataObj.grn_timeCat= grnTimeCat+"_revision";
+			dataObj.revision= 1;
 		}
 		
 		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
@@ -3081,9 +3081,7 @@ function insertTimeCategory(tx) {
    	    	var cost=jsonObj["cost"];
    	    	var comment=jsonObj["comment"];
    	    	
-   	    	console.log(window.localStorage["permissions"] + '----' + grnRolesId);
    	    	if(window.localStorage["permissions"]==grnRolesId){
-   	    		console.log("true condition--" + window.localStorage["permissions"] + '----' + grnRolesId);
    	    		time_cats_arr_curr_role.push(jsonObj);
    	    	}
    	    	
