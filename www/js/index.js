@@ -1188,7 +1188,7 @@ function getSalesOrders(){
 				   data:{action:'getSalesOrders',grn_user:grnUserObj},
 				   success:function(data){
 				   		var responseJson = $.parseJSON(data);
-				   		conole.log(JSON.stringify(responseJson)); // For Testing
+				   		console.log(JSON.stringify(responseJson)); // For Testing
 				   		$('#salesOrderMainDiv').html('');
 				   		
 					   	if(responseJson.status== "success"){
@@ -2939,6 +2939,7 @@ function deleteTimeTrackerRow(id){
 function insertTimeCategory(tx) {
 	var timeCategoryCreateSql ='CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,grnrole text,revision integer,status integer, grn_companies_id integer, type text, cost text, comment text)';
 	
+	time_cats_arr_curr_role=[];
 	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
 		//var el = $('#timeCat');
    		//el.find('option').remove().end();
