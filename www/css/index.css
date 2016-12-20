@@ -289,7 +289,11 @@ hr.style {
 
 .so-name-box .so-name-block{
 	text-align: left;
-	padding-left: 10px;	
+	padding-left: 10px;
+	width: 250px;
+  	white-space: nowrap;
+  	overflow: hidden;
+  	text-overflow: ellipsis;
 }
 
 .process-report.pull-right{
@@ -421,4 +425,12 @@ ul#userRolesUl li.active a{
 
 .version-number-text{
 	text-align: right;
+}
+
+.timecat-total-time-td .timecat-title-format{
+	color: #444;
+}
+.timecat-total-time-td .timecat-title-format .abbr{
+	font-size: 140%;
+	font-weight:bold;
 }
