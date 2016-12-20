@@ -1519,7 +1519,10 @@ function  hideAllTablesData(){
 	 $('table').find('tfoot').hide();
 }
 
-function changeLoginRole(roleId,roleName){
+function changeLoginRole(thiss){
+	
+	var roleid=$(thiss).data("roleid");
+	var rolename=$(thiss).data("rolename");
 	if(roleId!=''){
 		checkDataForNotification();
 		var connectionType=checkConnection();
@@ -2575,8 +2578,8 @@ function successCBGetGrnCompRoles(){
 		var role=jsonObj["role"];
 		rolesArr.push("'"+id+"'");//=['5','7','9','10'];
 
-		var currOnClickFn="changeLoginRole("+id+",'"+role+"'); return false;";
-		var liEleObj='<li id="'+id+'" onclick="'+currOnClickFn+'" ><a href="#" class="ui-btn ui-btn-icon-right ui-icon-carat-r">'+role+'</a></li>';
+		var currOnClickFn="changeLoginRole(this); return false;";
+		var liEleObj='<li id="'+id+'" data-roleid="'+id+'" data-rolename="'+role+'" onclick="'+currOnClickFn+'" ><a href="#" class="ui-btn ui-btn-icon-right ui-icon-carat-r">'+role+'</a></li>';
 		$('ul#userRolesUl').append(liEleObj);
 	});
 	
