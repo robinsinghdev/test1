@@ -581,6 +581,9 @@ function logout() {
 		window.localStorage["tclocal"] = 0;
 		window.localStorage["sync_flag"] = 0;
 		
+		time_cats_arr=[];
+		time_cats_arr_curr_role=[];
+		
 		var form = $("#loginForm");
 		$("#username", form).val(window.localStorage["username"]);
 		$("#password", form).val('');
@@ -1018,13 +1021,13 @@ function getCategoriesForTimeTracking(){
 					   url:appUrl,
 					   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
 					   success:function(data){
+						   	db.transaction(function(tx) {
+					   			tx.executeSql("DELETE FROM TIMECATEGORY ");
+					   		});
 					   		var responseJson = $.parseJSON(data);
 					   		time_cats_arr=responseJson.time_cats;
 					   		window.localStorage["tclocal"] = 1;
 					   		
-					   		db.transaction(function(tx) {
-					   			tx.executeSql("DELETE FROM TIMECATEGORY ");
-					   		});
 					   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
 					   		
 					   		getSalesOrders();
@@ -1210,9 +1213,10 @@ function getSalesOrders(){
 							                 '</td>'+
 							                */ 
 							                 '<td class="timecat-total-time-td">'+
-							                 	'<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
+							                 	'<span id="orderId_spOrderIdReplace" class="timer timecat-title-format" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
 							                 	// +'<span class="time-cat-title">'+title+'</span></span>'+
-							                 	+ titleEleObj +
+							                 	+ titleEleObj 
+							                 	+ '</span>'+
  
 							                    //'<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" onclick="getTotalTimeForCategory(this);"><span class="time-img" ><img src="img/wifi-icon-24px.png" class="wifi-icon" /></span>&nbsp;<span class="time-data">--:-- hrs</span></span>'+
 							                     //'<br/><span id="orderId_spOrderIdReplace" class="timer">LCL &nbsp;<span class="lcl">--:-- hrs</span></span>'+
@@ -1384,12 +1388,10 @@ function successCBTimeCatTbodyObj() {
                  */
                  '<td class="timecat-total-time-td">'+
                      //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
-	                 '<span id="orderId_spOrderIdReplace" class="timer" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
-	                 	
-	                 //+'<span class="time-cat-title">'+title+'</span>'
-	                 + titleEleObj
-	                 	
-	                 	+'</span>'+
+	                 '<span id="orderId_spOrderIdReplace" class="timer timecat-title-format" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
+		                 //+'<span class="time-cat-title">'+title+'</span>'
+		                 + titleEleObj
+	                 +'</span>'+
                  '</td>'+
                  '<td class="order-t-icon">'+
                      '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
@@ -1548,6 +1550,7 @@ function changeLoginRole(roleId,roleName){
 		
 		$('#salesOrderMainDiv').html('');
 		time_cats_arr=[];
+		time_cats_arr_curr_role=[];
 		getCategoriesForTimeTracking();
 		hideModal();
 		navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
