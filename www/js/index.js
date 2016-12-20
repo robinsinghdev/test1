@@ -1520,47 +1520,52 @@ function  hideAllTablesData(){
 }
 
 function changeLoginRole(roleId,roleName){
-	checkDataForNotification();
-	var connectionType=checkConnection();
-	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
+	if(roleId!=''){
+		checkDataForNotification();
+		var connectionType=checkConnection();
+		if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+			if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
+				
+			}
+			else{
+				showSaveRunningTimerDialog();
+				return false;
+			}
+			/*
+			// Removing this condition for v2
+			if (window.localStorage.getItem("sync_flag") == 1 ) {
+				showChangeRoleBlockedDialog();
+				return false;
+			}
+		    else if (window.localStorage.getItem("sync_flag") == 0 ) {
+		    	// To-Do required actions
+		    }
+			*/
+			showModal();
 			
+			window.localStorage["permissions"] = ''+roleId+'';
+			window.localStorage["solocal"] = 0;
+			window.localStorage["tclocal"] = 0;
+			
+			$('ul#userRolesUl li').removeClass('active');
+			$('ul#userRolesUl li#'+roleId+'').addClass('active');
+			var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
+			$('#userRoleShow').html(currentUserRoleText);
+			
+			$('#salesOrderMainDiv').html('');
+			time_cats_arr=[];
+			time_cats_arr_curr_role=[];
+			getCategoriesForTimeTracking();
+			hideModal();
+			navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
 		}
 		else{
-			showSaveRunningTimerDialog();
-			return false;
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
-		/*
-		// Removing this condition for v2
-		if (window.localStorage.getItem("sync_flag") == 1 ) {
-			showChangeRoleBlockedDialog();
-			return false;
-		}
-	    else if (window.localStorage.getItem("sync_flag") == 0 ) {
-	    	// To-Do required actions
-	    }
-		*/
-		showModal();
-		
-		window.localStorage["permissions"] = ''+roleId+'';
-		window.localStorage["solocal"] = 0;
-		window.localStorage["tclocal"] = 0;
-		
-		$('ul#userRolesUl li').removeClass('active');
-		$('ul#userRolesUl li#'+roleId+'').addClass('active');
-		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
-		$('#userRoleShow').html(currentUserRoleText);
-		
-		$('#salesOrderMainDiv').html('');
-		time_cats_arr=[];
-		time_cats_arr_curr_role=[];
-		getCategoriesForTimeTracking();
-		hideModal();
-		navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
+	}else{
+		navigator.notification.alert("Role Not Defined",alertConfirm,appName,notiAlertOkBtnText);
 	}
-	else{
-		navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
-	}
+	
 }
 
 //callSyncData();
@@ -2568,10 +2573,10 @@ function successCBGetGrnCompRoles(){
 		var jsonObj=value;
 		var id=jsonObj["id"];
 		var role=jsonObj["role"];
-		rolesArr.push('"'+id+'"');//=['5','7','9','10'];
+		rolesArr.push("'"+id+"'");//=['5','7','9','10'];
 
-		var currOnClickFn='changeLoginRole('+id+',"'+role+'"); return false;';
-		var liEleObj='<li id="'+id+'" onclick="'+currOnClickFn+'" ><a href="#">'+role+'</a></li>';
+		var currOnClickFn="changeLoginRole("+id+",'"+role+"'); return false;";
+		var liEleObj='<li id="'+id+'" onclick="'+currOnClickFn+'" ><a href="#" class="ui-btn ui-btn-icon-right ui-icon-carat-r">'+role+'</a></li>';
 		$('ul#userRolesUl').append(liEleObj);
 	});
 	
