@@ -766,6 +766,7 @@ function launchAppStoreSuccessCB(){
 function checkingUserAssignedRoles(){
 	
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
+	console.log("grn_roles_id_string-- " + grn_roles_id_string);
 	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
@@ -774,6 +775,8 @@ function checkingUserAssignedRoles(){
 		
 		var $userRolesUlObj = $("#userRolesUl");
 		$('ul#userRolesUl li').removeClass('active').show();
+		
+		console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
 		
 		$.each(rolesArr, function(index,value) {
 			
@@ -1521,8 +1524,8 @@ function  hideAllTablesData(){
 
 function changeLoginRole(thiss){
 	
-	var roleid=$(thiss).data("roleid");
-	var rolename=$(thiss).data("rolename");
+	var roleId=$(thiss).data("roleid");
+	var roleName=$(thiss).data("rolename");
 	if(roleId!=''){
 		checkDataForNotification();
 		var connectionType=checkConnection();
@@ -2576,6 +2579,8 @@ function successCBGetGrnCompRoles(){
 		var jsonObj=value;
 		var id=jsonObj["id"];
 		var role=jsonObj["role"];
+		
+		window.localStorage["permissions"]=''+id+'';
 		rolesArr.push("'"+id+"'");//=['5','7','9','10'];
 
 		var currOnClickFn="changeLoginRole(this); return false;";
