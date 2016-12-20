@@ -769,9 +769,9 @@ function checkingUserAssignedRoles(){
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
 	
-	console.log("grn_roles_id_string-- " + grn_roles_id_string);
-	console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
-	console.log("tempArr-- " + tempArr + " -- " + tempArr.toString());
+	//console.log("grn_roles_id_string-- " + grn_roles_id_string);
+	//console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
+	//console.log("tempArr-- " + tempArr + " -- " + tempArr.toString());
 	
 	if(tempArr.length > 0){
 		
@@ -793,21 +793,13 @@ function checkingUserAssignedRoles(){
 					window.localStorage["permissions"]=''+permissionValue+'';
 				}
 				
-				if(window.localStorage["permissions"]== roleIdTemp){
-					console.log("checkingUserAssignedRoles index-- ============+++++++++++ " + index);
-				}
-				
 				if(window.localStorage["permissions"]== value){
-					
-					console.log("checkingUserAssignedRoles index-- ============================== " + index);
-					
 					$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
 					$('#userRoleShow').html(currentUserRoleText);
 				}
 			}
 			else {
-				console.log("checkingUserAssignedRoles index--  " + index + ' --elseeeeeeeeeeee value-- ' + value);
 				$userRolesUlObj.find("li#"+roleIdTemp+"").hide();
 			}
 		});
@@ -1000,7 +992,7 @@ function getCategoriesForTimeTracking(){
 	
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	console.log ("getCategoriesForTimeTracking-- " + grnUserObj); // For Testing
+	// console.log ("getCategoriesForTimeTracking-- " + grnUserObj); // For Testing
 	
 	if(grnUserObj != '') {
 		var connectionType=checkConnection();
@@ -1206,7 +1198,7 @@ function getSalesOrders(){
 				   data:{action:'getSalesOrders',grn_user:grnUserObj},
 				   success:function(data){
 				   		var responseJson = $.parseJSON(data);
-				   		console.log(JSON.stringify(responseJson)); // For Testing
+				   		// console.log(JSON.stringify(responseJson)); // For Testing
 				   		$('#salesOrderMainDiv').html('');
 				   		
 					   	if(responseJson.status== "success"){
