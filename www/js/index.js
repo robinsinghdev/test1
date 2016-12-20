@@ -766,17 +766,17 @@ function launchAppStoreSuccessCB(){
 function checkingUserAssignedRoles(){
 	
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
-	console.log("grn_roles_id_string-- " + grn_roles_id_string);
-	//var grn_roles_id_string= "1,2,3,4,6,5,7,8,9";
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
+	
+	console.log("grn_roles_id_string-- " + grn_roles_id_string);
+	console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
+	console.log("tempArr-- " + tempArr + " -- " + tempArr.toString());
 	
 	if(tempArr.length > 0){
 		
 		var $userRolesUlObj = $("#userRolesUl");
 		$('ul#userRolesUl li').removeClass('active').show();
-		
-		console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
 		
 		$.each(rolesArr, function(index,value) {
 			console.log("checkingUserAssignedRoles index-- " + index);
@@ -2596,7 +2596,7 @@ function successCBGetGrnCompRoles(){
 			window.localStorage["permissions"]=''+id+'';
 		}
 		console.log("window.localStorage permissions ----- " + window.localStorage["permissions"]);
-		rolesArr.push("'"+id+"'");//=['5','7','9','10'];
+		rolesArr.push(id.toString());//=['5','7','9','10'];
 
 		var currOnClickFn="changeLoginRole(this); return false;";
 		var liEleObj='<li id="'+id+'" data-roleid="'+id+'" data-rolename="'+role+'" onclick="'+currOnClickFn+'" ><a href="#" class="ui-btn ui-btn-icon-right ui-icon-carat-r">'+role+'</a></li>';
