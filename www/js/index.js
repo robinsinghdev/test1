@@ -784,6 +784,9 @@ function checkingUserAssignedRoles(){
 			var roleIdTemp= parseInt(value);
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
+				
+				console.log("checkingUserAssignedRoles index--  " + index + ' --value-- ' + value);
+				
 				$userRolesUlObj.find("li#"+value+"").show();
 				if(window.localStorage["permissions"]== ''){
 					var permissionValue=value;
@@ -804,6 +807,7 @@ function checkingUserAssignedRoles(){
 				}
 			}
 			else {
+				console.log("checkingUserAssignedRoles index--  " + index + ' --elseeeeeeeeeeee value-- ' + value);
 				$userRolesUlObj.find("li#"+roleIdTemp+"").hide();
 			}
 		});
