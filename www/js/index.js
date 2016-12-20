@@ -779,6 +779,7 @@ function checkingUserAssignedRoles(){
 		console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
 		
 		$.each(rolesArr, function(index,value) {
+			console.log("checkingUserAssignedRoles index-- " + index);
 			
 			var roleIdTemp= parseInt(value);
 			var firstRoleFoundFlag=false;
@@ -789,7 +790,14 @@ function checkingUserAssignedRoles(){
 					window.localStorage["permissions"]=''+permissionValue+'';
 				}
 				
+				if(window.localStorage["permissions"]== roleIdTemp){
+					console.log("checkingUserAssignedRoles index-- ============+++++++++++ " + index);
+				}
+				
 				if(window.localStorage["permissions"]== value){
+					
+					console.log("checkingUserAssignedRoles index-- ============================== " + index);
+					
 					$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
 					$('#userRoleShow').html(currentUserRoleText);
@@ -2580,7 +2588,10 @@ function successCBGetGrnCompRoles(){
 		var id=jsonObj["id"];
 		var role=jsonObj["role"];
 		
-		window.localStorage["permissions"]=''+id+'';
+		if(index==0){
+			window.localStorage["permissions"]=''+id+'';
+		}
+		console.log("window.localStorage permissions ----- " + window.localStorage["permissions"]);
 		rolesArr.push("'"+id+"'");//=['5','7','9','10'];
 
 		var currOnClickFn="changeLoginRole(this); return false;";
@@ -3105,7 +3116,7 @@ function timeCatSelectRefresh(){
 		el.find('option').remove().end();
 	     jQuery.each(time_cats_arr_curr_role, function(index,value) {
 	    	var jsonObj=value;
-	    	var id=jsonObj["pid"];
+	    	var id=jsonObj["id"];
 	    	var title=jsonObj["title"];
 	    	el.append('<option value="'+id+'">'+title+'</option>').val(id);
 		});
