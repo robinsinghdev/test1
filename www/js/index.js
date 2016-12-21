@@ -24,7 +24,7 @@ $(document).delegate('.history-tabs a', 'tap', function () {
 });
 
 // Variables Declaration
-var appName='T2B';
+var appName='BP Metrics';
 var appUrl='https://dev.bpmetrics.net/grn/m_app/';
 var connectionType;
 var currDataHexcolor,currDataOname,currDataOrder;
@@ -139,7 +139,7 @@ function callSyncWithServer() {
 	
 	db.transaction(function (tx){
 	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime text,secondsData integer
-	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,appTimestamp FROM TIMETRACKER',[],function(tx,results){
+	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,appTimestamp,revision FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
 	                    if(len == 0){
 	                    	window.localStorage["sync_flag"] = 0;
@@ -169,6 +169,7 @@ function callSyncWithServer() {
 	                        		dataObj.lid= currid;
 	                        		dataObj.log_timestamp=results.rows.item(i)['appTimestamp'];
 	                        		dataObj.sender ="aapp";
+	                        		dataObj.revision=results.rows.item(i)['revision'];
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
@@ -533,7 +534,6 @@ function checkConnection() {
     states[Connection.CELL]     = 'Cell generic connection';
     states[Connection.NONE]     = 'No network connection';
     
-    console.log("states[networkState]-- " + states[networkState]);
     if(typeof states[networkState] === 'undefined'){
     	return 'Unknown connection';
     }
@@ -1659,7 +1659,7 @@ function getLogTimeListOfOrder(data){
 				   			
 				   			grn_timeCat_img=grn_timeCat_img.replace("_revision", "");
 				   			var revisionSpan;
-				   			if (grn_timeCat.toLowerCase().indexOf("revision") >= 0){
+				   			if (revision== 1){ //grn_timeCat.toLowerCase().indexOf("revision") >= 0){
 				   				revisionSpan='<span style="vertical-align: top;" class="text-pink">Revision Work</span>';
 				   			}else{
 				   				revisionSpan='<span style="vertical-align: top;" class="text-purple">Work</span>';
@@ -1729,7 +1729,7 @@ function getLogTimeListLocal(oid){
 	       function (tx){
 	            tx.executeSql
 	            (
-	                'SELECT id,soTimeId,date,time,crewSize,timecat,comment FROM TIMETRACKER WHERE soTimeId=?',[oid],function(tx,results){
+	                'SELECT id,soTimeId,date,time,crewSize,timecat,comment,revision FROM TIMETRACKER WHERE soTimeId=?',[oid],function(tx,results){
 	                    var len = results.rows.length;
 	                    $('#logTimeHistoryLocalDiv').html('');
 	                    if(len>0){
@@ -1747,6 +1747,8 @@ function getLogTimeListLocal(oid){
 					   			var title = results.rows.item(i)['timecat'];
 					   			var grn_timeCat_img = results.rows.item(i)['timecat'];
 					   			var grn_timeCat_trimmed=results.rows.item(i)['timecat'];
+					   			var revision=results.rows.item(i)['revision'];
+					   			
 					   			grn_timeCat_trimmed=grn_timeCat_trimmed.replace("_revision", "");
 					   			
 					   			var timeInHours= results.rows.item(i)['time'];
@@ -1754,7 +1756,7 @@ function getLogTimeListLocal(oid){
 					   			
 					   			grn_timeCat_img=grn_timeCat_img.replace("_revision", "");
 					   			var revisionSpan;
-					   			if (grn_timeCat.toLowerCase().indexOf("revision") >= 0){
+					   			if (revision==1){  //|| grn_timeCat.toLowerCase().indexOf("revision") >= 0){
 					   				revisionSpan='<span style="vertical-align: top;" class="text-pink">Revision Work</span>';
 					   			}else{
 					   				revisionSpan='<span style="vertical-align: top;" class="text-purple">Work</span>';
@@ -1926,6 +1928,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
+		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 		var grnTimeCat=$addUpdateLogTimeForm.find('#timeCat option:selected').val();
 		if(typeof grnTimeCat === 'undefined'){
 			alert('Please select the process.');
@@ -1942,17 +1945,17 @@ function callAddUpadteLogTime(obj,logTimeType){
 		dataObj.grn_user=grnUserObj;
 		dataObj.nickname= window.localStorage["nickname"];
 		
-		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
-		
 		dataObj.grn_timeCat= grnTimeCat;
 		dataObj.grn_timeCat= grnTimeCat;//+"_revision";
 		
 		console.log("isRevisionCheckbox--   " + $("#isRevisionCheckbox").is(':checked'));
+		var revision=0;
 		if($("#isRevisionCheckbox").is(':checked')){
-			dataObj.revision= 1;
-		}else{
-			dataObj.revision= 0;
+			revision=1;
+			
 		}
+		dataObj.revision= revision;
+		
 		/*
 		if(logTimeType=='logTime'){
 			dataObj.revision= 0;
@@ -2020,7 +2023,8 @@ function callAddUpadteLogTime(obj,logTimeType){
 			var appTimestamp=dateTimestamp();
 			
 			var currtimetrackerid = window.localStorage.getItem("trackerkey");
-			var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' ,appTimestamp='"+appTimestamp+"' WHERE id=' "+currtimetrackerid+" '";
+			// TODO
+			var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' ,appTimestamp='"+appTimestamp+"' ,revision='"+revision+"' WHERE id=' "+currtimetrackerid+" '";
 			
 			var result=addUpadteLogTimeTT(dataObj,updateQuery);
 			
@@ -2160,7 +2164,7 @@ function addLogTimeToApp(dataObj){
 	var appTimestamp=dateTimestamp();
 	db.transaction(function(tx) {
 		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
-		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData, appTimestamp) VALUES (?,?,?,?,?,?,?,?,?,?,?)'
+		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData, appTimestamp,revision) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
 				,[dataObj.grn_salesorderTime_id,
 				  dataObj.date,
 				  dataObj.time,
@@ -2171,7 +2175,8 @@ function addLogTimeToApp(dataObj){
 				  "complete",
 				  "0",
 				  secondsVal,
-				  appTimestamp]
+				  appTimestamp,
+				  dataObj.revision]
 			,function(tx, results){
 					//alert('Returned ID: ' + results.insertId);
 					navigator.notification.alert(
@@ -2669,8 +2674,8 @@ function startTimer() {
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData,appTimestamp) VALUES (?,?,?,?,?,?,?,?,?,?,?)'
-    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTimeValue,0,appTimestamp]
+    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData,appTimestamp,revision) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTimeValue,0,appTimestamp,0]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
@@ -3016,7 +3021,7 @@ function initializeDB(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER_JSON (id integer primary key autoincrement,jsonArr text,createTime text )');
 	// tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,revision integer,status integer)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,grnrole text,revision integer,status integer, grn_companies_id integer, type text, cost text, comment text)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer, appTimestamp text)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer, appTimestamp text, revision integer)');
 	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS GRNCOMPANYROLES (id integer primary key autoincrement,jsonArr text,createTime text)');
 }
@@ -3106,26 +3111,31 @@ function insertTimeCategory(tx) {
 
 function timeCatSelectRefresh(){
 	var el = $('#timeCat');
-		el.find('option').remove().end();
-		var firstSelectValue;
-	    jQuery.each(time_cats_arr_curr_role, function(index,value) {
-	    	var jsonObj=value;
-	    	var id=jsonObj["id"];
-	    	var title=jsonObj["title"];
-	    	el.append('<option value="'+id+'">'+title+'</option>').val(id);
-	    	
-	    	if(index==0){
-	    		firstSelectValue=id;
-	    	}
-		});
-	  el.val(currentValue).attr('selected', true).siblings('option').removeAttr('selected');   
-	  el.selectmenu();
-	  el.selectmenu("refresh", true);
-	  
-	  if(time_cats_arr_curr_role.length>0){
-		  el.val(firstSelectValue).attr('selected', true).siblings('option').removeAttr('selected');   
-		  el.selectmenu("refresh", true);
-	  }
+	el.find('option').remove().end();
+	var currentValue;
+	jQuery.each(time_cats_arr_curr_role, function(index,value) {
+		var jsonObj=value;
+		var id=jsonObj["id"];
+		var title=jsonObj["title"];
+		el.append('<option value="'+id+'">'+title+'</option>').val(id);
+
+		if(index==0){
+			firstSelectValue=id;
+		}
+	});
+	if(time_cats_arr_curr_role.length>0){
+		el.val(currentValue).attr('selected', true).siblings('option').removeAttr('selected');   
+	}	
+	el.selectmenu();
+	el.selectmenu("refresh", true);
+	
+	/*
+	if(time_cats_arr_curr_role.length>0){
+		var selectEle = $('#timeCat');	
+		selectEle.val(currentValue).attr('selected', true).siblings('option').removeAttr('selected');   
+		selectEle.selectmenu("refresh", true);
+	}
+	*/
 }
 
 function insertSalesOrderJson(tx) {

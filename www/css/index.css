@@ -238,8 +238,7 @@ hr.style {
 }
 
 .log-time-entry-div .process-details .process-name{
-	 
-	 width: 70%;
+	 width: 80%;
 } 
 .log-time-entry-div .process-details .process-img{
 	float: left;
@@ -427,10 +426,26 @@ ul#userRolesUl li.active a{
 	text-align: right;
 }
 
-.timecat-total-time-td .timecat-title-format{
+.timecat-total-time-td .timecat-title-format, .log-time-entry-div .process-details .process-name{
 	color: #444;
 }
-.timecat-total-time-td .timecat-title-format .abbr{
+.timecat-total-time-td .timecat-title-format .abbr, .log-time-entry-div .process-details .process-name .abbr{
 	font-size: 140%;
 	font-weight:bold;
+}
+
+#login-page{background: #464646;}
+
+#login-page .login-box label{
+	color: #fff;	
+}
+
+#login-page .login-box label, #login-page .version-number-text{
+	color: #fff;	
+}
+
+#login-page element.style {
+	bottom: 0;
+	position: absolute;
+	right: 0;
 }
