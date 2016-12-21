@@ -1650,6 +1650,7 @@ function getLogTimeListOfOrder(data){
 				   			var grn_timeCat =value.grn_timeCat;
 				   			var commentsData =value.comments;				   			
 				   			var title =value.title;
+				   			var revision =value.revision;
 				   			var grn_timeCat_img = grn_timeCat;
 				   			var grn_timeCat_trimmed=value.grn_timeCat;
 				   			grn_timeCat_trimmed=grn_timeCat_trimmed.replace("_revision", "");
@@ -1669,6 +1670,8 @@ function getLogTimeListOfOrder(data){
 				   				comments="No Comments Yet.";
 				   			}
 				   			
+				   			var titleEleObj=timeCatTitleFormat(title);
+				   			
 					   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
 										   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
 												'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
@@ -1676,7 +1679,7 @@ function getLogTimeListOfOrder(data){
 											'<div class="process-details">'+
 												'<div class="ui-grid-a my-breakpoint">'+
 												  '<div class="ui-block-a">'+
-														'<div class="process-name">'+title+'</div>'+
+														'<div class="process-name">'+titleEleObj+'</div>'+
 												  '</div>'+
 												  '<div class="ui-block-b text-align-right">'+
 														'<span class="link-custom-span">'+
@@ -1766,6 +1769,7 @@ function getLogTimeListLocal(oid){
 					   				comments="No Comments Yet.";
 					   			}
 					   			
+					   			var titleEleObj=timeCatTitleFormat(title);
 						   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1 logTimeLocalDiv'+id+' ">'+
 											   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
 														'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
@@ -1773,7 +1777,7 @@ function getLogTimeListLocal(oid){
 													'<div class="process-details">'+
 														'<div class="ui-grid-a my-breakpoint">'+
 														  '<div class="ui-block-a">'+
-																'<div class="process-name">'+title.toUpperCase()+'</div>'+
+																'<div class="process-name">'+titleEleObj+'</div>'+
 														  '</div>'+
 														 
 														  '<div class="ui-block-b text-align-right">'+
