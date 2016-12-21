@@ -26,6 +26,7 @@ $(document).delegate('.history-tabs a', 'tap', function () {
 // Variables Declaration
 var appName='T2B';
 var appUrl='https://dev.bpmetrics.net/grn/m_app/';
+var connectionType;
 var currDataHexcolor,currDataOname,currDataOrder;
 var salse_orders_arr=[];
 var time_cats_arr=[];
@@ -35,11 +36,13 @@ var rolesArr=[];
 var globalLogTimeObj={};
 var db;
 var closeSalesOrderDataObj,deleteLogTimeLocalObj;
-var devTestingFlag=true;
 var notiAlertOkBtnText='Ok';
 // Common Message 
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
+
+// For Testing
+var devTestingFlag=false;
 
 var colorArray=[{"id":"1","HexColor":"FFD700"},{"id":"2","HexColor":"FFC0CB"},{"id":"3","HexColor":"FFA500"},{"id":"4","HexColor":"FFA07A"},
                 {"id":"5","HexColor":"FF69B4"},{"id":"6","HexColor":"FF1493"},{"id":"7","HexColor":"FF0000"},
@@ -121,7 +124,7 @@ function resetSyncTimer(){
 }
 
 function checkConnectionForSync() {
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		callSyncWithServer();
 	}
@@ -258,7 +261,7 @@ function checkDataForNotification() {
 function callSyncData() {
 	checkDataForNotification();
 	
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
@@ -293,7 +296,7 @@ function syncDataDialogAction(button){
 
 function callSyncNow() {
 	checkDataForNotification();
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
@@ -316,7 +319,7 @@ function callSyncNow() {
 
 function callReconnectNow() {
 	$("#reconnectStatusMsg").html("Establishing Internet Connection").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		$("#reconnectStatusMsg").html("Unable to Establish Internet Connection").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
@@ -329,7 +332,7 @@ function callReconnectNow() {
 }
 
 function callSaveLogTime(obj){
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
@@ -376,7 +379,7 @@ function saveLogTime(dataObj){
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 	   return false;
@@ -445,7 +448,7 @@ function alertexit(button){
 
 function doLogout() {
 	checkDataForNotification();
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		navigator.notification.alert(
@@ -515,7 +518,7 @@ function alertlogout(button){
 // Check Data Connection Common Function
 function checkConnection() {
 	if(devTestingFlag){
-		var connectionType="WiFi connection";//For Testing
+		connectionType="WiFi connection";//For Testing
 		return connectionType;
 	}
 	
@@ -530,6 +533,7 @@ function checkConnection() {
     states[Connection.CELL]     = 'Cell generic connection';
     states[Connection.NONE]     = 'No network connection';
     
+    console.log("states[networkState]-- " + states[networkState]);
     if(typeof states[networkState] === 'undefined'){
     	return 'Unknown connection';
     }
@@ -613,11 +617,12 @@ function handleLogin() {
 	
 	if(u != '' && p!= '') {
 		
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			
 			if(window.localStorage["user_logged_in"] ==1) {
 				$('#userFullName').html(window.localStorage.getItem("full_name"));
+				$('#userRoleShow').html('');
 				
 				getGrnCompanyRoles();
 				checkDataForNotification();
@@ -823,7 +828,7 @@ function getSOBySONumber(){
 	
 	if(grnUserObj != '') {
 		
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
@@ -943,7 +948,7 @@ function createNewSO(){
 	
 	if(grnUserObj != '') {
 		
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
@@ -995,7 +1000,7 @@ function getCategoriesForTimeTracking(){
 	// console.log ("getCategoriesForTimeTracking-- " + grnUserObj); // For Testing
 	
 	if(grnUserObj != '') {
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["tclocal"] == 1){
 				getSalesOrders();
@@ -1007,49 +1012,34 @@ function getCategoriesForTimeTracking(){
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
-			/*
-			if(devTestingFlag){ // // For Testing
-				window.localStorage["tclocal"]=0;
-			}
-			*/
 			if(window.localStorage["tclocal"] == 1){
 				getSalesOrders();
 		   		hideModal();
 			}
 			else if(window.localStorage["tclocal"] == 0){
-				/*
-				if(devTestingFlag){
-					var time_cats_arrtemps=[{"id":"70","grn_companies_id":"3","title":"B Pho Photos","icon":"","grn_roles_id":"3","revision":"1","type":"time","cost":"70.00","comment":"","status":"1","role":"Inventory Company 1"},{"id":"63","grn_companies_id":"3","title":"A Crm Conversation","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"64","grn_companies_id":"3","title":"A $qt Quoting","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"65","grn_companies_id":"3","title":"A Acp Acceptance","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"66","grn_companies_id":"3","title":"A Wrk Paperwork","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"67","grn_companies_id":"3","title":"A Alc Allocation","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"68","grn_companies_id":"3","title":"A Buy Purchasing","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"69","grn_companies_id":"3","title":"A Ovr Handover","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"71","grn_companies_id":"3","title":"C Ver Verification","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"72","grn_companies_id":"3","title":"C Cfm Reconfirmation","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"73","grn_companies_id":"3","title":"C Pre PreInstall","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"74","grn_companies_id":"3","title":"C Ovr Handover","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"97","grn_companies_id":"3","title":"J Acc Job Acceptance","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"98","grn_companies_id":"3","title":"J $in Invoicing","icon":"","grn_roles_id":"4","revision":"4","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"99","grn_companies_id":"3","title":"J $rx Received Payment","icon":"","grn_roles_id":"4","revision":"4","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"100","grn_companies_id":"3","title":"K Asi After Sales Inspection","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"101","grn_companies_id":"3","title":"K Wrn Warranty Negotiations","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales Company 1"},{"id":"75","grn_companies_id":"3","title":"D Prp Preparation","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating Company 1"},{"id":"76","grn_companies_id":"3","title":"D Ttm Travel Time","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating Company 1"},{"id":"77","grn_companies_id":"3","title":"D Tpl Templating","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating Company 1"},{"id":"78","grn_companies_id":"3","title":"D Ovr Handover","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating Company 1"},{"id":"79","grn_companies_id":"3","title":"E Prp Preparation","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming Company 1"},{"id":"80","grn_companies_id":"3","title":"E Crm Conversation","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming Company 1"},{"id":"81","grn_companies_id":"3","title":"E Prg Programming","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming Company 1"},{"id":"82","grn_companies_id":"3","title":"E Ovr Handover","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming Company 1"},{"id":"83","grn_companies_id":"3","title":"F Prp Preparation","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production Company 1"},{"id":"84","grn_companies_id":"3","title":"F Sup Machine Set Up","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production Company 1"},{"id":"85","grn_companies_id":"3","title":"F Unl Machine Unload","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production Company 1"},{"id":"86","grn_companies_id":"3","title":"F Cnc Production","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production Company 1"},{"id":"87","grn_companies_id":"3","title":"F Ovr Handover","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production Company 1"},{"id":"102","grn_companies_id":"3","title":"O Smt Scheduled Maint","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"xxxx - Maintenance Company 1"},{"id":"103","grn_companies_id":"3","title":"O Umt Unscheduled Maint","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"xxxx - Maintenance Company 1"},{"id":"104","grn_companies_id":"3","title":"O Trn Training","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"xxxx - Maintenance Company 1"},{"id":"105","grn_companies_id":"3","title":"O Mee Meeting","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"xxxx - Maintenance Company 1"},{"id":"106","grn_companies_id":"3","title":"O Oth Other","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"xxxx - Maintenance Company 1"},{"id":"88","grn_companies_id":"3","title":"G Cnf Confirm Order","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality Control Company 1"},{"id":"89","grn_companies_id":"3","title":"G Fsg Finishing","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality Control Company 1"},{"id":"90","grn_companies_id":"3","title":"G Ovr Handover","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality Control Company 1"},{"id":"91","grn_companies_id":"3","title":"H Crm Conversation","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing Company 1"},{"id":"92","grn_companies_id":"3","title":"H Loa Loading Up","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing Company 1"},{"id":"93","grn_companies_id":"3","title":"H Ttm TravelTime","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing Company 1"},{"id":"94","grn_companies_id":"3","title":"H Ins Installing","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing Company 1"},{"id":"95","grn_companies_id":"3","title":"H Crm Client Instruction","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing Company 1"},{"id":"96","grn_companies_id":"3","title":"H Cln Truck Cleaning","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing Company 1"},{"id":"75","grn_companies_id":"3","title":"D Prp Preparation","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating 2"},{"id":"76","grn_companies_id":"3","title":"D Ttm Travel Time","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating 2"},{"id":"77","grn_companies_id":"3","title":"D Tpl Templating","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating 2"},{"id":"78","grn_companies_id":"3","title":"D Ovr Handover","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating 2"},{"id":"79","grn_companies_id":"3","title":"E Prp Preparation","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming 2"},{"id":"80","grn_companies_id":"3","title":"E Crm Conversation","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming 2"},{"id":"81","grn_companies_id":"3","title":"E Prg Programming","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming 2"},{"id":"82","grn_companies_id":"3","title":"E Ovr Handover","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming 2"},{"id":"83","grn_companies_id":"3","title":"F Prp Preparation","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production 2"},{"id":"84","grn_companies_id":"3","title":"F Sup Machine Set Up","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production 2"},{"id":"85","grn_companies_id":"3","title":"F Unl Machine Unload","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production 2"},{"id":"86","grn_companies_id":"3","title":"F Cnc Production","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production 2"},{"id":"87","grn_companies_id":"3","title":"F Ovr Handover","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Production 2"},{"id":"88","grn_companies_id":"3","title":"G Cnf Confirm Order","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality_Control 2"},{"id":"89","grn_companies_id":"3","title":"G Fsg Finishing","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality_Control 2"},{"id":"90","grn_companies_id":"3","title":"G Ovr Handover","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality_Control 2"},{"id":"91","grn_companies_id":"3","title":"H Crm Conversation","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 2"},{"id":"92","grn_companies_id":"3","title":"H Loa Loading Up","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 2"},{"id":"93","grn_companies_id":"3","title":"H Ttm TravelTime","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 2"},{"id":"94","grn_companies_id":"3","title":"H Ins Installing","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 2"},{"id":"95","grn_companies_id":"3","title":"H Crm Client Instruction","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 2"},{"id":"96","grn_companies_id":"3","title":"H Cln Truck Cleaning","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 2"},{"id":"63","grn_companies_id":"3","title":"A Crm Conversation","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"64","grn_companies_id":"3","title":"A $qt Quoting","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"65","grn_companies_id":"3","title":"A Acp Acceptance","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"66","grn_companies_id":"3","title":"A Wrk Paperwork","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"67","grn_companies_id":"3","title":"A Alc Allocation","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"68","grn_companies_id":"3","title":"A Buy Purchasing","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"69","grn_companies_id":"3","title":"A Ovr Handover","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"71","grn_companies_id":"3","title":"C Ver Verification","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"72","grn_companies_id":"3","title":"C Cfm Reconfirmation","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"73","grn_companies_id":"3","title":"C Pre PreInstall","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"74","grn_companies_id":"3","title":"C Ovr Handover","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"97","grn_companies_id":"3","title":"J Acc Job Acceptance","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"98","grn_companies_id":"3","title":"J $in Invoicing","icon":"","grn_roles_id":"4","revision":"4","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"99","grn_companies_id":"3","title":"J $rx Received Payment","icon":"","grn_roles_id":"4","revision":"4","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"100","grn_companies_id":"3","title":"K Asi After Sales Inspection","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"101","grn_companies_id":"3","title":"K Wrn Warranty Negotiations","icon":"","grn_roles_id":"4","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Sales 3"},{"id":"70","grn_companies_id":"3","title":"B Pho Photos","icon":"","grn_roles_id":"3","revision":"1","type":"time","cost":"70.00","comment":"","status":"1","role":"Inventory 3"},{"id":"102","grn_companies_id":"3","title":"O Smt Scheduled Maint","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Internal 3"},{"id":"103","grn_companies_id":"3","title":"O Umt Unscheduled Maint","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Internal 3"},{"id":"104","grn_companies_id":"3","title":"O Trn Training","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Internal 3"},{"id":"105","grn_companies_id":"3","title":"O Mee Meeting","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Internal 3"},{"id":"106","grn_companies_id":"3","title":"O Oth Other","icon":"","grn_roles_id":"8","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Internal 3"},{"id":"75","grn_companies_id":"3","title":"D Prp Preparation","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating 3"},{"id":"76","grn_companies_id":"3","title":"D Ttm Travel Time","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating 3"},{"id":"77","grn_companies_id":"3","title":"D Tpl Templating","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating 3"},{"id":"78","grn_companies_id":"3","title":"D Ovr Handover","icon":"","grn_roles_id":"5","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Templating 3"},{"id":"79","grn_companies_id":"3","title":"E Prp Preparation","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming 3"},{"id":"80","grn_companies_id":"3","title":"E Crm Conversation","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming 3"},{"id":"81","grn_companies_id":"3","title":"E Prg Programming","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming 3"},{"id":"82","grn_companies_id":"3","title":"E Ovr Handover","icon":"","grn_roles_id":"6","revision":"1","type":"time","cost":"75.00","comment":"","status":"1","role":"Programming 3"},{"id":"83","grn_companies_id":"3","title":"F Prp Preparation","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Manufacturing 3"},{"id":"84","grn_companies_id":"3","title":"F Sup Machine Set Up","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Manufacturing 3"},{"id":"85","grn_companies_id":"3","title":"F Unl Machine Unload","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Manufacturing 3"},{"id":"86","grn_companies_id":"3","title":"F Cnc Production","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Manufacturing 3"},{"id":"87","grn_companies_id":"3","title":"F Ovr Handover","icon":"","grn_roles_id":"7","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Manufacturing 3"},{"id":"88","grn_companies_id":"3","title":"G Cnf Confirm Order","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality Control 3"},{"id":"89","grn_companies_id":"3","title":"G Fsg Finishing","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality Control 3"},{"id":"90","grn_companies_id":"3","title":"G Ovr Handover","icon":"","grn_roles_id":"9","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Quality Control 3"},{"id":"91","grn_companies_id":"3","title":"H Crm Conversation","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 3"},{"id":"92","grn_companies_id":"3","title":"H Loa Loading Up","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 3"},{"id":"93","grn_companies_id":"3","title":"H Ttm TravelTime","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 3"},{"id":"94","grn_companies_id":"3","title":"H Ins Installing","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 3"},{"id":"95","grn_companies_id":"3","title":"H Crm Client Instruction","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 3"},{"id":"96","grn_companies_id":"3","title":"H Cln Truck Cleaning","icon":"","grn_roles_id":"10","revision":"1","type":"time","cost":"60.00","comment":"","status":"1","role":"Installing 3"}];
-					
-					time_cats_arr=$.parseJSON(JSON.stringify(time_cats_arrtemps));
-					getSalesOrders();
-			   		hideModal();
-				}else{
-				*/
-					$.ajax({
-						type : 'POST',
-					   url:appUrl,
-					   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
-					   success:function(data){
-						   	db.transaction(function(tx) {
-					   			tx.executeSql("DELETE FROM TIMECATEGORY ");
-					   		});
-					   		var responseJson = $.parseJSON(data);
-					   		time_cats_arr=responseJson.time_cats;
-					   		window.localStorage["tclocal"] = 1;
-					   		
-					   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
-					   		
-					   		getSalesOrders();
-					   		hideModal();
-						},
-						error:function(data,t,f){
-							hideModal();
-							//console.log(data+' '+t+' '+f);
-							navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
-						}
-					});
-				//}
+				$.ajax({
+					type : 'POST',
+				   url:appUrl,
+				   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
+				   success:function(data){
+					   	db.transaction(function(tx) {
+				   			tx.executeSql("DELETE FROM TIMECATEGORY ");
+				   		});
+				   		var responseJson = $.parseJSON(data);
+				   		time_cats_arr=responseJson.time_cats;
+				   		window.localStorage["tclocal"] = 1;
+				   		
+				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+				   		
+				   		getSalesOrders();
+				   		hideModal();
+					},
+					error:function(data,t,f){
+						hideModal();
+						//console.log(data+' '+t+' '+f);
+						navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+					}
+				});
 			}
 		}
 	}
@@ -1070,7 +1060,7 @@ function getTotalTimeForCategory(dataObj){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
@@ -1118,7 +1108,7 @@ function getAllColorsForSO(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {		
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
@@ -1152,7 +1142,7 @@ function getSalesOrders(){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			if(window.localStorage["solocal"] == 1){
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
@@ -1170,11 +1160,6 @@ function getSalesOrders(){
 			}
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-			/*
-			if(devTestingFlag){ // For Testing
-				window.localStorage["solocal"] = 0;
-			}
-			*/
 			
 			if(window.localStorage["solocal"] == 1){
 				
@@ -1533,7 +1518,7 @@ function changeLoginRole(thiss){
 	var roleName=$(thiss).data("rolename");
 	if(roleId!=''){
 		checkDataForNotification();
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
 				
@@ -1604,7 +1589,7 @@ function getLogTimeListOfOrder(data){
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		
 		var $thisData=$(data);
 		currDataHexcolor=$thisData.attr("data-hexcolor");
@@ -1654,6 +1639,7 @@ function getLogTimeListOfOrder(data){
 			   		}
 			   		else{
 				   		jQuery.each(records_arr, function(index,value) {
+				   			console.log( JSON.stringify(value) );
 				   			var id =value.id;
 				   			var grn_users_id=value.grn_users_id;
 				   			var grn_salesorderTime_id=value.grn_salesorderTime_id;
@@ -1690,9 +1676,6 @@ function getLogTimeListOfOrder(data){
 											'<div class="process-details">'+
 												'<div class="ui-grid-a my-breakpoint">'+
 												  '<div class="ui-block-a">'+
-														'<div class="process-img">'+
-															'<img src="img/'+grn_timeCat_img+'.png">'+            				 
-														'</div>'+
 														'<div class="process-name">'+title+'</div>'+
 												  '</div>'+
 												  '<div class="ui-block-b text-align-right">'+
@@ -1788,9 +1771,6 @@ function getLogTimeListLocal(oid){
 													'<div class="process-details">'+
 														'<div class="ui-grid-a my-breakpoint">'+
 														  '<div class="ui-block-a">'+
-																'<div class="process-img">'+
-																	'<img src="img/'+grn_timeCat_img+'.png">'+            				 
-																'</div>'+
 																'<div class="process-name">'+title.toUpperCase()+'</div>'+
 														  '</div>'+
 														 
@@ -1850,7 +1830,7 @@ function addLogTime(){
 	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','add');
 	$addUpdateLogTimeForm.find('#logTimeRevisionSubmitBtn').attr('data-flag','add');
 	
-	changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
+	//changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	$.mobile.changePage('#add-log-time','slide');
 }
 
@@ -1866,7 +1846,7 @@ function editLogTime(dataObj){
 	var date=$dataObj.data('date');
 	var time=$dataObj.data('time');
 	var crewSize=$dataObj.data('crewsize');
-	var category=$dataObj.data('category'); //'prod_materials';
+	var category=$dataObj.data('category');
 	var comment=$dataObj.data('comment');
 	
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
@@ -1941,11 +1921,22 @@ function refreshSelect(ele,currentValue){
 }
 
 function callAddUpadteLogTime(obj,logTimeType){
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
+		var grnTimeCat=$addUpdateLogTimeForm.find('#timeCat option:selected').val();
+		if(typeof grnTimeCat === 'undefined'){
+			alert('Please select the process.');
+			return false;
+		}
+		
+		if(grnTimeCat == ''){
+			alert('Please select the process.');
+			return false;
+		}
+		
 		var dataObj={};
 		dataObj.action='addLogTime';
 		dataObj.grn_user=grnUserObj;
@@ -1953,16 +1944,23 @@ function callAddUpadteLogTime(obj,logTimeType){
 		
 		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 		
-		var grnTimeCat=$addUpdateLogTimeForm.find('#timeCat option:selected').val();
+		dataObj.grn_timeCat= grnTimeCat;
+		dataObj.grn_timeCat= grnTimeCat;//+"_revision";
+		
+		console.log("isRevisionCheckbox--   " + $("#isRevisionCheckbox").is(':checked'));
+		if($("#isRevisionCheckbox").is(':checked')){
+			dataObj.revision= 1;
+		}else{
+			dataObj.revision= 0;
+		}
+		/*
 		if(logTimeType=='logTime'){
-			dataObj.grn_timeCat= grnTimeCat;
 			dataObj.revision= 0;
 		}
 		else if(logTimeType=='logTimeRevision'){
-			dataObj.grn_timeCat= grnTimeCat+"_revision";
 			dataObj.revision= 1;
 		}
-		
+		*/
 		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
 		dataObj.date= $addUpdateLogTimeForm.find('#logDate').val();
 		
@@ -2051,7 +2049,7 @@ function addUpadteLogTimeTT(dataObj,updateQuery){
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	//if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		
@@ -2086,7 +2084,7 @@ function addLogTimeToServer(dataObj){
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		hideModal();
@@ -2125,7 +2123,7 @@ function updateLogTimeToServer(dataObj){
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		hideModal();
@@ -2217,7 +2215,7 @@ function closeSalesOrder(dataObj){
 		salesorderId=salesorderId.replace("#","");
 		var salesId=$(dataObj).data('id');
 		
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			hideModal();
@@ -2266,7 +2264,7 @@ function showOrderSOBySONumber(){
 	if(grnUserObj != '') {
 		var salesorderId=$('#sp_salesOrderNumber').val();
 		
-		var connectionType=checkConnection();
+		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
@@ -2502,7 +2500,7 @@ function getGrnCompanyRoles(){
 	$userRolesUlObj.find('li').remove();
 	$userRolesUlObj.empty();
 	
-	var connectionType=checkConnection();
+	connectionType=checkConnection();
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		hideModal();
 		// 
@@ -2792,8 +2790,7 @@ function logtimeTimer() {
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
 	
-	changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
-	
+	//changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	//alert(window.localStorage.getItem("trackerValueSave"));
 	$.mobile.changePage('#add-log-time','slide');	
 }
@@ -3110,14 +3107,25 @@ function insertTimeCategory(tx) {
 function timeCatSelectRefresh(){
 	var el = $('#timeCat');
 		el.find('option').remove().end();
-	     jQuery.each(time_cats_arr_curr_role, function(index,value) {
+		var firstSelectValue;
+	    jQuery.each(time_cats_arr_curr_role, function(index,value) {
 	    	var jsonObj=value;
 	    	var id=jsonObj["id"];
 	    	var title=jsonObj["title"];
 	    	el.append('<option value="'+id+'">'+title+'</option>').val(id);
+	    	
+	    	if(index==0){
+	    		firstSelectValue=id;
+	    	}
 		});
+	  el.val(currentValue).attr('selected', true).siblings('option').removeAttr('selected');   
 	  el.selectmenu();
 	  el.selectmenu("refresh", true);
+	  
+	  if(time_cats_arr_curr_role.length>0){
+		  el.val(firstSelectValue).attr('selected', true).siblings('option').removeAttr('selected');   
+		  el.selectmenu("refresh", true);
+	  }
 }
 
 function insertSalesOrderJson(tx) {
