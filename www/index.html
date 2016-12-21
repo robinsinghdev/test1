@@ -30,7 +30,7 @@
                 <div data-role="content">
 					<div  class="login-box">
 						<div id="logoContainer" class="centerText">
-								<img src="img/kgr_logo_white.png" id="logo"  />
+								<img src="img/bpmetrics_v2_logo.png" id="logo"  />
 						</div>
 						<form  id="loginForm" action="">
 							<label for="username">Username</label>
@@ -61,16 +61,10 @@
                 <div data-role="content" >
                 	<div data-role="panel" id="overlayPanel" data-display="overlay">
 					<h4>
-						Select Role <img src="img/wifi-icon-24px.png" class="wifi-icon" />
+						Select Role
 					</h4>
 						<ul data-role="listview" id="userRolesUl">
-						  	<li id="5"  data-roleid="5" data-rolename="Templating" onclick="changeLoginRole(this); return false;" ><a href="#">Templating</a></li>
-						  	<!-- 
-						  	<li id="6" onclick="changeLoginRole(6,'Programming '); return false;"><a href="#">Programming</a></li>
-						  	<li id="7" onclick="changeLoginRole(7,'Production'); return false;"><a href="#">Production</a></li>
-						  	<li id="9" onclick="changeLoginRole(9,'Quality Control'); return false;"><a href="#">Quality Control</a></li>
-						  	<li id="10" onclick="changeLoginRole(10,'Installing'); return false;"><a href="#">Installing</a></li>
-						  	 -->
+						  	<!-- <li id=""  data-roleid="0" data-rolename="NONE" onclick="changeLoginRole(this); return false;" ><a href="#">NONE</a></li> -->
 						 </ul>
 					 </div> 
 					 
@@ -329,11 +323,6 @@
 		                    </div>
 		                    
 		                    <div class="ui-field-contain">
-							    <label for="Comment">Comment </label>
-							    <textarea cols="" rows="4" name="logComment" id="logComment" style="width: 65% !important;"></textarea>
-		                    </div>     
-		                    
-		                    <div class="ui-field-contain">
 		                    	<label for="Crew Size">Crew Size </label>
 		                    	<select onchange="getDataForTotalTimeCalc();" name="crewSize" id="crewSize" data-mini="true" >                    
 		                    		<option value="1">1</option>
@@ -353,17 +342,38 @@
 		                            <option value="15">15</option>
 		                            <option value="16">16</option>
 		                        </select>
-		                    </div> 
+		                    </div>
+		                    
+						    <label>
+						        <input id="isRevisionCheckbox" name="isRevisionCheckbox" type="checkbox">Revision?
+						    </label>
 		                    
 		                    <div class="ui-field-contain">
 		                    	<p><span >Total Time </span><span id="totalCrewTime">00:00</span></p>
 		                    </div>
 		                    
-		                    <div class="ui-grid-a">
-						      <div class="ui-block-a" ><input type="button" id="logTimeSubmitBtn" value="Log Time" data-flag="add" onclick="callAddUpadteLogTime(this,'logTime');" /></div>
-						      <div class="ui-block-b" ><input type="button" id="logTimeRevisionSubmitBtn" value="Revision Log Time" data-flag="add" onclick="callAddUpadteLogTime(this,'logTimeRevision');" /></div>
-						    </div>
-						</form>	    
+		                    <div class="ui-field-contain">
+							    <label for="Comment">Comment </label>
+							    <textarea cols="" rows="4" name="logComment" id="logComment" style="width: 65% !important;"></textarea>
+		                    </div>
+
+							<div class="ui-grid-a">
+								<div class="ui-block-a">
+									<input type="button" id="logTimeSubmitBtn" value="Log Time"
+										data-flag="add" onclick="callAddUpadteLogTime(this,'logTime');" />
+								</div>
+								<div class="ui-block-b">
+								
+								</div>
+								<!-- 
+								<div class="ui-block-b">
+									<input type="button" id="logTimeRevisionSubmitBtn"
+										value="Revision Log Time" data-flag="add"
+										onclick="callAddUpadteLogTime(this,'logTimeRevision');" />
+								</div>
+								 -->
+							</div>
+					</form>	    
                 	</div>
                 	
                 </div>	
