@@ -1192,7 +1192,7 @@ function getSalesOrders(){
 					   		jQuery.each(time_cats_arr_curr_role, function(index,value) {
 					        	var jsonObj=value;
 					        	var id=jsonObj["id"];
-					        	var timeCats=jsonObj["timeCats"];
+					        	var timeCats=jsonObj["id"];//;jsonObj["timeCats"]; //IMP
 					        	var title=jsonObj["title"];
 					        	var grn_roles_id=jsonObj["grn_roles_id"];
 					        	var revision=jsonObj["revision"];
@@ -1671,7 +1671,6 @@ function getLogTimeListOfOrder(data){
 				   			}
 				   			
 				   			var titleEleObj=timeCatTitleFormat(title);
-				   			
 					   		var logTimeDiv ='<div id="logTimeDiv" class="log-time-entry-div logTimeDiv1">'+
 										   		'<div class="date-time-details">Date:<span class="">'+date+'</span>'+
 												'<span class="pull-right">'+totalCrewTimeData+' hrs</span>'+
@@ -1867,6 +1866,7 @@ function editLogTime(dataObj){
 	$addUpdateLogTimeForm.find('#logMinutes').val(timeArr[1]);
 	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
 	$addUpdateLogTimeForm.find('#logComment').val('');
+	console.log("category-- " + category);
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
@@ -2795,6 +2795,7 @@ function logtimeTimer() {
 	
 	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
 	$addUpdateLogTimeForm.find('#logComment').val(comment);
+	console.log("category-- " + category);
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
