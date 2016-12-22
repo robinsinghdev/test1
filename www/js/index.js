@@ -677,6 +677,7 @@ function handleLogin() {
 						    showAppUpdateAvailableDialog();
 					    }
 					});
+					selectGrnComRoleFn();
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
@@ -770,9 +771,6 @@ function launchAppStoreSuccessCB(){
 
 // rolesArr=['5','7','9','10'];
 function checkingUserAssignedRoles(){
-	
-	alert("permissions============");
-	
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
@@ -792,7 +790,6 @@ function checkingUserAssignedRoles(){
 			var roleIdTemp= parseInt(value);
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
-				
 				//console.log("checkingUserAssignedRoles index--  " + index + ' --value-- ' + value);
 				
 				$userRolesUlObj.find("li#"+value+"").show();
@@ -802,7 +799,6 @@ function checkingUserAssignedRoles(){
 				}
 				
 				if(window.localStorage["permissions"]== value){
-					alert("permissions============");
 					console.log("permissions============");
 					$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
@@ -821,6 +817,13 @@ function checkingUserAssignedRoles(){
 	else{
 		logoutUnAuthorisedUser();
 	}
+}
+
+function selectGrnComRoleFn(){
+	var roleIdTemp= parseInt(window.localStorage["permissions"]);
+	$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
+	var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
+	$('#userRoleShow').html(currentUserRoleText);
 }
 
 var sp_salesOrderNumber_for_scroll;
