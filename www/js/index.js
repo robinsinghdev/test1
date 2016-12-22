@@ -2168,7 +2168,7 @@ function addLogTimeToApp(dataObj){
 	var appTimestamp=dateTimestamp();
 	db.transaction(function(tx) {
 		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
-		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData, appTimestamp,revision,title) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData, appTimestamp,revision,title) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'
 				,[dataObj.grn_salesorderTime_id,
 				  dataObj.date,
 				  dataObj.time,
@@ -2679,7 +2679,7 @@ function startTimer() {
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData,appTimestamp,revision,title) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData,appTimestamp,revision,title) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'
     				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTimeValue,0,appTimestamp,0,""]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
