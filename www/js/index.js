@@ -2627,12 +2627,19 @@ function getGrnCompRolesFromLocalDB(){
 }
 
 function successCBGetGrnCompRoles(){
+	var permissionsTemp=0;
+	if(window.localStorage["permissions"]== ''){
+		
+	}else{
+		permissionsTemp=window.localStorage["permissions"];
+	}
+	
 	jQuery.each(grnCompRolesArr, function(index,value) {
 		var jsonObj=value;
 		var id=jsonObj["id"];
 		var role=jsonObj["role"];
 		
-		if(index==0){
+		if(index==0 && permissionsTemp==0){
 			window.localStorage["permissions"]=''+id+'';
 		}
 		rolesArr.push(id.toString());//=['5','7','9','10'];
@@ -2641,6 +2648,8 @@ function successCBGetGrnCompRoles(){
 		var liEleObj='<li id="'+id+'" data-roleid="'+id+'" data-rolename="'+role+'" onclick="'+currOnClickFn+'" ><a href="#" class="ui-btn ui-btn-icon-right ui-icon-carat-r">'+role+'</a></li>';
 		$('ul#userRolesUl').append(liEleObj);
 	});
+	
+	window.localStorage["permissions"]=''+id+'';
 	
 	checkingUserAssignedRoles();
 }	
