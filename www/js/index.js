@@ -1347,7 +1347,7 @@ function timeCatTbodyObj(){// get time categories
 		                        	
 		                        	time_cats_arr.push(jsonObj);
 		                        	
-		                        	console.log(window.localStorage["permissions"] + '----' + grnRolesId);
+		                        	console.log(window.localStorage["permissions"] + '----' + jsonObj["grn_roles_id"]);
 		                   	    	if(window.localStorage["permissions"]==jsonObj["grn_roles_id"]){
 		                   	    		console.log("true condition--" + window.localStorage["permissions"] + '----' + jsonObj["grn_roles_id"]);
 		                   	    		time_cats_arr_curr_role.push(jsonObj);
