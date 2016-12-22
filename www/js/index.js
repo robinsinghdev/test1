@@ -1149,7 +1149,7 @@ function getSalesOrders(){
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				console.log();
 				showModal();
-				if(salesTableDivLength==0){
+				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
 					$('#salesOrderMainDiv').html('');
 					tbodyObjGlobal=timeCatTbodyObj();
 				}
@@ -1318,6 +1318,9 @@ function getSalesOrders(){
 
 function timeCatTbodyObj(){// get time categories
 	var populateFlag=false;
+	time_cats_arr=[];
+	time_cats_arr_curr_role=[];
+
 	if(time_cats_arr.length==0){
 		db.transaction
 		  (
@@ -1542,8 +1545,6 @@ function changeLoginRole(thiss){
 			showModal();
 			
 			window.localStorage["permissions"] = ''+roleId+'';
-			window.localStorage["solocal"] = 0;
-			window.localStorage["tclocal"] = 0;
 			
 			$('ul#userRolesUl li').removeClass('active');
 			$('ul#userRolesUl li#'+roleId+'').addClass('active');
@@ -1552,6 +1553,8 @@ function changeLoginRole(thiss){
 			
 			$('#salesOrderMainDiv').html('');
 			//time_cats_arr=[];
+			//window.localStorage["solocal"] = 0;
+			//window.localStorage["tclocal"] = 0;
 			time_cats_arr_curr_role=[];
 			getCategoriesForTimeTracking();
 			hideModal();
@@ -1643,7 +1646,6 @@ function getLogTimeListOfOrder(data){
 			   		}
 			   		else{
 				   		jQuery.each(records_arr, function(index,value) {
-				   			console.log( JSON.stringify(value) );
 				   			var id =value.id;
 				   			var grn_users_id=value.grn_users_id;
 				   			var grn_salesorderTime_id=value.grn_salesorderTime_id;
@@ -3134,14 +3136,6 @@ function timeCatSelectRefresh(){
 	}	
 	el.selectmenu();
 	el.selectmenu("refresh", true);
-	
-	/*
-	if(time_cats_arr_curr_role.length>0){
-		var selectEle = $('#timeCat');	
-		selectEle.val(currentValue).attr('selected', true).siblings('option').removeAttr('selected');   
-		selectEle.selectmenu("refresh", true);
-	}
-	*/
 }
 
 function insertSalesOrderJson(tx) {
