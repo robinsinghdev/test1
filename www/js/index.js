@@ -1577,6 +1577,13 @@ function changeLoginRole(thiss){
 			if(time_cats_arr_curr_role.length==0){
 				window.localStorage["timecatfetchflag"] = 1;
 				timeCatTbodyObj();
+				
+				$('ul#userRolesUl li').removeClass('active');
+				$('ul#userRolesUl li#'+roleId+'').addClass('active');
+				var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
+				$('#userRoleShow').html(currentUserRoleText);
+				
+				
 			}
 		}
 	}else{
@@ -1587,11 +1594,6 @@ function changeLoginRole(thiss){
 
 function changeRoleOffline() {
 	if(window.localStorage["timecatfetchflag"] == 0){
-		$('ul#userRolesUl li').removeClass('active');
-		$('ul#userRolesUl li#'+roleId+'').addClass('active');
-		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
-		$('#userRoleShow').html(currentUserRoleText);
-		
 		$('#salesOrderMainDiv').html('');
 		getCategoriesForTimeTracking();
 		hideModal();
