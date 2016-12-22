@@ -1327,7 +1327,7 @@ function timeCatTbodyObj(){// get time categories
 		db.transaction
 		  (
 		       function (tx){
-		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,revision,status FROM TIMECATEGORY',[],function(tx,results){
+		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,grnRole,revision,status,grn_companies_id FROM TIMECATEGORY',[],function(tx,results){
 		                    var len = results.rows.length;
 		                    if(len>0){
 		                        for (var i = 0; i < len; i++) {
@@ -3117,6 +3117,7 @@ function insertTimeCategory(tx) {
 	time_cats_arr_curr_role=[];
 	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
    	     jQuery.each(time_cats_arr, function(index,value) {
+   	    	 console.log(JSON.stringify(value));
    	    	var jsonObj=value;
    	    	var pid=jsonObj["id"];
    	    	var timeCats='';//jsonObj["timeCats"];
