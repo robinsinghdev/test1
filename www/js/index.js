@@ -139,7 +139,7 @@ function callSyncWithServer() {
 	
 	db.transaction(function (tx){
 	    	   // soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime text,secondsData integer
-	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,appTimestamp,revision FROM TIMETRACKER',[],function(tx,results){
+	            tx.executeSql('SELECT id,soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,appTimestamp,revision,title FROM TIMETRACKER',[],function(tx,results){
 	                    var len = results.rows.length;
 	                    if(len == 0){
 	                    	window.localStorage["sync_flag"] = 0;
@@ -170,6 +170,7 @@ function callSyncWithServer() {
 	                        		dataObj.log_timestamp=results.rows.item(i)['appTimestamp'];
 	                        		dataObj.sender ="aapp";
 	                        		dataObj.revision=results.rows.item(i)['revision'];
+	                        		dataObj.title=results.rows.item(i)['title'];
 	                        		
 	                        		var response = saveLogTime(dataObj);
 	                        		if(response){
@@ -284,7 +285,7 @@ function showSyncDataDialog() {
         ("Confirm ready to sync time entries to office?"), // message
         syncDataDialogAction, // callback
         appName, // title
-        'Yes,Cancel' // buttonName
+        ['Yes','Cancel'] // buttonName
     );
 }
 
@@ -435,7 +436,7 @@ function showExitDialog() {
             ("Do you want to Exit?"), // message
             alertexit, // callback
             appName, // title
-            'YES,NO' // buttonName
+            ['YES','NO'] // buttonName
     );
 }
 
@@ -484,7 +485,7 @@ function showLogoutBlockedDialog() {
         ("Please first Sync Data"), // message
         logoutBlockedDialogAction, // callback
         'Logout Blocked', // title
-        'Ok,Cancel' // buttonName
+        ['Ok','Cancel'] // buttonName
     );
 }
 
@@ -505,7 +506,7 @@ function showLogoutDialog() {
             ("Are you sure to Logout?"), // message
             alertlogout, // callback
             appName, // title
-            'YES,NO' // buttonName
+            ['YES','NO'] // buttonName
     );
 }
 
@@ -745,7 +746,7 @@ function showAppUpdateAvailableDialog() {
         ("App Version Outdated, please update to latest version."), // message
         showAppUpdateAvailableDialogAction, // callback
         'Update', // title
-        'Update,Later' // buttonName
+        ['Update','Later'] // buttonName
     );
 }
 
@@ -784,13 +785,13 @@ function checkingUserAssignedRoles(){
 		$('ul#userRolesUl li').removeClass('active').show();
 		
 		$.each(rolesArr, function(index,value) {
-			console.log("checkingUserAssignedRoles index-- " + index);
+			//console.log("checkingUserAssignedRoles index-- " + index);
 			
 			var roleIdTemp= parseInt(value);
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
 				
-				console.log("checkingUserAssignedRoles index--  " + index + ' --value-- ' + value);
+				//console.log("checkingUserAssignedRoles index--  " + index + ' --value-- ' + value);
 				
 				$userRolesUlObj.find("li#"+value+"").show();
 				if(window.localStorage["permissions"]== ''){
@@ -1175,7 +1176,6 @@ function getSalesOrders(){
 			}
 			
 			if(window.localStorage["solocal"] == 0){
-				console.log('getSalesOrders');
 				showModal();
 				$.ajax({
 					type : 'POST',
@@ -1570,7 +1570,7 @@ function showChangeRoleBlockedDialog() {
         ("Please first Sync Data"), // message
         changeRoleBlockedDialogAction, // callback
         'Switch Role Blocked', // title
-        'Ok,Cancel' // buttonName
+        ['Ok','Cancel'] // buttonName
     );
 }
 
@@ -1731,7 +1731,7 @@ function getLogTimeListLocal(oid){
 	       function (tx){
 	            tx.executeSql
 	            (
-	                'SELECT id,soTimeId,date,time,crewSize,timecat,comment,revision FROM TIMETRACKER WHERE soTimeId=?',[oid],function(tx,results){
+	                'SELECT id,soTimeId,date,time,crewSize,timecat,comment,revision,title FROM TIMETRACKER WHERE soTimeId=?',[oid],function(tx,results){
 	                    var len = results.rows.length;
 	                    $('#logTimeHistoryLocalDiv').html('');
 	                    if(len>0){
@@ -1746,7 +1746,7 @@ function getLogTimeListLocal(oid){
 					   			var crew_size = results.rows.item(i)['crewSize'];
 					   			var grn_timeCat = results.rows.item(i)['timecat'];
 					   			var commentsData = results.rows.item(i)['comment'];				   			
-					   			var title = results.rows.item(i)['timecat'];
+					   			var title = results.rows.item(i)['title'];
 					   			var grn_timeCat_img = results.rows.item(i)['timecat'];
 					   			var grn_timeCat_trimmed=results.rows.item(i)['timecat'];
 					   			var revision=results.rows.item(i)['revision'];
@@ -1882,7 +1882,7 @@ function showDeleteLogTimeDialog(dataObj) {
         ("Are you sure to delete this log time ?"), // message
         deleteLogTimeAction, // callback
         'Log Time ', // title
-        'Cancel,Delete' // buttonName
+        ['Cancel','Delete'] // buttonName
     );
 }
 
@@ -1934,6 +1934,8 @@ function callAddUpadteLogTime(obj,logTimeType){
 	if(grnUserObj != '') {
 		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 		var grnTimeCat=$addUpdateLogTimeForm.find('#timeCat option:selected').val();
+		var grnTimeCatTitle=$addUpdateLogTimeForm.find('#timeCat option:selected').text();
+		console.log("grnTimeCatTitle-- " + grnTimeCatTitle);
 		if(typeof grnTimeCat === 'undefined'){
 			alert('Please select the process.');
 			return false;
@@ -1956,9 +1958,9 @@ function callAddUpadteLogTime(obj,logTimeType){
 		var revision=0;
 		if($("#isRevisionCheckbox").is(':checked')){
 			revision=1;
-			
 		}
 		dataObj.revision= revision;
+		dataObj.title= grnTimeCatTitle;
 		
 		/*
 		if(logTimeType=='logTime'){
@@ -2028,7 +2030,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 			
 			var currtimetrackerid = window.localStorage.getItem("trackerkey");
 			// TODO
-			var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' ,appTimestamp='"+appTimestamp+"' ,revision='"+revision+"' WHERE id=' "+currtimetrackerid+" '";
+			var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' ,appTimestamp='"+appTimestamp+"' ,revision='"+revision+"' ,title='"+grnTimeCatTitle+"' WHERE id=' "+currtimetrackerid+" '";
 			
 			var result=addUpadteLogTimeTT(dataObj,updateQuery);
 			
@@ -2168,7 +2170,7 @@ function addLogTimeToApp(dataObj){
 	var appTimestamp=dateTimestamp();
 	db.transaction(function(tx) {
 		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
-		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData, appTimestamp,revision) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData, appTimestamp,revision,title) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
 				,[dataObj.grn_salesorderTime_id,
 				  dataObj.date,
 				  dataObj.time,
@@ -2180,7 +2182,8 @@ function addLogTimeToApp(dataObj){
 				  "0",
 				  secondsVal,
 				  appTimestamp,
-				  dataObj.revision]
+				  dataObj.revision,
+				  dataObj.title]
 			,function(tx, results){
 					//alert('Returned ID: ' + results.insertId);
 					navigator.notification.alert(
@@ -2202,7 +2205,7 @@ function closeSalesOrderDialog(dataObj) {
             ("Confirm you want to close this Sales Order?"), // message
             closeSalesOrderAction, // callback
             'Sales Order ', // title
-            'Yes,No' // buttonName
+            ['Yes','No'] // buttonName
     );
 }
 
@@ -2594,7 +2597,6 @@ function successCBGetGrnCompRoles(){
 		if(index==0){
 			window.localStorage["permissions"]=''+id+'';
 		}
-		console.log("window.localStorage permissions ----- " + window.localStorage["permissions"]);
 		rolesArr.push(id.toString());//=['5','7','9','10'];
 
 		var currOnClickFn="changeLoginRole(this); return false;";
@@ -2678,8 +2680,8 @@ function startTimer() {
     	db.transaction(function(tx) {
     		//	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text )');
     		//soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text
-    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData,appTimestamp,revision) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
-    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTimeValue,0,appTimestamp,0]
+    		tx.executeSql('INSERT INTO TIMETRACKER(soTimeId,date,time,crewSize,grnStaffTimeId,timecat,comment,localStatus,startTime,secondsData,appTimestamp,revision,title) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+    				,[0,getTodayDate().toString(),"00:00",0,0,"prod_","comments test","start",currentDateTimeValue,0,appTimestamp,0,""]
     			,function(tx, results){
     					//alert('Returned ID: ' + results.insertId);
     					currTimeTrackerId=results.insertId;
@@ -2861,7 +2863,7 @@ function showDeleteTrackerDialog() {
         ("Are you sure to delete this time ?"), // message
         deleteTrackerAction, // callback
         'Time Tracker ', // title
-        'Cancel,Delete' // buttonName
+        ['Cancel','Delete'] // buttonName
     );
 }
 
@@ -2882,7 +2884,7 @@ function showLogPauseOptionsDialog() {
             ("What to do with the running timer ?"), // message
             logPauseAction, // callback
             'Time Tracker ', // title
-            'Cancel,Log Time,Pause' // buttonName
+            ['Cancel','Log Time','Pause'] // buttonName
     );
 }
 
@@ -2904,7 +2906,7 @@ function showSaveRunningTimerDialog() {
             ("What to do with the running timer ?"), // message
             saveRunningTimerAction, // callback
             'Time Tracker ', // title
-            'Cancel,Edit/Log Time' // buttonName
+            ['Cancel','Edit/Log Time'] // buttonName
     );
 }
 
