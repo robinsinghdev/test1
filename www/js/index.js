@@ -102,6 +102,8 @@ var app = {
 		db.transaction(initializeDB, errorCB, successCB);
         // Check if user is also authorized
         checkPreAuth();
+        
+        window.localStorage["timecatfetchflag"] = 0;
     },
 	// Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -1151,7 +1153,8 @@ function getSalesOrders(){
 				showModal();
 				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
 					$('#salesOrderMainDiv').html('');
-					tbodyObjGlobal=timeCatTbodyObj();
+					window.localStorage["timecatfetchflag"] = 0;
+					timeCatTbodyObj();
 				}
 		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
@@ -1163,7 +1166,6 @@ function getSalesOrders(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
 			if(window.localStorage["solocal"] == 1){
-				
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				showModal();
 				
@@ -1363,43 +1365,47 @@ function timeCatTbodyObj(){// get time categories
 
 //Transaction success callback
 function successCBTimeCatTbodyObj() {
-	var tbodyObj='<tbody>';
-	
-	jQuery.each(time_cats_arr_curr_role, function(index,value) {
-	var jsonObj=value;
-	var id=jsonObj["id"];
-	var timeCats=jsonObj["timeCats"];
-	var title=jsonObj["title"];
-	var grn_roles_id=jsonObj["grn_roles_id"];
-	var revision=jsonObj["revision"];
-	var status=jsonObj["status"];
-	var titleEleObj=timeCatTitleFormat(title);
-	
-	tbodyObj+='<tr>'+
-				/* // Remove this
-                 '<td class="order-p-icon">'+
-                     '<span class="process-icon cm-10">'+
-                         '<img class="icon-img" src="#" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-                     '</span>'+
-                 '</td>'+
-                 */
-                 '<td class="timecat-total-time-td">'+
-                     //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
-	                 '<span id="orderId_spOrderIdReplace" class="timer timecat-title-format" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
-		                 //+'<span class="time-cat-title">'+title+'</span>'
-		                 + titleEleObj
-	                 +'</span>'+
-                 '</td>'+
-                 '<td class="order-t-icon">'+
-                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-					 '</a>'+
-                 '</td>'+
-             '</tr>';
-	});
-	
-	tbodyObj+='</tbody>';
-	tbodyObjGlobal=tbodyObj;
-	populateSalesOrders(tbodyObjGlobal);
+	if(window.localStorage["timecatfetchflag"]==1){
+		window.localStorage["timecatfetchflag"]=0;
+	}else{
+		var tbodyObj='<tbody>';
+		
+		jQuery.each(time_cats_arr_curr_role, function(index,value) {
+		var jsonObj=value;
+		var id=jsonObj["id"];
+		var timeCats=jsonObj["timeCats"];
+		var title=jsonObj["title"];
+		var grn_roles_id=jsonObj["grn_roles_id"];
+		var revision=jsonObj["revision"];
+		var status=jsonObj["status"];
+		var titleEleObj=timeCatTitleFormat(title);
+		
+		tbodyObj+='<tr>'+
+					/* // Remove this
+	                 '<td class="order-p-icon">'+
+	                     '<span class="process-icon cm-10">'+
+	                         '<img class="icon-img" src="#" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+	                     '</span>'+
+	                 '</td>'+
+	                 */
+	                 '<td class="timecat-total-time-td">'+
+	                     //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+		                 '<span id="orderId_spOrderIdReplace" class="timer timecat-title-format" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
+			                 //+'<span class="time-cat-title">'+title+'</span>'
+			                 + titleEleObj
+		                 +'</span>'+
+	                 '</td>'+
+	                 '<td class="order-t-icon">'+
+	                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+						 '</a>'+
+	                 '</td>'+
+	             '</tr>';
+		});
+		
+		tbodyObj+='</tbody>';
+		tbodyObjGlobal=tbodyObj;
+		populateSalesOrders(tbodyObjGlobal);
+	}	
 }
 
 //Transaction error callback
@@ -1543,8 +1549,15 @@ function changeLoginRole(thiss){
 		    }
 			*/
 			showModal();
-			
 			window.localStorage["permissions"] = ''+roleId+'';
+			//time_cats_arr=[];
+			//window.localStorage["solocal"] = 0;
+			//window.localStorage["tclocal"] = 0;
+			time_cats_arr_curr_role=[];
+			if(time_cats_arr_curr_role.length==0){
+				window.localStorage["timecatfetchflag"] = 1;
+				timeCatTbodyObj();
+			}
 			
 			$('ul#userRolesUl li').removeClass('active');
 			$('ul#userRolesUl li#'+roleId+'').addClass('active');
@@ -1552,10 +1565,6 @@ function changeLoginRole(thiss){
 			$('#userRoleShow').html(currentUserRoleText);
 			
 			$('#salesOrderMainDiv').html('');
-			//time_cats_arr=[];
-			//window.localStorage["solocal"] = 0;
-			//window.localStorage["tclocal"] = 0;
-			time_cats_arr_curr_role=[];
 			getCategoriesForTimeTracking();
 			hideModal();
 			navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
