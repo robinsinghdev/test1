@@ -1341,9 +1341,9 @@ function timeCatTbodyObj(){// get time categories
 		                        	jsonObj["status"]=results.rows.item(i)['status'];
 		                        	
 		                        	jsonObj["grn_companies_id"]=results.rows.item(i)['grn_companies_id'];
-		                        	jsonObj["type"]=results.rows.item(i)['type'];
-		                        	jsonObj["cost"]=results.rows.item(i)['cost'];
-		                        	jsonObj["comment"]=results.rows.item(i)['comment'];
+		                        	jsonObj["type"]='';//results.rows.item(i)['type'];
+		                        	jsonObj["cost"]='';//results.rows.item(i)['cost'];
+		                        	jsonObj["comment"]='';//results.rows.item(i)['comment'];
 		                        	
 		                        	time_cats_arr.push(jsonObj);
 		                        	
@@ -1568,7 +1568,7 @@ function changeLoginRole(thiss){
 			navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
 		}
 		else{
-			showModal();
+			//showModal();
 			
 			//window.localStorage["solocal"] = 0;
 			//window.localStorage["tclocal"] = 0;
