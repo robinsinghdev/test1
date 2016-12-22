@@ -451,5 +451,5 @@ ul#userRolesUl li.active a{
 }
 
 .rev-checkbox-div .ui-checkbox{
-	width: 40%;
+/* 	min-width: 60%; */
 }
