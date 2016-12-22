@@ -606,8 +606,6 @@ function logoutUnAuthorisedUser(){
 }
 
 function handleLogin() {
-	//checkConnection();
-	//console.log('handle login called');
 	var form = $("#loginForm");
 	//disable the button so we can't resubmit while we wait
 	$("#submitButton",form).attr("disabled","disabled");
@@ -2515,8 +2513,9 @@ function getGrnCompanyRoles(){
 	connectionType=checkConnection();
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		hideModal();
-		// 
-		successCBGetGrnCompRoles();
+		// Get from local DB
+		getGrnCompRolesFromLocalDB();
+		//successCBGetGrnCompRoles();
 	}
 	else if(connectionType=="WiFi connection"  || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		db.transaction(function(tx) {
@@ -2567,8 +2566,8 @@ function deleteGrnCompRolesJson() {
 	});
 }
 
-function getGrnCompRoles(tbodyObj){
-	if(salse_orders_arr.length==0){
+function getGrnCompRolesFromLocalDB(){
+	if(grnCompRolesArr.length==0){
 		db.transaction(function (tx){
 		            tx.executeSql('SELECT jsonArr,createTime FROM GRNCOMPANYROLES',[],function(tx,results){
 		                    var len = results.rows.length;
