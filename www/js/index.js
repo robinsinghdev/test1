@@ -1327,7 +1327,7 @@ function timeCatTbodyObj(){// get time categories
 		db.transaction
 		  (
 		       function (tx){
-		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,grnRole,revision,status,grn_companies_id FROM TIMECATEGORY',[],function(tx,results){
+		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,grnrole,revision,status,grn_companies_id FROM TIMECATEGORY',[],function(tx,results){
 		                    var len = results.rows.length;
 		                    if(len>0){
 		                        for (var i = 0; i < len; i++) {
@@ -1336,7 +1336,7 @@ function timeCatTbodyObj(){// get time categories
 		                        	jsonObj["timeCats"]=results.rows.item(i)['timeCats'];
 		                        	jsonObj["title"]=results.rows.item(i)['title'];
 		                        	jsonObj["grn_roles_id"]=results.rows.item(i)['grnrolesid'];
-		                        	jsonObj["grnRole"]=results.rows.item(i)['grnRole'];
+		                        	jsonObj["role"]=results.rows.item(i)['grnrole'];
 		                        	jsonObj["revision"]=results.rows.item(i)['revision'];
 		                        	jsonObj["status"]=results.rows.item(i)['status'];
 		                        	
