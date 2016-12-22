@@ -3117,7 +3117,7 @@ function insertTimeCategory(tx) {
 	time_cats_arr_curr_role=[];
 	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
    	     jQuery.each(time_cats_arr, function(index,value) {
-   	    	 console.log(JSON.stringify(value));
+   	    	 console.log(JSON.stringify(value) + "--");
    	    	var jsonObj=value;
    	    	var pid=jsonObj["id"];
    	    	var timeCats='';//jsonObj["timeCats"];
