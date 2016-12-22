@@ -1515,9 +1515,12 @@ function changeLoginRole(thiss){
 	var roleId=$(thiss).data("roleid");
 	var roleName=$(thiss).data("rolename");
 	if(roleId!=''){
+		/*
+		// Removed this condition for v2
 		checkDataForNotification();
 		connectionType=checkConnection();
 		if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		*/	
 			if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
 				
 			}
@@ -1552,10 +1555,12 @@ function changeLoginRole(thiss){
 			getCategoriesForTimeTracking();
 			hideModal();
 			navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
+		/*
 		}
 		else{
 			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 		}
+		*/
 	}else{
 		navigator.notification.alert("Role Not Defined",alertConfirm,appName,notiAlertOkBtnText);
 	}
@@ -3027,7 +3032,7 @@ function initializeDB(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS SALESORDER_JSON (id integer primary key autoincrement,jsonArr text,createTime text )');
 	// tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,revision integer,status integer)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMECATEGORY (id integer primary key autoincrement,pid integer,timeCats text,title text,grnrolesid integer,grnrole text,revision integer,status integer, grn_companies_id integer, type text, cost text, comment text)');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer, appTimestamp text, revision integer)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer, appTimestamp text, revision integer, title text)');
 	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS GRNCOMPANYROLES (id integer primary key autoincrement,jsonArr text,createTime text)');
 }
