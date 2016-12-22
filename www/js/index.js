@@ -1026,6 +1026,7 @@ function getCategoriesForTimeTracking(){
 				   		});
 				   		var responseJson = $.parseJSON(data);
 				   		time_cats_arr=responseJson.time_cats;
+				   		time_cats_arr_curr_role=[];
 				   		window.localStorage["tclocal"] = 1;
 				   		
 				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
@@ -1143,9 +1144,10 @@ function getSalesOrders(){
 	if(grnUserObj != '') {
 		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			console.log("solocal-- " + window.localStorage["solocal"]);
 			if(window.localStorage["solocal"] == 1){
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
-				
+				console.log();
 				showModal();
 				if(salesTableDivLength==0){
 					$('#salesOrderMainDiv').html('');
@@ -1314,10 +1316,9 @@ function getSalesOrders(){
 	}
 }
 
-function timeCatTbodyObj(){
+function timeCatTbodyObj(){// get time categories
 	var populateFlag=false;
 	if(time_cats_arr.length==0){
-		time_cats_arr_curr_role=[];
 		db.transaction
 		  (
 		       function (tx){
@@ -1550,7 +1551,7 @@ function changeLoginRole(thiss){
 			$('#userRoleShow').html(currentUserRoleText);
 			
 			$('#salesOrderMainDiv').html('');
-			time_cats_arr=[];
+			//time_cats_arr=[];
 			time_cats_arr_curr_role=[];
 			getCategoriesForTimeTracking();
 			hideModal();
@@ -3084,8 +3085,6 @@ function insertTimeCategory(tx) {
 	
 	time_cats_arr_curr_role=[];
 	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
-		//var el = $('#timeCat');
-   		//el.find('option').remove().end();
    	     jQuery.each(time_cats_arr, function(index,value) {
    	    	var jsonObj=value;
    	    	var pid=jsonObj["id"];
@@ -3105,15 +3104,11 @@ function insertTimeCategory(tx) {
    	    		time_cats_arr_curr_role.push(jsonObj);
    	    	}
    	    	
-	   		//el.append('<option value="'+pid+'">'+title+'</option>').val(timeCats);
-   	    	
    	    	tx.executeSql('INSERT INTO TIMECATEGORY(pid, timeCats, title, grnrolesid, grnrole, revision, status, grn_companies_id, type, cost, comment) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
    	    			[pid,timeCats,title,grnRolesId,grnRole,revision,status,grn_companies_id,tcType,cost,comment], function(tx, res) {
 	   	         //alert("insertId: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
   	    	});
    		});
-   	     ///el.selectmenu();
-   	     ///el.selectmenu("refresh", true);
    	     
    	     timeCatSelectRefresh();
    	     window.localStorage["tclocal"]=1;
