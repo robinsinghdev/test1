@@ -771,6 +771,8 @@ function launchAppStoreSuccessCB(){
 // rolesArr=['5','7','9','10'];
 function checkingUserAssignedRoles(){
 	
+	alert("permissions============");
+	
 	var grn_roles_id_string=window.localStorage["grn_roles_id"];
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
@@ -800,6 +802,7 @@ function checkingUserAssignedRoles(){
 				}
 				
 				if(window.localStorage["permissions"]== value){
+					alert("permissions============");
 					console.log("permissions============");
 					$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
