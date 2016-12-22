@@ -1367,6 +1367,7 @@ function timeCatTbodyObj(){// get time categories
 function successCBTimeCatTbodyObj() {
 	if(window.localStorage["timecatfetchflag"]==1){
 		window.localStorage["timecatfetchflag"]=0;
+		changeRoleOffline();
 	}else{
 		var tbodyObj='<tbody>';
 		
@@ -1525,19 +1526,20 @@ function changeLoginRole(thiss){
 	var roleId=$(thiss).data("roleid");
 	var roleName=$(thiss).data("rolename");
 	if(roleId!=''){
-		/*
+		// Save Time Tracker Data
+		if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
+			
+		}
+		else{
+			showSaveRunningTimerDialog();
+			return false;
+		}
+		window.localStorage["permissions"] = ''+roleId+'';
+		
 		// Removed this condition for v2
 		checkDataForNotification();
 		connectionType=checkConnection();
 		if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
-		*/	
-			if (window.localStorage.getItem("trackerkey") === null || window.localStorage.getItem("trackerkey") === '') {
-				
-			}
-			else{
-				showSaveRunningTimerDialog();
-				return false;
-			}
 			/*
 			// Removing this condition for v2
 			if (window.localStorage.getItem("sync_flag") == 1 ) {
@@ -1549,15 +1551,9 @@ function changeLoginRole(thiss){
 		    }
 			*/
 			showModal();
-			window.localStorage["permissions"] = ''+roleId+'';
-			//time_cats_arr=[];
-			//window.localStorage["solocal"] = 0;
-			//window.localStorage["tclocal"] = 0;
-			time_cats_arr_curr_role=[];
-			if(time_cats_arr_curr_role.length==0){
-				window.localStorage["timecatfetchflag"] = 1;
-				timeCatTbodyObj();
-			}
+			
+			window.localStorage["solocal"] = 0;
+			window.localStorage["tclocal"] = 0;
 			
 			$('ul#userRolesUl li').removeClass('active');
 			$('ul#userRolesUl li#'+roleId+'').addClass('active');
@@ -1565,20 +1561,44 @@ function changeLoginRole(thiss){
 			$('#userRoleShow').html(currentUserRoleText);
 			
 			$('#salesOrderMainDiv').html('');
+			time_cats_arr=[];
+			time_cats_arr_curr_role=[];
 			getCategoriesForTimeTracking();
 			hideModal();
 			navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
-		/*
 		}
 		else{
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+			showModal();
+			
+			//window.localStorage["solocal"] = 0;
+			//window.localStorage["tclocal"] = 0;
+			//time_cats_arr=[];
+			time_cats_arr_curr_role=[];
+			if(time_cats_arr_curr_role.length==0){
+				window.localStorage["timecatfetchflag"] = 1;
+				timeCatTbodyObj();
+			}
 		}
-		*/
 	}else{
 		navigator.notification.alert("Role Not Defined",alertConfirm,appName,notiAlertOkBtnText);
 	}
 	
 }
+
+function changeRoleOffline() {
+	if(window.localStorage["timecatfetchflag"] == 0){
+		$('ul#userRolesUl li').removeClass('active');
+		$('ul#userRolesUl li#'+roleId+'').addClass('active');
+		var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
+		$('#userRoleShow').html(currentUserRoleText);
+		
+		$('#salesOrderMainDiv').html('');
+		getCategoriesForTimeTracking();
+		hideModal();
+		navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
+	}
+}
+
 
 //callSyncData();
 function showChangeRoleBlockedDialog() {
