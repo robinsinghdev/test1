@@ -800,6 +800,7 @@ function checkingUserAssignedRoles(){
 				}
 				
 				if(window.localStorage["permissions"]== value){
+					console.log("permissions============");
 					$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
 					$('#userRoleShow').html(currentUserRoleText);
@@ -1374,7 +1375,7 @@ function successCBTimeCatTbodyObj() {
 		jQuery.each(time_cats_arr_curr_role, function(index,value) {
 		var jsonObj=value;
 		var id=jsonObj["id"];
-		var timeCats=jsonObj["timeCats"];
+		var timeCats=jsonObj["id"];//jsonObj["timeCats"];
 		var title=jsonObj["title"];
 		var grn_roles_id=jsonObj["grn_roles_id"];
 		var revision=jsonObj["revision"];
@@ -1582,8 +1583,6 @@ function changeLoginRole(thiss){
 				$('ul#userRolesUl li#'+roleId+'').addClass('active');
 				var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
 				$('#userRoleShow').html(currentUserRoleText);
-				
-				
 			}
 		}
 	}else{
@@ -2554,7 +2553,6 @@ function getGrnCompanyRoles(){
 		hideModal();
 		// Get from local DB
 		getGrnCompRolesFromLocalDB();
-		//successCBGetGrnCompRoles();
 	}
 	else if(connectionType=="WiFi connection"  || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		db.transaction(function(tx) {
