@@ -454,7 +454,12 @@ ul#userRolesUl li.active a{
 	width:100%;
 }
 .rev-checkbox-div, .total-time-div{
- 	width: 50%;
+ 	width: 48%;
+ 	float:left;
+}
+
+.total-time-div{
+ 	padding-left: 5px;
 }
 
 .ui-block-a.log-data-show p {
@@ -464,4 +469,6 @@ ul#userRolesUl li.active a{
 }
 .current-role-info{
 	font-weight: 600;
+	margin: 0;
+	padding: 0;
 }
