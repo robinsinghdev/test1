@@ -810,7 +810,7 @@ function checkingUserAssignedRoles(){
 				}
 			}
 			else {
-				console.log("for not exist index-- " + index);
+				console.log("for not exist index-- " + index + ' --value-- ' + value);
 				$userRolesUlObj.find("li#"+roleIdTemp+"").hide();
 			}
 		});
@@ -2686,10 +2686,9 @@ function successCBGetGrnCompRoles(){
 		var liEleObj='<li id="'+id+'" data-roleid="'+id+'" data-rolename="'+role+'" onclick="'+currOnClickFn+'" ><a href="#" class="ui-btn ui-btn-icon-right ui-icon-carat-r">'+role+'</a></li>';
 		$('ul#userRolesUl').append(liEleObj);
 	});
-	
 	//window.localStorage["permissions"]=''+id+'';
 	
-	checkingUserAssignedRoles();
+	setTimeout(checkingUserAssignedRoles(), 1000);
 }	
 
 function errorCBGetGrnCompRoles(err){
