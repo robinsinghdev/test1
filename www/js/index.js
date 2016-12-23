@@ -548,7 +548,7 @@ function checkConnection() {
 
 // Check User Authorication
 function checkPreAuth() {
-	alert("hi");
+	//alert("hi");
 	var form = $("#loginForm");
 	if(window.localStorage["username"] != undefined && window.localStorage["password"] != undefined && window.localStorage.getItem("user_logged_in")==1) {
 		$("#username", form).val(window.localStorage["username"]);
