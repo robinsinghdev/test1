@@ -677,7 +677,7 @@ function handleLogin() {
 					var versionJson = responseJson.version;
 					cordova.getAppVersion.getVersionNumber(function (version) {
 						console.log("version-- " + version + " --- " + versionJson["App"]);	
-					    if(version !== versionJson["App"]){
+					    if(version.toString() != versionJson["App"].toString()){
 						    showAppUpdateAvailableDialog();
 					    }
 					});
