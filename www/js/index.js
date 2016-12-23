@@ -807,6 +807,7 @@ function checkingUserAssignedRoles(){
 					$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
 					$('#userRoleShow').html(currentUserRoleText);
+					$('.current-role-info').html(currentUserRoleText);
 				}
 			}
 			else {
@@ -2422,19 +2423,19 @@ function getDataForTotalTimeCalc(){
 
 function crewSizeChangedCall(crewSize){
 	if(crewSize>1){
-		$(".log-data-shows").find(".crew-size-data").show();
-		$(".log-data-shows").find(".crew-size-count").html(crewSize);
+		$(".log-data-show").find(".crew-size-data").show();
+		$(".log-data-show").find(".crew-size-count").html(crewSize);
 	}else{
-		$(".log-data-shows").find(".crew-size-data").hide();
+		$(".log-data-show").find(".crew-size-data").hide();
 	}
 }
 
 function revisionChangedCall(){
 	var isRevisionChecked=$("#isRevisionCheckbox").is(':checked');
 	if(isRevisionChecked){
-		$(".log-data-shows").find(".revision-data").show();
+		$(".log-data-show").find(".revision-data").show();
 	}else{
-		$(".log-data-shows").find(".revision-data").hide();
+		$(".log-data-show").find(".revision-data").hide();
 	}
 }
 

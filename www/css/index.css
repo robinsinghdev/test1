@@ -462,3 +462,6 @@ ul#userRolesUl li.active a{
     font-weight: 600;
     margin: 6px 5px 0;
 }
+.current-role-info{
+	font-weight: 600;
+}
