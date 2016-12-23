@@ -220,7 +220,7 @@
                     		<span style="">&nbsp;</span>
                         </div>
                         <div class="so-name-box" >
-                        	Order: <span class="" id="so_name">1 time Customer Customer #123</span>
+                        	Order: <span class="" id="so_name">#</span>
                         </div>
                     </div>
                     
@@ -348,15 +348,18 @@
 						        <input id="isRevisionCheckbox" name="isRevisionCheckbox" type="checkbox">Revision?
 						    </label>
 							 -->
-							<div class="rev-checkbox-div">
-								<fieldset data-role="controlgroup" data-iconpos="right">
-									<input id="isRevisionCheckbox" name="isRevisionCheckbox" type="checkbox">
-									<label for="isRevisionCheckbox">Revision?</label>
-								</fieldset>
-							</div>
-
-						<div class="ui-field-contain">
-		                    	<p><span >Total Time </span><span id="totalCrewTime">00:00</span></p>
+							 
+							 <div class="st-full-width">
+								<div class="rev-checkbox-div" >
+									<fieldset data-role="controlgroup" data-iconpos="right">
+										<input id="isRevisionCheckbox" name="isRevisionCheckbox" type="checkbox"  onchange="revisionChangedCall();" >
+										<label for="isRevisionCheckbox">Revision?</label>
+									</fieldset>
+								</div>
+	
+								<div class="ui-field-contain total-time-div">
+			                    	<p><span >Total Time </span><span id="totalCrewTime">00:00</span></p>
+			                    </div>
 		                    </div>
 		                    
 		                    <div class="ui-field-contain">
@@ -365,20 +368,26 @@
 		                    </div>
 
 							<div class="ui-grid-a">
-								<div class="ui-block-a">
+								<div class="ui-block-a log-data-show">
+									<div class="">
+										<p style="display: none;" class="crew-size-data">
+											Crew Size:<span class="crew-size-count">16</span>
+										</p>
+										<p style="display: none;" class="revision-data">Revision</p>
+									</div>
+								</div>
+	
+								<div class="ui-block-b">
 									<input type="button" id="logTimeSubmitBtn" value="Log Time"
 										data-flag="add" onclick="callAddUpadteLogTime(this,'logTime');" />
 								</div>
-								<div class="ui-block-b">
-								
-								</div>
 								<!-- 
-								<div class="ui-block-b">
-									<input type="button" id="logTimeRevisionSubmitBtn"
-										value="Revision Log Time" data-flag="add"
-										onclick="callAddUpadteLogTime(this,'logTimeRevision');" />
-								</div>
-								 -->
+									<div class="ui-block-b">
+										<input type="button" id="logTimeRevisionSubmitBtn"
+											value="Revision Log Time" data-flag="add"
+											onclick="callAddUpadteLogTime(this,'logTimeRevision');" />
+									</div>
+								-->
 							</div>
 					</form>	    
                 	</div>

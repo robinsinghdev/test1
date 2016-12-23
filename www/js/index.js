@@ -40,6 +40,8 @@ var notiAlertOkBtnText='Ok';
 // Common Message 
 var appRequiresWiFi='This action requires internet.';
 var serverBusyMsg='Server is busy, please try again later.';
+var grnCompRoleInternal=8;
+var grnCompRoleInternalOrderNo=1;
 
 // For Testing
 var devTestingFlag=false;
@@ -673,11 +675,12 @@ function handleLogin() {
 					
 					var versionJson = responseJson.version;
 					cordova.getAppVersion.getVersionNumber(function (version) {
+						console.log("version-- " + version + " --- " + versionJson["App"]);	
 					    if(version !== versionJson["App"]){
 						    showAppUpdateAvailableDialog();
 					    }
 					});
-					selectGrnComRoleFn();
+					//selectGrnComRoleFn();
 				}else{
 					window.localStorage["password"] = '';
 					window.localStorage["user_logged_in"] = 0;
@@ -775,9 +778,9 @@ function checkingUserAssignedRoles(){
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
 	
-	//console.log("grn_roles_id_string-- " + grn_roles_id_string);
-	//console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
-	//console.log("tempArr-- " + tempArr + " -- " + tempArr.toString());
+	console.log("grn_roles_id_string-- " + grn_roles_id_string);
+	console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
+	console.log("tempArr-- " + tempArr + " -- " + tempArr.toString());
 	
 	if(tempArr.length > 0){
 		
@@ -785,12 +788,12 @@ function checkingUserAssignedRoles(){
 		$('ul#userRolesUl li').removeClass('active').show();
 		
 		$.each(rolesArr, function(index,value) {
-			//console.log("checkingUserAssignedRoles index-- " + index);
+			console.log("for exist index-- " + index);
 			
 			var roleIdTemp= parseInt(value);
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
-				//console.log("checkingUserAssignedRoles index--  " + index + ' --value-- ' + value);
+				console.log("checkingUserAssignedRoles index--  " + index + ' --value-- ' + value);
 				
 				$userRolesUlObj.find("li#"+value+"").show();
 				if(window.localStorage["permissions"]== ''){
@@ -806,6 +809,7 @@ function checkingUserAssignedRoles(){
 				}
 			}
 			else {
+				console.log("for not exist index-- " + index);
 				$userRolesUlObj.find("li#"+roleIdTemp+"").hide();
 			}
 		});
@@ -1282,7 +1286,16 @@ function getSalesOrders(){
 											 '</table>'+
 										 '</div>';
 					        	
-					        	$('#salesOrderMainDiv').append(divObj);
+					        	console.log(window.localStorage["permissions"] + " ----- " + grnCompRoleInternal);
+					        	if(window.localStorage["permissions"]==grnCompRoleInternal){
+					        		console.log("-- " + sp_salesorderNumber + " ---- " +grnCompRoleInternalOrderNo);	
+					        		if(sp_salesorderNumber==grnCompRoleInternalOrderNo){
+					        			$('#salesOrderMainDiv').append(divObj);
+					        		}
+					        	}else{
+					        		$('#salesOrderMainDiv').append(divObj);
+					        	}
+					        	
 					   		});
 					   		hideAllTablesData();
 					   		
@@ -2402,6 +2415,26 @@ function getDataForTotalTimeCalc(){
 	var timeDuration= logHours+":"+logMinutes;
 	
 	calcTotalCrewTime(crewSize,timeDuration);
+	
+	crewSizeChangedCall(crewSize);
+}
+
+function crewSizeChangedCall(crewSize){
+	if(crewSize>1){
+		$(".log-data-shows").find(".crew-size-data").show();
+		$(".log-data-shows").find(".crew-size-count").html(crewSize);
+	}else{
+		$(".log-data-shows").find(".crew-size-data").hide();
+	}
+}
+
+function revisionChangedCall(){
+	var isRevisionChecked=$("#isRevisionCheckbox").is(':checked');
+	if(isRevisionChecked){
+		$(".log-data-shows").find(".revision-data").show();
+	}else{
+		$(".log-data-shows").find(".revision-data").hide();
+	}
 }
 
 function  calcTotalCrewTime(crewSize,timeDuration){
@@ -2816,7 +2849,8 @@ function logtimeTimer() {
 	var $so_name_box = $('#addLogTimeContent').find('.so-details-box');
 	$so_name_box.css('border-color',currDataHexcolorVal);
 	$so_name_box.find('.so-color-box').css('background-color',currDataHexcolorVal);
-	$so_name_box.find(".so-name-box").html(order_name);
+	var order_name_temp=order_name.replace("Report","");
+	$so_name_box.find(".so-name-box").html(order_name_temp);
 	
 	var id="";
 	//$('#is_revision').attr('data-timecat', timecat);

@@ -450,6 +450,15 @@ ul#userRolesUl li.active a{
 	right: 0;
 }
 
-.rev-checkbox-div .ui-checkbox{
-/* 	min-width: 60%; */
+.st-full-width{
+	width:100%;
+}
+.rev-checkbox-div, .total-time-div{
+ 	width: 50%;
+}
+
+.ui-block-a.log-data-show p {
+    color: red;
+    font-weight: 600;
+    margin: 6px 5px 0;
 }
