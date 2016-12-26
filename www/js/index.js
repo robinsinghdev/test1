@@ -1623,6 +1623,7 @@ function changeLoginRole(thiss){
 				var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
 				$('#userRoleShow').html(currentUserRoleText);
 				$('.current-role-info').html(currentUserRoleText);
+				navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
 			}
 		}
 	}else{
