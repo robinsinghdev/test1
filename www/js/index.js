@@ -1899,6 +1899,8 @@ function addLogTime(){
 	
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 	$('form#addLogTimeForm')[0].reset();
+	// Reset Log Data Details
+	logDataShowReset();
 	
 	$addUpdateLogTimeForm.find('#logDate').val(getTodayDate());
 	$addUpdateLogTimeForm.find('#logHours').val('00');
@@ -2444,6 +2446,7 @@ function crewSizeChangedCall(crewSize){
 		$(".log-data-show").find(".crew-size-count").html(crewSize);
 	}else{
 		$(".log-data-show").find(".crew-size-data").hide();
+		$(".log-data-show").find(".crew-size-count").html("");
 	}
 }
 
@@ -2454,6 +2457,12 @@ function revisionChangedCall(){
 	}else{
 		$(".log-data-show").find(".revision-data").hide();
 	}
+}
+
+function logDataShowReset(){
+	$(".log-data-show").find(".crew-size-data").hide();
+	$(".log-data-show").find(".crew-size-count").html("");
+	$(".log-data-show").find(".revision-data").hide();
 }
 
 function  calcTotalCrewTime(crewSize,timeDuration){
