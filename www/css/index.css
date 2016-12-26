@@ -469,7 +469,7 @@ ul#userRolesUl li.active a{
 }
 .current-role-info{
 	color: red;
-	font-weight: 600 !important;
+	font-weight: bold;
 	margin: 0;
 	padding: 0;
 }

@@ -679,16 +679,11 @@ function handleLogin() {
 					cordova.getAppVersion.getVersionNumber(function (version) {
 						var appVersionString= ""+ version.toString();
 						var currentVersionJsonString=versionJson["App"];
-						currentVersionJsonString=versionJsonString.toString();
-						
-						console.log("version-- " + appVersionString + " --- " + currentVersionJsonString);	
-						
+						currentVersionJsonString=currentVersionJsonString.toString();
 						var compareVersionsFlag=compareVersionsFn(appVersionString,currentVersionJsonString);
-					    console.log( compareVersionsFlag );
 					    if(compareVersionsFlag==false){
 						    showAppUpdateAvailableDialog();
 					    }
-					    
 					});
 					//selectGrnComRoleFn();
 				}else{
@@ -839,6 +834,7 @@ function selectGrnComRoleFn(){
 	$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
 	var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
 	$('#userRoleShow').html(currentUserRoleText);
+	$('.current-role-info').html(currentUserRoleText);
 }
 
 var sp_salesOrderNumber_for_scroll;
@@ -1602,6 +1598,7 @@ function changeLoginRole(thiss){
 			$('ul#userRolesUl li#'+roleId+'').addClass('active');
 			var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
 			$('#userRoleShow').html(currentUserRoleText);
+			$('.current-role-info').html(currentUserRoleText);
 			
 			$('#salesOrderMainDiv').html('');
 			time_cats_arr=[];
@@ -1625,6 +1622,7 @@ function changeLoginRole(thiss){
 				$('ul#userRolesUl li#'+roleId+'').addClass('active');
 				var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
 				$('#userRoleShow').html(currentUserRoleText);
+				$('.current-role-info').html(currentUserRoleText);
 			}
 		}
 	}else{
