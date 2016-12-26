@@ -1,4 +1,4 @@
-
+/* JS Code */
 $( document ).on( "mobileinit", function() {
     // Make your jQuery Mobile framework configuration changes here!
 	 $.support.cors = true;
@@ -675,14 +675,20 @@ function handleLogin() {
 					$.mobile.changePage('#home-page',{ transition: "slideup"});
 					
 					var versionJson = responseJson.version;
+					
 					cordova.getAppVersion.getVersionNumber(function (version) {
-						console.log("version-- " + version + " --- " + versionJson["App"]);	
-						var versionString=version.toString();
-						var versionJsonString=versionJson["App"];
-						versionJsonString=versionJsonString.toString();
-					    if(versionString != versionJsonString){
+						var appVersionString= ""+ version.toString();
+						var currentVersionJsonString=versionJson["App"];
+						currentVersionJsonString=versionJsonString.toString();
+						
+						console.log("version-- " + appVersionString + " --- " + currentVersionJsonString);	
+						
+						var compareVersionsFlag=compareVersionsFn(appVersionString,currentVersionJsonString);
+					    console.log( compareVersionsFlag );
+					    if(compareVersionsFlag==false){
 						    showAppUpdateAvailableDialog();
 					    }
+					    
 					});
 					//selectGrnComRoleFn();
 				}else{
@@ -1298,7 +1304,9 @@ function getSalesOrders(){
 					        			$('#salesOrderMainDiv').append(divObj);
 					        		}
 					        	}else{
-					        		$('#salesOrderMainDiv').append(divObj);
+					        		if(sp_salesorderNumber!=grnCompRoleInternalOrderNo){
+					        			$('#salesOrderMainDiv').append(divObj);
+					        		}	
 					        	}
 					        	
 					   		});
@@ -1516,7 +1524,17 @@ function successCBPopulateSalesOrders(){
 					 '</table>'+
 				 '</div>';
     	
-    	$('#salesOrderMainDiv').append(divObj);
+    	console.log(window.localStorage["permissions"] + " ----- " + grnCompRoleInternal);
+    	if(window.localStorage["permissions"]==grnCompRoleInternal){
+    		console.log("-- " + sp_salesorderNumber + " ---- " +grnCompRoleInternalOrderNo);
+    		if(sp_salesorderNumber==grnCompRoleInternalOrderNo){
+    			$('#salesOrderMainDiv').append(divObj);
+    		}
+    	}else{
+    		if(sp_salesorderNumber!=grnCompRoleInternalOrderNo){
+    			$('#salesOrderMainDiv').append(divObj);
+    		}	
+    	}
 	});
 	hideAllTablesData();
 	hideModal();
@@ -2682,7 +2700,7 @@ function successCBGetGrnCompRoles(){
 		var role=jsonObj["role"];
 		
 		if(index==0 && permissionsTemp==0){
-			window.localStorage["permissions"]=''+id+'';
+			//window.localStorage["permissions"]=''+id+'';
 		}
 		rolesArr.push(id.toString());//=['5','7','9','10'];
 
@@ -2697,6 +2715,33 @@ function successCBGetGrnCompRoles(){
 
 function errorCBGetGrnCompRoles(err){
 	console.log("Get GRN Company Roles Error Code:"+err.code);
+}
+
+
+function compareVersionsFn(installed, required) {
+    var a = installed.split('.');
+    var b = required.split('.');
+
+    for (var i = 0; i < a.length; ++i) {
+        a[i] = Number(a[i]);
+    }
+    for (var i = 0; i < b.length; ++i) {
+        b[i] = Number(b[i]);
+    }
+    if (a.length == 2) {
+        a[2] = 0;
+    }
+
+    if (a[0] > b[0]) return true;
+    if (a[0] < b[0]) return false;
+
+    if (a[1] > b[1]) return true;
+    if (a[1] < b[1]) return false;
+
+    if (a[2] > b[2]) return true;
+    if (a[2] < b[2]) return false;
+
+    return true;
 }
 
 /* ----------------  Time Tracker Code Starts -------------------------  */
