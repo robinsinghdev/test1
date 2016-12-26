@@ -783,9 +783,9 @@ function checkingUserAssignedRoles(){
 	var tempArr = new Array();
 	tempArr = grn_roles_id_string.split(",");
 	
-	console.log("grn_roles_id_string-- " + grn_roles_id_string);
-	console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
-	console.log("tempArr-- " + tempArr + " -- " + tempArr.toString());
+	//console.log("grn_roles_id_string-- " + grn_roles_id_string);
+	//console.log("rolesArr-- " + rolesArr + " -- " + rolesArr.toString());
+	//console.log("tempArr-- " + tempArr + " -- " + tempArr.toString());
 	
 	if(tempArr.length > 0){
 		
@@ -793,12 +793,12 @@ function checkingUserAssignedRoles(){
 		$('ul#userRolesUl li').removeClass('active').show();
 		
 		$.each(rolesArr, function(index,value) {
-			console.log("for exist index-- " + index);
+			//console.log("for exist index-- " + index);
 			
 			var roleIdTemp= parseInt(value);
 			var firstRoleFoundFlag=false;
 			if ( $.inArray(value, tempArr) > -1 ) {
-				console.log("checkingUserAssignedRoles index--  " + index + ' --value-- ' + value);
+				//console.log("checkingUserAssignedRoles index--  " + index + ' --value-- ' + value);
 				
 				$userRolesUlObj.find("li#"+value+"").show();
 				if(window.localStorage["permissions"]== ''){
@@ -807,7 +807,7 @@ function checkingUserAssignedRoles(){
 				}
 				
 				if(window.localStorage["permissions"]== value){
-					console.log("permissions============");
+					//console.log("permissions============");
 					$('ul#userRolesUl li#'+roleIdTemp+'').addClass('active');
 					var currentUserRoleText = $('ul#userRolesUl li#'+roleIdTemp+'').text();
 					$('#userRoleShow').html(currentUserRoleText);
@@ -815,7 +815,7 @@ function checkingUserAssignedRoles(){
 				}
 			}
 			else {
-				console.log("for not exist index-- " + index + ' --value-- ' + value);
+				//console.log("for not exist index-- " + index + ' --value-- ' + value);
 				$userRolesUlObj.find("li#"+roleIdTemp+"").hide();
 			}
 		});
@@ -991,7 +991,7 @@ function createNewSO(){
 				},
 				error:function(data,t,f){
 					hideModal();
-					//console.log(data+' '+t+' '+f);
+					console.log(data+' '+t+' '+f);
 					navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				}
 			});
@@ -1143,7 +1143,7 @@ function getAllColorsForSO(){
 				},
 				error:function(data,t,f){
 					hideModal();
-					//console.log(data+' '+t+' '+f);
+					console.log(data+' '+t+' '+f);
 					navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 				}
 			});
@@ -1164,10 +1164,9 @@ function getSalesOrders(){
 	if(grnUserObj != '') {
 		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			console.log("solocal-- " + window.localStorage["solocal"]);
+			//console.log("solocal-- " + window.localStorage["solocal"]);
 			if(window.localStorage["solocal"] == 1){
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
-				console.log();
 				showModal();
 				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
 					$('#salesOrderMainDiv').html('');
@@ -1293,9 +1292,9 @@ function getSalesOrders(){
 											 '</table>'+
 										 '</div>';
 					        	
-					        	console.log(window.localStorage["permissions"] + " ----- " + grnCompRoleInternal);
+					        	//console.log(window.localStorage["permissions"] + " ----- " + grnCompRoleInternal);
 					        	if(window.localStorage["permissions"]==grnCompRoleInternal){
-					        		console.log("-- " + sp_salesorderNumber + " ---- " +grnCompRoleInternalOrderNo);	
+					        		//console.log("-- " + sp_salesorderNumber + " ---- " +grnCompRoleInternalOrderNo);	
 					        		if(sp_salesorderNumber==grnCompRoleInternalOrderNo){
 					        			$('#salesOrderMainDiv').append(divObj);
 					        		}
@@ -1376,9 +1375,9 @@ function timeCatTbodyObj(){// get time categories
 		                        	
 		                        	time_cats_arr.push(jsonObj);
 		                        	
-		                        	console.log(window.localStorage["permissions"] + '----' + jsonObj["grn_roles_id"]);
+		                        	//console.log(window.localStorage["permissions"] + '----' + jsonObj["grn_roles_id"]);
 		                   	    	if(window.localStorage["permissions"]==jsonObj["grn_roles_id"]){
-		                   	    		console.log("true condition--" + window.localStorage["permissions"] + '----' + jsonObj["grn_roles_id"]);
+		                   	    		//console.log("true condition--" + window.localStorage["permissions"] + '----' + jsonObj["grn_roles_id"]);
 		                   	    		time_cats_arr_curr_role.push(jsonObj);
 		                   	    	}
 		                        }
@@ -1520,9 +1519,7 @@ function successCBPopulateSalesOrders(){
 					 '</table>'+
 				 '</div>';
     	
-    	console.log(window.localStorage["permissions"] + " ----- " + grnCompRoleInternal);
     	if(window.localStorage["permissions"]==grnCompRoleInternal){
-    		console.log("-- " + sp_salesorderNumber + " ---- " +grnCompRoleInternalOrderNo);
     		if(sp_salesorderNumber==grnCompRoleInternalOrderNo){
     			$('#salesOrderMainDiv').append(divObj);
     		}
@@ -1943,7 +1940,7 @@ function editLogTime(dataObj){
 	$addUpdateLogTimeForm.find('#logMinutes').val(timeArr[1]);
 	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
 	$addUpdateLogTimeForm.find('#logComment').val('');
-	console.log("category-- " + category);
+	//console.log("category-- " + category);
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
@@ -2012,7 +2009,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 		var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 		var grnTimeCat=$addUpdateLogTimeForm.find('#timeCat option:selected').val();
 		var grnTimeCatTitle=$addUpdateLogTimeForm.find('#timeCat option:selected').text();
-		console.log("grnTimeCatTitle-- " + grnTimeCatTitle);
+		//console.log("grnTimeCatTitle-- " + grnTimeCatTitle);
 		if(typeof grnTimeCat === 'undefined'){
 			alert('Please select the process.');
 			return false;
@@ -2031,7 +2028,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 		dataObj.grn_timeCat= grnTimeCat;
 		dataObj.grn_timeCat= grnTimeCat;//+"_revision";
 		
-		console.log("isRevisionCheckbox--   " + $("#isRevisionCheckbox").is(':checked'));
+		//console.log("isRevisionCheckbox--   " + $("#isRevisionCheckbox").is(':checked'));
 		var revision=0;
 		if($("#isRevisionCheckbox").is(':checked')){
 			revision=1;
@@ -2185,7 +2182,7 @@ function addLogTimeToServer(dataObj){
 		   data:dataObj,
 		   success:function(data){
 		   		var responseJson = $.parseJSON(data);
-		   		console.log(responseJson);
+		   		//console.log(responseJson);
 		   		if(responseJson.status=='success') {
 		   			navigator.notification.alert(responseJson.msg,alertConfirm,appName,notiAlertOkBtnText);
 		   			$.mobile.changePage('#view-all-sales-order','slide');
@@ -2224,7 +2221,7 @@ function updateLogTimeToServer(dataObj){
 		   data:dataObj,
 		   success:function(data){
 		   		var responseJson = $.parseJSON(data);
-		   		console.log(responseJson);
+		   		//console.log(responseJson);
 		   		if(responseJson.status=='success') {
 		   			navigator.notification.alert(responseJson.msg,alertConfirm,appName,notiAlertOkBtnText);
 		   			$.mobile.changePage('#view-all-sales-order','slide');
@@ -2626,7 +2623,7 @@ function getGrnCompanyRoles(){
 			data:{action:'getAvailableRolesOnAPP',grn_user:grnUserObj},
 			success:function(data){
 				var responseJson = $.parseJSON(data);
-				console.log(responseJson);
+				//console.log(responseJson);
 				if(responseJson.status=='success') {
 					grnCompRolesArr=responseJson["company_roles"];
 					db.transaction(insertGrnCompRolesJson, errorCB, successCB);// Insert Time Category
@@ -2930,7 +2927,7 @@ function logtimeTimer() {
 	
 	$addUpdateLogTimeForm.find('#totalCrewTime').html('');
 	$addUpdateLogTimeForm.find('#logComment').val(comment);
-	console.log("category-- " + category);
+	//console.log("category-- " + category);
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
@@ -3214,7 +3211,7 @@ function insertTimeCategory(tx) {
 	time_cats_arr_curr_role=[];
 	tx.executeSql(timeCategoryCreateSql,[], function (tx, results) {
    	     jQuery.each(time_cats_arr, function(index,value) {
-   	    	 console.log(JSON.stringify(value) + "--");
+   	    	//console.log(JSON.stringify(value) + "--");
    	    	var jsonObj=value;
    	    	var pid=jsonObj["id"];
    	    	var timeCats='';//jsonObj["timeCats"];
