@@ -2467,10 +2467,10 @@ function revisionChangedCall(){
 function revisionChecboxChangedCall(isRevisionChecked){
 	if(isRevisionChecked==1){
 		$(".log-data-show").find(".revision-data").show();
-		$("#isRevisionCheckbox").prop("checked",true).checkboxradio("refresh");
+		//$("#isRevisionCheckbox").prop("checked", true).checkboxradio("refresh");
 	}else{
 		$(".log-data-show").find(".revision-data").hide();
-		$("#isRevisionCheckbox").prop("checked",false).checkboxradio("refresh");
+		//$("#isRevisionCheckbox").prop("checked", false).checkboxradio("refresh");
 	}
 }
 
