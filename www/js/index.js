@@ -1757,7 +1757,7 @@ function getLogTimeListOfOrder(data){
 												  '<div class="ui-block-b text-align-right">'+
 														'<span class="link-custom-span">'+
 															'<a onclick="editLogTime(this);" href="#" data-sotimeid="'+grn_salesorderTime_id+'" data-comment="'+commentsData+'"  '+
-															' data-id="'+id+'" data-date="'+date+'" data-time="'+timeInHours+'" data-crewSize="'+crew_size+'"  data-category="'+grn_timeCat_trimmed+'" >Edit</a>'+
+															' data-id="'+id+'" data-date="'+date+'" data-time="'+timeInHours+'" data-crewSize="'+crew_size+'" data-category="'+grn_timeCat_trimmed+'" data-revision="'+revision+'">Edit</a>'+
 														'</span>'+	
 												  '</div>'+
 												'</div>'+
@@ -1929,6 +1929,7 @@ function editLogTime(dataObj){
 	var crewSize=$dataObj.data('crewsize');
 	var category=$dataObj.data('category');
 	var comment=$dataObj.data('comment');
+	var revision=$dataObj.data('revision');
 	
 	var $addUpdateLogTimeForm = $('form#addLogTimeForm');
 	$addUpdateLogTimeForm.find('#logTimeSubmitBtn').attr('data-flag','update');
@@ -1948,6 +1949,10 @@ function editLogTime(dataObj){
 	calcTotalCrewTime(crewSize,time);
 	
 	changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
+	
+	// Update Log Data
+	crewSizeChangedCall(crewSize);
+	revisionChecboxChangedCall(revision);
 	
 	$.mobile.changePage('#add-log-time','slide');
 }
@@ -2459,6 +2464,16 @@ function revisionChangedCall(){
 	}
 }
 
+function revisionChecboxChangedCall(isRevisionChecked){
+	if(isRevisionChecked==1){
+		$(".log-data-show").find(".revision-data").show();
+		$("#isRevisionCheckbox").prop("checked",true).checkboxradio("refresh");
+	}else{
+		$(".log-data-show").find(".revision-data").hide();
+		$("#isRevisionCheckbox").prop("checked",false).checkboxradio("refresh");
+	}
+}
+
 function logDataShowReset(){
 	$(".log-data-show").find(".crew-size-data").hide();
 	$(".log-data-show").find(".crew-size-count").html("");
@@ -2940,6 +2955,8 @@ function logtimeTimer() {
 	refreshSelect($addUpdateLogTimeForm.find('#timeCat'),category);
 	refreshSelect($addUpdateLogTimeForm.find('#crewSize'),crewSize);
 	calcTotalCrewTime(crewSize,time);
+	// Reset Log Data Details
+	logDataShowReset();
 	
 	//changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	//alert(window.localStorage.getItem("trackerValueSave"));
