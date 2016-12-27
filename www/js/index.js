@@ -1913,6 +1913,9 @@ function addLogTime(){
 	
 	//changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	$.mobile.changePage('#add-log-time','slide');
+	
+	// revision checkbox uncheck
+	revisionChecboxChangedCall(0);
 }
 
 function editLogTime(dataObj){
@@ -1952,9 +1955,10 @@ function editLogTime(dataObj){
 	
 	// Update Log Data
 	crewSizeChangedCall(crewSize);
-	revisionChecboxChangedCall(revision);
+	
 	
 	$.mobile.changePage('#add-log-time','slide');
+	revisionChecboxChangedCall(revision);
 }
 
 function showDeleteLogTimeDialog(dataObj) {
@@ -2482,8 +2486,6 @@ function logDataShowReset(){
 	$(".log-data-show").find(".crew-size-data").hide();
 	$(".log-data-show").find(".crew-size-count").html("");
 	$(".log-data-show").find(".revision-data").hide();
-	// revision checkbox uncheck
-	revisionChecboxChangedCall(0);
 }
 
 function  calcTotalCrewTime(crewSize,timeDuration){
@@ -2967,6 +2969,9 @@ function logtimeTimer() {
 	//changeTimeCatImage($addUpdateLogTimeForm.find('#timeCat'));
 	//alert(window.localStorage.getItem("trackerValueSave"));
 	$.mobile.changePage('#add-log-time','slide');	
+	
+	// revision checkbox uncheck
+	revisionChecboxChangedCall(0);
 }
 
 function getCorrectTimeForTimerData(time) {
