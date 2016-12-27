@@ -2466,6 +2466,7 @@ function revisionChangedCall(){
 
 function revisionChecboxChangedCall(isRevisionChecked){
 	if(isRevisionChecked==1){
+		$("#isRevisionCheckbox").removeAttr("checked");
 		$("#isRevisionCheckbox").attr("checked", "checked");
 		$("#isRevisionCheckbox").checkboxradio().checkboxradio("refresh");
 		
