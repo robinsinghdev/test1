@@ -321,6 +321,11 @@ hr.style {
 	font-size: 20px;
 }
 
+.home-page-menu-ul li.ui-li-divider{
+	background: #464646;
+	color: #fff;
+}
+
 .home-page-menu-ul li a{
 	font-size: 14px;
 }
