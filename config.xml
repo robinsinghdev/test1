@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.bpmetrics.trackerv2" 
-version="2.0.1"
-versionCode = "2" 
+version="2.0.4"
+versionCode = "4" 
 xmlns="http://www.w3.org/ns/widgets" 
 xmlns:gap   = "http://phonegap.com/ns/1.0" 
 xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>BP Metrics v2</name>
-    <description>
-        Application
+     <name>BP Metrics v2</name> 
+    <description> 
+        BP Metrics v2, Application for time tracking offline and online.
     </description>
-    <author email="Test1@d.com" href="http://www.stavyah.com/">
-        BP Metrics v2
+    <author email="hdekkers@dynaread.com" href="https://bpmetrics.com/">
+        Hans Dekkers
     </author>
     
     <content src="index.html" />
