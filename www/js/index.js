@@ -2443,6 +2443,7 @@ function getDataForTotalTimeCalc(){
 	calcTotalCrewTime(crewSize,timeDuration);
 	
 	crewSizeChangedCall(crewSize);
+	revisionChecboxChangedCall(0);
 }
 
 function crewSizeChangedCall(crewSize){
@@ -2466,11 +2467,15 @@ function revisionChangedCall(){
 
 function revisionChecboxChangedCall(isRevisionChecked){
 	if(isRevisionChecked==1){
+		$("#isRevisionCheckbox").attr("checked", "checked");
+		$("#isRevisionCheckbox").checkboxradio("refresh");
+		
 		$(".log-data-show").find(".revision-data").show();
-		//$("#isRevisionCheckbox").prop("checked", true).checkboxradio("refresh");
 	}else{
+		$("#isRevisionCheckbox").removeAttr("checked");
+		$("#isRevisionCheckbox").checkboxradio("refresh");
+		
 		$(".log-data-show").find(".revision-data").hide();
-		//$("#isRevisionCheckbox").prop("checked", false).checkboxradio("refresh");
 	}
 }
 
