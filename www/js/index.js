@@ -2089,7 +2089,7 @@ function callAddUpadteLogTime(obj,logTimeType){
 		
 		if(time=='00:00' || ( logHoursInt==0 && logMinutesInt==0)  ){
 			navigator.notification.alert(
-    		    'Please fill time details.',  // message
+    		    'Please enter Hrs Min.',  // message
     		    alertConfirm,
     		    'Log Time',            // title
     		    notiAlertOkBtnText                  // buttonName
@@ -2443,7 +2443,6 @@ function getDataForTotalTimeCalc(){
 	calcTotalCrewTime(crewSize,timeDuration);
 	
 	crewSizeChangedCall(crewSize);
-	revisionChecboxChangedCall(0);
 }
 
 function crewSizeChangedCall(crewSize){
@@ -2483,6 +2482,8 @@ function logDataShowReset(){
 	$(".log-data-show").find(".crew-size-data").hide();
 	$(".log-data-show").find(".crew-size-count").html("");
 	$(".log-data-show").find(".revision-data").hide();
+	// revision checkbox uncheck
+	revisionChecboxChangedCall(0);
 }
 
 function  calcTotalCrewTime(crewSize,timeDuration){
