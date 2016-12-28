@@ -427,7 +427,7 @@ ul#userRolesUl li.active a{
 	margin-bottom: 10px;
 }
 
-.version-number-text{
+.version-number-text, .privacy-policy-div{
 	text-align: right;
 }
 
@@ -445,12 +445,12 @@ ul#userRolesUl li.active a{
 	color: #fff;	
 }
 
-#login-page .login-box label, #login-page .version-number-text{
+#login-page .login-box label, #login-page .version-number-text, #login-page .privacy-policy-div{
 	color: #fff;
 	margin-bottom: 5px;
 }
 
-#login-page .version-number-text a{
+#login-page .privacy-policy-div a{
 	color: #fff;	
 	font-weight: 500;
 }
