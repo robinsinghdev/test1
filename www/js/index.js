@@ -2395,7 +2395,6 @@ function showOrderSOBySONumber(){
 	}
 }
 
-
 function moreProcessDetails(currObj){
 	var $parentDiv = $(currObj).parents(".more-process-details-main");
 	var $moreProcessDetails = $parentDiv.find('.more-process-details');
@@ -2769,6 +2768,11 @@ function compareVersionsFn(installed, required) {
     if (a[2] < b[2]) return false;
 
     return true;
+}
+
+function openPrivacyPolicyExternalApp(){
+	var url="https://www.bpmetrics.net/privacy.html";
+	navigator.app.loadUrl(url, { openExternal:true });
 }
 
 /* ----------------  Time Tracker Code Starts -------------------------  */

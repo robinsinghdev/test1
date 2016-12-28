@@ -446,7 +446,13 @@ ul#userRolesUl li.active a{
 }
 
 #login-page .login-box label, #login-page .version-number-text{
+	color: #fff;
+	margin-bottom: 5px;
+}
+
+#login-page .version-number-text a{
 	color: #fff;	
+	font-weight: 500;
 }
 
 #login-page element.style {
