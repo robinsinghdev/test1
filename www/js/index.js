@@ -25,7 +25,7 @@ $(document).delegate('.history-tabs a', 'tap', function () {
 
 // Variables Declaration
 var appName='BP Metrics';
-var appUrl='https://dev.bpmetrics.net/grn/m_app/';
+var appUrl='https://www.bpmetrics.net/grn/m_app/';
 var connectionType;
 var currDataHexcolor,currDataOname,currDataOrder;
 var salse_orders_arr=[];
@@ -616,8 +616,8 @@ function handleLogin() {
 	$("#submitButton",form).attr("disabled","disabled");
 	var u = $("#username", form).val();
 	var p = $("#password", form).val();
-//	 u='cto@bpm.com'; // For testing
-//	 p='cto'; // For testing
+	// u=''; // For testing
+	// p=''; // For testing
 	
 	if(u != '' && p!= '') {
 		
@@ -1320,12 +1320,12 @@ function getSalesOrders(){
 					   		
 					   		hideModal();
 					   		if(salse_orders_arr.length <= 0){
-					   			navigator.notification.alert('No sales order to show or try again after sometime.',alertConfirm,appName,notiAlertOkBtnText);
+					   			navigator.notification.alert('Use the green Add Sales Order button to add new Job/SO #',alertConfirm,appName,notiAlertOkBtnText);
 					   		}
 					   		
 					   }
 					   else if(responseJson.status== "fail"){
-						   navigator.notification.alert('No sales order to show or try again after sometime.',alertConfirm,appName,notiAlertOkBtnText);
+						   navigator.notification.alert('Use the green Add Sales Order button to add new Job/SO #',alertConfirm,appName,notiAlertOkBtnText);
 					   }
 				   		
 				   		$.mobile.changePage('#view-all-sales-order','slide');
