@@ -484,3 +484,17 @@ ul#userRolesUl li.active a{
 	margin: 0;
 	padding: 0;
 }
+
+.feedback-td{
+	text-align: left;
+}
+
+.feedback-td .process-icon{
+	
+}
+
+.feedback-td .feedback-label{
+	color: blue;
+	margin-left: 5px;
+}
+

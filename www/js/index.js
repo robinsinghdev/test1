@@ -1210,17 +1210,13 @@ function getSalesOrders(){
 					   		var tbodyObj='<tbody>';
 					   		// Feedback row
 					   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
-					    				'<td class="order-p-icon">'+
-						                     '<span class="process-icon cm-10">'+
+					    				'<td class="order-p-icon  feedback-td">'+
+						                     '<span class="process-icon cm-10" style="vertical-align: top;>'+
 						                         '<img class="icon-img" src="img/feedback-icon.png" >'+
+						                         '<span class="feedback-label">Feedback</span>'+
 						                     '</span>'+
 						                 '</td>'+
 						                 '<td class="timecat-total-time-td">'+
-						                 	'<span class="timer timecat-title-format" >'
-						                 		+ 'Feedback'
-						                 	+ '</span>'+
-						                 '</td>'+
-						                 '<td class="order-t-icon">'+
 						                 '</td>'+
 						             '</tr>';
 					   		
@@ -1426,20 +1422,16 @@ function successCBTimeCatTbodyObj() {
 			var titleEleObj=timeCatTitleFormat(title);
 			
 			// Feedback row
-	   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
-	    				'<td class="order-p-icon">'+
-		                     '<span class="process-icon cm-10">'+
-		                         '<img class="icon-img" src="img/feedback-icon.png" >'+
-		                     '</span>'+
-		                 '</td>'+
-		                 '<td class="timecat-total-time-td">'+
-		                 	'<span class="timer timecat-title-format" >'
-		                 		+ 'Feedback'
-		                 	+ '</span>'+
-		                 '</td>'+
-		                 '<td class="order-t-icon">'+
-		                 '</td>'+
-		             '</tr>';
+			tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
+						'<td class="order-p-icon feedback-td">'+
+			                 '<span class="process-icon cm-10" style="vertical-align: top;>'+
+			                     '<img class="icon-img" src="img/feedback-icon.png" >'+
+			                     '<span class="feedback-label">Feedback</span>'+
+			                 '</span>'+
+			             '</td>'+
+			             '<td class="timecat-total-time-td">'+
+			             '</td>'+
+			         '</tr>';
 			
 			tbodyObj+='<tr>'+
 						/* // Remove this
