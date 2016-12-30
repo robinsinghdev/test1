@@ -400,6 +400,79 @@
                 </div>
             </div>
             
+            <div id="job-feedback-page" data-role="page">
+                <div data-role="header" data-id="header" id="header" data-position="fixed" class="ui-header app-header-section">
+                	<a href="#" onclick="onBackKeyDown();" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-notext">Back</a>
+                    <h1>Sales Order Feedback</h1>
+					<a href="#" class="ui-btn ui-corner-all ui-icon-power ui-btn-icon-notext ui-btn-right" onclick="doLogout();">Logout</a>
+                </div>
+
+			<div data-role="content" id="addLogTimeContent">
+
+				<div id="so_details_box" class="so-details-box">
+					<div class="so-color-box">
+						<span style="">&nbsp;</span>
+					</div>
+					<div class="so-name-box">
+						Order: <span class="" id="so_name">1</span>
+					</div>
+				</div>
+
+				<div id="addJobfeedbackMainDiv" class="add-log-time-main-div">
+					<form id="addJobfeedbackForm">
+						<div class="display-none">
+							<input type="hidden" id="staffTimeId" value=""> <input
+								type="hidden" id="soTimeId" value="">
+						</div>
+
+						<div class="ui-field-contain">
+							<label for="Crew Size">Category </label> <select
+								onchange="getDataForTotalTimeCalc();" name="crewSize"
+								id="crewSize" data-mini="true">
+								<option value="1">1</option>
+								<option value="2">2</option>
+							</select>
+						</div>
+
+						<div class="st-full-width">
+							<div class="rev-checkbox-div">
+								<fieldset data-role="controlgroup" data-iconpos="right">
+									<input id="hideIdentity" name="hideIdentity" type="checkbox">
+									<label for="hideIdentity">Hide Identity</label>
+								</fieldset>
+							</div>
+						</div>
+
+						<div class="ui-field-contain">
+							<label for="Comment">Feedback </label>
+							<textarea cols="" rows="4" name="feedbackComment"
+								id="feedbackComment" style="width: 65% !important;"></textarea>
+						</div>
+
+						<div class="ui-grid-a">
+							<div class="ui-block-a log-data-show"></div>
+
+							<div class="ui-block-b">
+								<input type="button" id="jobFeedbackSubmitBtn" value="Submit"
+									data-flag="add" onclick="callAddUpadteJobFeedback(this);" />
+							</div>
+						</div>
+						
+					</form>
+				</div>
+
+			</div>
+
+			<div data-role="footer" data-id="footer1" data-position="fixed"   class="app-footer-section" class="footer-div">
+                    <div id="navbar" data-role="navbar">
+                        <ul>
+                            <li><a id="map-button" href="#home-page" onclick="homePageActions();" data-icon="home" data-theme="b" class="app-link">Home</a></li>
+                            <li><a id="list-button" href="#" onclick="getCategoriesForTimeTracking();" data-icon="bars" class="app-link">Sales Order</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
         </div>
 		
     </body>

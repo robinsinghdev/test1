@@ -1208,6 +1208,22 @@ function getSalesOrders(){
 					   	if(responseJson.status== "success"){
 					   		
 					   		var tbodyObj='<tbody>';
+					   		// Feedback row
+					   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
+					    				'<td class="order-p-icon">'+
+						                     '<span class="process-icon cm-10">'+
+						                         '<img class="icon-img" src="img/feedback-icon.png" >'+
+						                     '</span>'+
+						                 '</td>'+
+						                 '<td class="timecat-total-time-td">'+
+						                 	'<span class="timer timecat-title-format" >'
+						                 		+ 'Feedback'
+						                 	+ '</span>'+
+						                 '</td>'+
+						                 '<td class="order-t-icon">'+
+						                 '</td>'+
+						             '</tr>';
+					   		
 					   		jQuery.each(time_cats_arr_curr_role, function(index,value) {
 					        	var jsonObj=value;
 					        	var id=jsonObj["id"];
@@ -1400,35 +1416,51 @@ function successCBTimeCatTbodyObj() {
 		var tbodyObj='<tbody>';
 		
 		jQuery.each(time_cats_arr_curr_role, function(index,value) {
-		var jsonObj=value;
-		var id=jsonObj["id"];
-		var timeCats=jsonObj["id"];//jsonObj["timeCats"];
-		var title=jsonObj["title"];
-		var grn_roles_id=jsonObj["grn_roles_id"];
-		var revision=jsonObj["revision"];
-		var status=jsonObj["status"];
-		var titleEleObj=timeCatTitleFormat(title);
-		
-		tbodyObj+='<tr>'+
-					/* // Remove this
-	                 '<td class="order-p-icon">'+
-	                     '<span class="process-icon cm-10">'+
-	                         '<img class="icon-img" src="#" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-	                     '</span>'+
-	                 '</td>'+
-	                 */
-	                 '<td class="timecat-total-time-td">'+
-	                     //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
-		                 '<span id="orderId_spOrderIdReplace" class="timer timecat-title-format" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
-			                 //+'<span class="time-cat-title">'+title+'</span>'
-			                 + titleEleObj
-		                 +'</span>'+
-	                 '</td>'+
-	                 '<td class="order-t-icon">'+
-	                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-						 '</a>'+
-	                 '</td>'+
-	             '</tr>';
+			var jsonObj=value;
+			var id=jsonObj["id"];
+			var timeCats=jsonObj["id"];//jsonObj["timeCats"];
+			var title=jsonObj["title"];
+			var grn_roles_id=jsonObj["grn_roles_id"];
+			var revision=jsonObj["revision"];
+			var status=jsonObj["status"];
+			var titleEleObj=timeCatTitleFormat(title);
+			
+			// Feedback row
+	   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
+	    				'<td class="order-p-icon">'+
+		                     '<span class="process-icon cm-10">'+
+		                         '<img class="icon-img" src="img/feedback-icon.png" >'+
+		                     '</span>'+
+		                 '</td>'+
+		                 '<td class="timecat-total-time-td">'+
+		                 	'<span class="timer timecat-title-format" >'
+		                 		+ 'Feedback'
+		                 	+ '</span>'+
+		                 '</td>'+
+		                 '<td class="order-t-icon">'+
+		                 '</td>'+
+		             '</tr>';
+			
+			tbodyObj+='<tr>'+
+						/* // Remove this
+		                 '<td class="order-p-icon">'+
+		                     '<span class="process-icon cm-10">'+
+		                         '<img class="icon-img" src="#" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+		                     '</span>'+
+		                 '</td>'+
+		                 */
+		                 '<td class="timecat-total-time-td">'+
+		                     //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+			                 '<span id="orderId_spOrderIdReplace" class="timer timecat-title-format" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
+				                 //+'<span class="time-cat-title">'+title+'</span>'
+				                 + titleEleObj
+			                 +'</span>'+
+		                 '</td>'+
+		                 '<td class="order-t-icon">'+
+		                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+							 '</a>'+
+		                 '</td>'+
+		             '</tr>';
 		});
 		
 		tbodyObj+='</tbody>';
