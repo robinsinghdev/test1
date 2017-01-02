@@ -429,6 +429,7 @@ ul#userRolesUl li.active a{
 
 .version-number-text, .privacy-policy-div{
 	text-align: right;
+	margin-right: 20px;
 }
 
 .timecat-total-time-td .timecat-title-format, .log-time-entry-div .process-details .process-name{

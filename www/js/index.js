@@ -500,7 +500,6 @@ function logoutBlockedDialogAction(button){
     }
 }
 
-
 function alertConfirm(buttonIndex){
 	
 }
@@ -1211,12 +1210,13 @@ function getSalesOrders(){
 					   		// Feedback row
 					   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
 					    				'<td class="order-p-icon  feedback-td">'+
-						                     '<span class="process-icon cm-10" style="vertical-align: top;>'+
+						                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
 						                         '<img class="icon-img" src="img/feedback-icon.png" >'+
 						                         '<span class="feedback-label">Feedback</span>'+
 						                     '</span>'+
 						                 '</td>'+
 						                 '<td class="timecat-total-time-td">'+
+						                 	'<img class="icon-img" src="img/feedback-icon.png" >'+
 						                 '</td>'+
 						             '</tr>';
 					   		
@@ -1424,7 +1424,7 @@ function successCBTimeCatTbodyObj() {
 			// Feedback row
 			tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
 						'<td class="order-p-icon feedback-td">'+
-			                 '<span class="process-icon cm-10" style="vertical-align: top;>'+
+			                 '<span class="process-icon cm-10" style="vertical-align: top;">'+
 			                     '<img class="icon-img" src="img/feedback-icon.png" >'+
 			                     '<span class="feedback-label">Feedback</span>'+
 			                 '</span>'+
