@@ -34,6 +34,7 @@ var time_cats_arr_curr_role=[];
 var grnCompRolesArr=[];
 var rolesArr=[];
 var globalLogTimeObj={};
+var jobFeedbackCatArr=[];
 var db;
 var closeSalesOrderDataObj,deleteLogTimeLocalObj;
 var notiAlertOkBtnText='Ok';
@@ -137,7 +138,6 @@ function checkConnectionForSync() {
 var successTimeTrackerIdArr=[];
 
 function callSyncWithServer() {
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -204,15 +204,66 @@ function errorCBSyncWithServer() {
 //Transaction success callback for SyncWithServer
 function successSyncWithServer() {
 	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
-	setTimeout(changeSyncStatusMsg, 5000);
+	//setTimeout(changeSyncStatusMsgToSyncSuccessful, 5000);
+	syncJobFeedbackFn();
 }
 
-function changeSyncStatusMsg(){
+function changeSyncStatusMsgToSyncSuccessful(){
 	$("#callSyncNowBtn").removeAttr("disabled");
 	$("#callSyncNowBtn").parent().attr('style', '');
 	
 	$("#syncStatusMsg").html("Sync Successful").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
 	$("#syncStatusMsg").fadeOut(20000,function() {});
+}
+
+function syncJobFeedbackFn() {
+	db.transaction(function (tx){
+		tx.executeSql('SELECT id,soid,grn_feedback_cat,feedback,identity FROM JOBFEEDBACK',[],function(tx,results){
+			var len = results.rows.length;
+			if(len == 0){
+				window.localStorage["sync_flag"] = 0;
+			}
+
+			if(len>0){
+				window.localStorage["sync_flag"] = 1;
+				for (var i = 0; i < len; i++) {
+					if(results.rows.item(i)['localStatus']=='complete'){
+						//alert("id"+results.rows.item(i)['id']);
+						var currid=results.rows.item(i)['id'];
+						var dataObj={};
+						dataObj.action='soAddFeedbackPost';
+						dataObj.grn_user=grnUserObj;
+						dataObj.lid= currid;
+						dataObj.id= results.rows.item(i)['id'];
+						dataObj.grn_feedback_cat= results.rows.item(i)['grn_feedback_cat'];
+						dataObj.feedback= results.rows.item(i)['feedback'];
+						dataObj.identity= results.rows.item(i)['identity'];
+
+						var response = syncJobFeedbackCall(dataObj);// saveLogTime(dataObj);
+					}
+				}
+			}
+		}, errorCB);
+	},errorCBSyncWithServer,successCBSyncJobFeedback);
+}
+
+//Transaction success callback for successCBSyncJobFeedback
+function successCBSyncJobFeedback() {
+	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
+	setTimeout(changeSyncStatusMsgToSyncSuccessful, 5000);
+}
+
+function changeSyncStatusMsgToCompleted(){
+	$("#callSyncNowBtn").removeAttr("disabled");
+	$("#callSyncNowBtn").parent().attr('style', '');
+	
+	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
+	$("#syncStatusMsg").fadeOut(20000,function() {});
+}
+
+function changeSyncStatusMsgToPending(){
+	$("#syncStatusMsg").html("");
+	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
 }
 
 function checkDataForSync() {
@@ -222,21 +273,23 @@ function checkDataForSync() {
                     var len = results.rows.length;
                     if(len == 0){
                     	window.localStorage["sync_flag"] = 0;
-                    	$("#callSyncNowBtn").removeAttr("disabled");
-                    	$("#callSyncNowBtn").parent().attr('style', '');
-                    	
-                    	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
-                		$("#syncStatusMsg").fadeOut(20000,function() {});
+                    	// changeSyncStatusMsgToCompleted();
                     }
                     
                     if(len>0){
                     	window.localStorage["sync_flag"] = 1;                    	
-                    	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
+                    	changeSyncStatusMsgToPending();
                     }
                 }, errorCB
             );
-       },errorCB,successCB
+       },errorCB,successCBCheckDataForSync
    );
+}
+
+//Transaction success callback for checkDataForSync
+function successCBCheckDataForSync() {
+	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
+	setTimeout(changeSyncStatusMsgToSyncSuccessful, 5000);
 }
 
 function checkDataForNotification() {
@@ -246,17 +299,12 @@ function checkDataForNotification() {
                     var len = results.rows.length;
                     if(len == 0){
                     	window.localStorage["sync_flag"] = 0;
-                    	$("#callSyncNowBtn").removeAttr("disabled");
-                    	$("#callSyncNowBtn").parent().attr('style', '');
-                    	
-                    	$("#syncStatusMsg").html("Data Already Synced").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
-                		$("#syncStatusMsg").fadeOut(20000,function() {});
+                    	changeSyncStatusMsgToCompleted();
                     }
                     
                     if(len>0){
                     	window.localStorage["sync_flag"] = 1;
-                    	$("#syncStatusMsg").html("");
-                    	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
+                    	changeSyncStatusMsgToPending();
                     }
                 }, errorCB
             );
@@ -264,9 +312,17 @@ function checkDataForNotification() {
    );
 }
 
+//Transaction success callback for checkDataForNotification
+function successCBCheckDataForNotification() {
+	if(window.localStorage["sync_flag"]==0){
+		
+	}else if(window.localStorage["sync_flag"]==1){
+		
+	}
+}
+
 function callSyncData() {
 	checkDataForNotification();
-	
 	connectionType=checkConnection();
 	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
@@ -588,8 +644,11 @@ function logout() {
 		window.localStorage["email"] = '';
 		window.localStorage["datasync"] = 0;
 		window.localStorage["solocal"] = 0;
+		
 		window.localStorage["tclocal"] = 0;
 		window.localStorage["sync_flag"] = 0;
+		
+		window.localStorage["jobFeedbackCatLocal"] = 0;
 		
 		time_cats_arr=[];
 		time_cats_arr_curr_role=[];
@@ -664,6 +723,7 @@ function handleLogin() {
 					window.localStorage["trackerValueSave"]=0;
 					window.localStorage["solocal"] = 0;
 					window.localStorage["tclocal"] = 0;
+					window.localStorage["jobFeedbackCatLocal"] = 0;
 					if (window.localStorage.getItem("sync_flag") === null ) {
 						window.localStorage["sync_flag"] = 0;
 					}
@@ -702,6 +762,7 @@ function handleLogin() {
 					window.localStorage["trackerValueSave"]=0;
 					window.localStorage["solocal"] = 0;
 					window.localStorage["tclocal"] = 0;
+					window.localStorage["jobFeedbackCatLocal"] = 0;
 					if (window.localStorage.getItem("sync_flag") === null ) {
 						window.localStorage["sync_flag"] = 0;
 					}
@@ -1208,7 +1269,7 @@ function getSalesOrders(){
 					   		
 					   		var tbodyObj='<tbody>';
 					   		// Feedback row
-					   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
+					   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories();return false;">'+
 					    				'<td class="order-p-icon  feedback-td">'+
 						                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
 						                         '<img class="icon-img" src="img/feedback-icon.png" >'+
@@ -1422,7 +1483,7 @@ function successCBTimeCatTbodyObj() {
 			var titleEleObj=timeCatTitleFormat(title);
 			
 			// Feedback row
-			tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="return false;">'+
+			tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories();return false;">'+
 						'<td class="order-p-icon feedback-td">'+
 			                 '<span class="process-icon cm-10" style="vertical-align: top;">'+
 			                     '<img class="icon-img" src="img/feedback-icon.png" >'+
@@ -1661,7 +1722,6 @@ function changeRoleOffline() {
 		navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
 	}
 }
-
 
 //callSyncData();
 function showChangeRoleBlockedDialog() {
@@ -2799,6 +2859,136 @@ function openPrivacyPolicyExternalApp(){
 	navigator.app.loadUrl(url, { openExternal:true });
 }
 
+// Get Job Feedback Categories
+function getFeedbackCategories(){
+	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"5"}; // Testing Data
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {
+		connectionType=checkConnection();
+		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			if(window.localStorage["jobFeedbackCatLocal"] == 1){
+				
+			}
+			else if(window.localStorage["jobFeedbackCatLocal"] == 0){
+				
+			}
+		}
+		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+			
+			if(window.localStorage["jobFeedbackCatLocal"] == 1 || jobFeedbackCatArr.length > 0){
+				window.localStorage["jobFeedbackCatLocal"] = 1;
+				showModal();
+				if(jobFeedbackCatArr.length > 0){
+					jobFeedbackSelectRefresh();
+				}else{
+					var jobFeedbackCatLocalLength= 1;
+					// Get Job Feedback Categories From Local
+					// FIXME
+				}
+		   		hideModal();
+				$.mobile.changePage('#job-feedback-page','slide');
+			}
+			
+			if(window.localStorage["jobFeedbackCatLocal"] == 0){
+				showModal();
+				$.ajax({
+					type : 'POST',
+					url:appUrl,
+					data:{action:'getFeedbacCats',grn_user:grnUserObj},
+					success:function(data){
+						var responseJson = $.parseJSON(data);
+				   		console.log(JSON.stringify(responseJson)); // For Testing
+				   		
+				   		if(responseJson.status== "success"){
+				   			jobFeedbackCatArr=responseJson["sales_orders"];
+				   			jobFeedbackSelectRefresh();
+				   			
+			   				db.transaction(function(tx) {
+			   					tx.executeSql("DELETE FROM JOBFEEDBACKCATEGORY ");
+			   				});
+			   				db.transaction(insertJobFeedbackCategory, errorCB, successCB);// Insert Job Feedback Time Category
+				   			
+					   		var tbodyObj='';
+					   		/*
+					   		salse_orders_arr=responseJson.sales_orders;
+					   		jQuery.each(salse_orders_arr, function(index,value) {
+					        	var jsonObj=value;
+					        	var id=jsonObj["id"];
+					        	var grn_companies_id=jsonObj["grn_companies_id"];
+					        	var sp_manager=jsonObj["sp_manager"];
+					        	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
+					        	var sp_jobName=jsonObj["sp_jobName"];
+					        	var HexColor=jsonObj["HexColor"];
+					        	
+					        	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
+						                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
+											     '<thead onclick="showHideTable(this);">'+
+											         '<tr>'+
+											             '<th class="sp-order " colspan="3" id="sp_order_name_'+id+'">'+
+											             		
+											             	'<div id="so_details_box" class="so-details-box" style="border-color: #'+HexColor+';">'+
+										                    	'<div class="so-color-box" style="background-color: #'+HexColor+';">'+
+										                    		'<span style="">&nbsp;</span>'+
+										                        '</div>'+
+										                        '<div class="so-name-box" >'+
+										                        	'<div class="so-name-block" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</div>'+
+										                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
+										                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
+													                 '</a>'+
+										                        '</div>'+
+										                    '</div>'+	
+											             '</th>'+
+											         '</tr>'+
+											     '</thead>'+
+											 '</table>'+
+										 '</div>';
+					        	$('#salesOrderMainDiv').append(divObj);
+					   		});
+					   		*/
+					   		
+					   		hideModal();
+					   	}
+					   	else if(responseJson.status== "fail"){
+						   navigator.notification.alert('No Categories Found.',alertConfirm,appName,notiAlertOkBtnText);
+					   	}
+				   		
+					   	$.mobile.changePage('#job-feedback-page','slide');
+					},
+					error:function(data,t,f){
+						hideModal();
+						navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);	
+					}
+				});
+			}
+		}
+		
+	}
+	else{
+		logout();
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
+	}
+}
+
+function jobFeedbackSelectRefresh(){
+	var el = $('#jobFeedbackSelect');
+	el.find('option').remove().end();
+	var currentValue;
+	jQuery.each(jobFeedbackCatArr, function(index,value) {
+		var jsonObj=value;
+		var id=jsonObj["id"];
+		var title=jsonObj["title"];
+		el.append('<option value="'+id+'">'+title+'</option>').val(id);
+
+		if(index==0){
+			firstSelectValue=id;
+		}
+	});
+	el.selectmenu();
+	el.selectmenu("refresh", true);
+}
+
 /* ----------------  Time Tracker Code Starts -------------------------  */
 
 var TimerFlag = 0;
@@ -3222,6 +3412,8 @@ function initializeDB(tx) {
 	tx.executeSql('CREATE TABLE IF NOT EXISTS TIMETRACKER (id integer primary key autoincrement,soTimeId integer,date text,time text,crewSize integer,grnStaffTimeId integer,timecat text,comment text,localStatus text,startTime text,secondsData integer, appTimestamp text, revision integer, title text)');
 	
 	tx.executeSql('CREATE TABLE IF NOT EXISTS GRNCOMPANYROLES (id integer primary key autoincrement,jsonArr text,createTime text)');
+	
+	tx.executeSql('CREATE TABLE IF NOT EXISTS JOBFEEDBACK (id integer primary key autoincrement,soid integer,grn_feedback_cat integer,feedback text,identity integer)');
 }
 
 //Transaction success callback
@@ -3464,6 +3656,76 @@ function getTimeTrackerList(){
             );
        },errorCB,successCB
    );
+}
+
+function insertJobFeedbackCategory(tx) {
+	var jobFeedbackCategoryCreateSql ='CREATE TABLE IF NOT EXISTS JOBFEEDBACKCATEGORY (id integer primary key autoincrement,pid integer,title text)';
+	jobFeedbackCategoryCreateSql=[];
+	tx.executeSql(jobFeedbackCategoryCreateSql,[], function (tx, results) {
+		jQuery.each(jobFeedbackCatArr, function(index,value) {
+			var jsonObj=value;
+			var pid=jsonObj["id"];
+			var title=jsonObj["title"];
+
+			tx.executeSql('INSERT INTO JOBFEEDBACKCATEGORY(pid, title) VALUES (?,?)',
+					[pid,title], function(tx, res) {
+			});
+		});
+		window.localStorage["jobFeedbackCatLocal"] = 1;
+	});
+}
+
+function insertJobFeedback(tx) {
+	var jobFeedbackCreateSql ='CREATE TABLE IF NOT EXISTS JOBFEEDBACK (id integer primary key autoincrement,soid integer,grn_feedback_cat integer,feedback text,identity integer)';
+	tx.executeSql(jobFeedbackCreateSql,[], function (tx, results) {
+		
+		var jsonObj=jobFeedbackJsonTemp;
+		var soid=jsonObj["soid"];
+		var grn_feedback_cat=jsonObj["grn_feedback_cat"];
+		var feedback=jsonObj["feedback"];
+		var identity=jsonObj["identity"];
+
+		tx.executeSql('INSERT INTO JOBFEEDBACK(soid,grn_feedback_cat,feedback,identity) VALUES (?,?,?,?)',
+				[soid,grn_feedback_cat,feedback,identity], function(tx, res) {
+		});
+		window.localStorage["jobFeedbackSync"] = 1;
+	});
+}
+
+function syncJobFeedbackCall(dataObj){
+	connectionType=checkConnection();
+	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+	   return false;
+	}
+	else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
+		$.ajax({
+			type : 'POST',
+			url:appUrl,
+			data:dataObj,
+			success:function(data){
+		   		var responseJson = $.parseJSON(data);
+		   		if(responseJson.status=='success') {
+		   			deleteJobFeedbackRow(dataObj["lid"]);
+		   			return true;
+		   		}
+		   		else if(responseJson.status=='fail') {
+		   			return false;
+		   		}
+			},
+			error:function(data,t,f){
+				hideModal();
+				return false;
+			}
+		});
+	}
+}
+
+function deleteJobFeedbackRow(id){
+	db.transaction(function (tx){
+		tx.executeSql(
+				'DELETE FROM JOBFEEDBACK WHERE id=?',[id], errorCB
+		);
+	}, successCB, errorCB);
 }
 
 
