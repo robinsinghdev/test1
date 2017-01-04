@@ -3762,11 +3762,11 @@ function syncJobFeedbackCall(dataObj){
 			data:dataObj,
 			success:function(data){
 		   		var responseJson = $.parseJSON(data);
-		   		if(responseJson.status=='success') {
+		   		if(responseJson.status==1) {
 		   			deleteJobFeedbackRow(dataObj["lid"]);
 		   			return true;
 		   		}
-		   		else if(responseJson.status=='fail') {
+		   		else {
 		   			return false;
 		   		}
 			},
