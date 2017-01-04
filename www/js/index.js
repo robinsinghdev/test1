@@ -203,17 +203,9 @@ function errorCBSyncWithServer() {
 
 //Transaction success callback for SyncWithServer
 function successSyncWithServer() {
-	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
+	changeSyncStatusMsgToSyncing();
 	//setTimeout(changeSyncStatusMsgToSyncSuccessful, 5000);
 	syncJobFeedbackFn();
-}
-
-function changeSyncStatusMsgToSyncSuccessful(){
-	$("#callSyncNowBtn").removeAttr("disabled");
-	$("#callSyncNowBtn").parent().attr('style', '');
-	
-	$("#syncStatusMsg").html("Sync Successful").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
-	$("#syncStatusMsg").fadeOut(20000,function() {});
 }
 
 function syncJobFeedbackFn() {
@@ -221,7 +213,7 @@ function syncJobFeedbackFn() {
 		tx.executeSql('SELECT id,soid,grn_feedback_cat,feedback,identity FROM JOBFEEDBACK',[],function(tx,results){
 			var len = results.rows.length;
 			if(len == 0){
-				window.localStorage["sync_flag"] = 0;
+				//window.localStorage["sync_flag"] = 0;
 			}
 
 			if(len>0){
@@ -249,8 +241,17 @@ function syncJobFeedbackFn() {
 
 //Transaction success callback for successCBSyncJobFeedback
 function successCBSyncJobFeedback() {
-	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
+	changeSyncStatusMsgToSyncing();
 	setTimeout(changeSyncStatusMsgToSyncSuccessful, 5000);
+}
+
+/* Sync Status Message Methods Starts */
+function changeSyncStatusMsgToSyncSuccessful(){
+	$("#callSyncNowBtn").removeAttr("disabled");
+	$("#callSyncNowBtn").parent().attr('style', '');
+	
+	$("#syncStatusMsg").html("Sync Successful").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
+	$("#syncStatusMsg").fadeOut(20000,function() {});
 }
 
 function changeSyncStatusMsgToCompleted(){
@@ -266,31 +267,10 @@ function changeSyncStatusMsgToPending(){
 	$("#callSyncNowBtn").parent().attr('style', 'background: #f0ad4e !important;border: 1px solid #f0ad4e;');
 }
 
-function checkDataForSync() {
-	db.transaction(
-       function (tx){
-            tx.executeSql('SELECT soTimeId,date,time FROM TIMETRACKER',[],function(tx,results){
-                    var len = results.rows.length;
-                    if(len == 0){
-                    	window.localStorage["sync_flag"] = 0;
-                    	// changeSyncStatusMsgToCompleted();
-                    }
-                    
-                    if(len>0){
-                    	window.localStorage["sync_flag"] = 1;                    	
-                    	changeSyncStatusMsgToPending();
-                    }
-                }, errorCB
-            );
-       },errorCB,successCBCheckDataForSync
-   );
-}
-
-//Transaction success callback for checkDataForSync
-function successCBCheckDataForSync() {
+function changeSyncStatusMsgToSyncing(){
 	$("#syncStatusMsg").html("Syncing...").fadeIn().stop().animate({opacity:'100'}).css('color','#000');
-	setTimeout(changeSyncStatusMsgToSyncSuccessful, 5000);
 }
+/* Sync Status Message Methods Ends */
 
 function checkDataForNotification() {
 	db.transaction(
@@ -299,25 +279,40 @@ function checkDataForNotification() {
                     var len = results.rows.length;
                     if(len == 0){
                     	window.localStorage["sync_flag"] = 0;
-                    	changeSyncStatusMsgToCompleted();
+                    	//changeSyncStatusMsgToCompleted();
                     }
-                    
-                    if(len>0){
+                    else if(len>0){
                     	window.localStorage["sync_flag"] = 1;
-                    	changeSyncStatusMsgToPending();
+                    	//changeSyncStatusMsgToPending(); 
                     }
                 }, errorCB
             );
-       },errorCB,successCB
+       },errorCB,successCBCheckDataForNotification
    );
 }
 
 //Transaction success callback for checkDataForNotification
 function successCBCheckDataForNotification() {
+	checkDataForSyncJobFeedback();
+}
+
+function checkDataForSyncJobFeedback() {
+	db.transaction(function (tx){
+		tx.executeSql('SELECT id,soid FROM JOBFEEDBACK',[],function(tx,results){
+			var len = results.rows.length;
+			if(len>0){
+				window.localStorage["sync_flag"] = 1;
+			}
+		}, errorCB);
+	},errorCBSyncWithServer,successCBCheckDataForSyncJobFeedback);
+}
+
+//Transaction success callback for successCBSyncJobFeedback
+function successCBCheckDataForSyncJobFeedback() {
 	if(window.localStorage["sync_flag"]==0){
-		
+		changeSyncStatusMsgToCompleted();
 	}else if(window.localStorage["sync_flag"]==1){
-		
+		changeSyncStatusMsgToPending();
 	}
 }
 
@@ -358,8 +353,7 @@ function syncDataDialogAction(button){
 
 function callSyncNow() {
 	checkDataForNotification();
-	connectionType=checkConnection();
-	
+	connectionType=checkConnection();	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 		$("#syncStatusMsg").html("Requires Internet").fadeIn().stop().animate({opacity:'100'}).css('color','#ff0000');
 		$("#syncStatusMsg").fadeOut(20000,function() {});
@@ -2194,7 +2188,6 @@ function callAddUpadteLogTime(obj,logTimeType){
 			var appTimestamp=dateTimestamp();
 			
 			var currtimetrackerid = window.localStorage.getItem("trackerkey");
-			// TODO
 			var updateQuery="UPDATE TIMETRACKER SET soTimeId='"+dataObj.grn_salesorderTime_id+"' ,date='"+dataObj.date+"' ,time='"+time+"' ,crewSize='"+dataObj.crew_size+"' ,grnStaffTimeId='"+dataObj.grn_staffTime_id+"' ,timecat='"+dataObj.grn_timeCat+"' ,comment='"+dataObj.comments+"' ,localStatus='complete' ,appTimestamp='"+appTimestamp+"' ,revision='"+revision+"' ,title='"+grnTimeCatTitle+"' WHERE id=' "+currtimetrackerid+" '";
 			
 			var result=addUpadteLogTimeTT(dataObj,updateQuery);
@@ -2885,7 +2878,7 @@ function getFeedbackCategories(){
 				}else{
 					var jobFeedbackCatLocalLength= 1;
 					// Get Job Feedback Categories From Local
-					// FIXME
+					getJobFeedbackCategoryList();
 				}
 		   		hideModal();
 				$.mobile.changePage('#job-feedback-page','slide');
@@ -3660,7 +3653,6 @@ function getTimeTrackerList(){
 
 function insertJobFeedbackCategory(tx) {
 	var jobFeedbackCategoryCreateSql ='CREATE TABLE IF NOT EXISTS JOBFEEDBACKCATEGORY (id integer primary key autoincrement,pid integer,title text)';
-	jobFeedbackCategoryCreateSql=[];
 	tx.executeSql(jobFeedbackCategoryCreateSql,[], function (tx, results) {
 		jQuery.each(jobFeedbackCatArr, function(index,value) {
 			var jsonObj=value;
@@ -3674,6 +3666,31 @@ function insertJobFeedbackCategory(tx) {
 		window.localStorage["jobFeedbackCatLocal"] = 1;
 	});
 }
+
+function getJobFeedbackCategoryList() {
+	jobFeedbackCatArr=[];
+	db.transaction(function (tx){
+		tx.executeSql('SELECT pid,title FROM JOBFEEDBACKCATEGORY',[],function(tx,results){
+			var len = results.rows.length;
+			if(len>0){
+				for (var i = 0; i < len; i++) {
+					if(results.rows.item(i)['localStatus']=='complete'){
+						var dataObj={};
+						dataObj.id= results.rows.item(i)['id'];
+						dataObj.title=grnUserObj;
+						jobFeedbackCatArr.push(dataObj);
+					}
+				}
+			}
+		}, errorCB);
+	},errorCBSyncWithServer,successCBGetJobFeedbackCategoryList);
+}
+
+//Transaction success callback for successCBGetJobFeedbackCategoryList
+function successCBGetJobFeedbackCategoryList() {
+	jobFeedbackSelectRefresh();
+}
+
 
 function insertJobFeedback(tx) {
 	var jobFeedbackCreateSql ='CREATE TABLE IF NOT EXISTS JOBFEEDBACK (id integer primary key autoincrement,soid integer,grn_feedback_cat integer,feedback text,identity integer)';
