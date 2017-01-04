@@ -2860,6 +2860,7 @@ function getFeedbackCategories(thiss){
 				navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 			}
 			hideModal();
+			resetForm('addJobFeedbackForm');
 			selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
 			$.mobile.changePage('#job-feedback-page','slide');
 		}
@@ -2874,6 +2875,7 @@ function getFeedbackCategories(thiss){
 					// Get Job Feedback Categories From Local
 					getJobFeedbackCategoryList();
 				}
+				resetForm('addJobFeedbackForm');
 				selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
 		   		hideModal();
 				$.mobile.changePage('#job-feedback-page','slide');
@@ -2898,13 +2900,13 @@ function getFeedbackCategories(thiss){
 			   				});
 			   				db.transaction(insertJobFeedbackCategory, errorCB, successCB);// Insert Job Feedback Time Category
 			   				
+			   				resetForm('addJobFeedbackForm');
 			   				selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
 					   		hideModal();
 					   	}
 					   	else if(responseJson.status== "fail"){
 						   navigator.notification.alert('No Categories Found.',alertConfirm,appName,notiAlertOkBtnText);
 					   	}
-				   		
 					   	$.mobile.changePage('#job-feedback-page','slide');
 					},
 					error:function(data,t,f){
@@ -2921,6 +2923,10 @@ function getFeedbackCategories(thiss){
 	}
 }
 
+function resetForm(formId){
+	$('form#'+formId)[0].reset();
+}
+
 function selectedSalesOrderData(salesOrderId, divId){
 	var order_name = $('#sp_order_name_' + salesOrderId).text();
     var currDataHexcolorVal = $('#sp_order_name_' + salesOrderId).find('.so-color-box').css('background-color');
@@ -2932,7 +2938,7 @@ function selectedSalesOrderData(salesOrderId, divId){
 	$so_name_box.find(".so-name-box").html(order_name_temp);
 	
 	if(divId=='jobFeedBackContentDiv'){
-		$("#addJobFeedbackForm").find('salesOrderId').val(salesOrderId);
+		$("#addJobFeedbackForm").find('#salesOrderId').val(salesOrderId);
 	}
 }
 
@@ -3009,22 +3015,24 @@ function callSaveJobFeedback(){
 
 function saveJobFeedbackFn(dataObj){
 	var jobFeedbackCreateSql ='CREATE TABLE IF NOT EXISTS JOBFEEDBACK (id integer primary key autoincrement,soid integer,grn_feedback_cat integer,feedback text,identity integer)';
-	tx.executeSql(jobFeedbackCreateSql,[], function (tx, results) {
-		
-		var jsonObj=jobFeedbackJsonTemp;
-		var soid=jsonObj["id"];
-		var grn_feedback_cat=jsonObj["grn_feedback_cat"];
-		var feedback=jsonObj["feedback"];
-		var identity=jsonObj["identity"];
-
-		tx.executeSql('INSERT INTO JOBFEEDBACK(soid,grn_feedback_cat,feedback,identity) VALUES (?,?,?,?)',
-				[soid,grn_feedback_cat,feedback,identity], function(tx, res) {
-			navigator.notification.alert('Feedback added successfully.',alertConfirm,appName,notiAlertOkBtnText);
+	db.transaction(function(tx) {
+		tx.executeSql(jobFeedbackCreateSql,[], function (tx, results) {
+			
+			var jsonObj=jobFeedbackJsonTemp;
+			var soid=jsonObj["id"];
+			var grn_feedback_cat=jsonObj["grn_feedback_cat"];
+			var feedback=jsonObj["feedback"];
+			var identity=jsonObj["identity"];
+	
+			tx.executeSql('INSERT INTO JOBFEEDBACK(soid,grn_feedback_cat,feedback,identity) VALUES (?,?,?,?)',
+					[soid,grn_feedback_cat,feedback,identity], function(tx, res) {
+				navigator.notification.alert('Feedback added successfully.',alertConfirm,appName,notiAlertOkBtnText);
+				$.mobile.changePage('#view-all-sales-order','slide');
+			});
+			window.localStorage["jobFeedbackSync"] = 1;
 			$.mobile.changePage('#view-all-sales-order','slide');
 		});
-		window.localStorage["jobFeedbackSync"] = 1;
-		$.mobile.changePage('#view-all-sales-order','slide');
-	});
+	});	
 }
 
 /* ----------------  Time Tracker Code Starts -------------------------  */

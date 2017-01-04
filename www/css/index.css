@@ -517,5 +517,6 @@ ul#userRolesUl li.active a{
 .feedback-td .feedback-label{
 	color: blue;
 	margin-left: 5px;
+	vertical-align: top;
 }
 
