@@ -209,6 +209,9 @@ function successSyncWithServer() {
 }
 
 function syncJobFeedbackFn() {
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
 	db.transaction(function (tx){
 		tx.executeSql('SELECT id,soid,grn_feedback_cat,feedback,identity FROM JOBFEEDBACK',[],function(tx,results){
 			var len = results.rows.length;
@@ -219,7 +222,7 @@ function syncJobFeedbackFn() {
 			if(len>0){
 				window.localStorage["sync_flag"] = 1;
 				for (var i = 0; i < len; i++) {
-					if(results.rows.item(i)['localStatus']=='complete'){
+					//if(results.rows.item(i)['localStatus']=='complete'){
 						//alert("id"+results.rows.item(i)['id']);
 						var currid=results.rows.item(i)['id'];
 						var dataObj={};
@@ -232,7 +235,7 @@ function syncJobFeedbackFn() {
 						dataObj.identity= results.rows.item(i)['identity'];
 
 						var response = syncJobFeedbackCall(dataObj);// saveLogTime(dataObj);
-					}
+					//}
 				}
 			}
 		}, errorCB);
@@ -3018,7 +3021,7 @@ function saveJobFeedbackFn(dataObj){
 	db.transaction(function(tx) {
 		tx.executeSql(jobFeedbackCreateSql,[], function (tx, results) {
 			
-			var jsonObj=jobFeedbackJsonTemp;
+			var jsonObj=dataObj;
 			var soid=jsonObj["id"];
 			var grn_feedback_cat=jsonObj["grn_feedback_cat"];
 			var feedback=jsonObj["feedback"];
