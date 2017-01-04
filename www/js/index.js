@@ -669,8 +669,8 @@ function handleLogin() {
 	$("#submitButton",form).attr("disabled","disabled");
 	var u = $("#username", form).val();
 	var p = $("#password", form).val();
-	u='dsom@som.com'; // For testing
-	p='123'; // For testing
+	// u=''; // For testing
+	// p=''; // For testing
 	
 	if(u != '' && p!= '') {
 		
@@ -1477,16 +1477,16 @@ function successCBTimeCatTbodyObj() {
 			var titleEleObj=timeCatTitleFormat(title);
 			
 			// Feedback row
-			tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories(this);return false;">'+
-						'<td class="order-p-icon feedback-td">'+
-			                 '<span class="process-icon cm-10" style="vertical-align: top;">'+
-			                     '<img class="icon-img" src="img/feedback-icon.png" >'+
-			                     '<span class="feedback-label">Feedback</span>'+
-			                 '</span>'+
-			             '</td>'+
-			             '<td class="timecat-total-time-td">'+
-			             '</td>'+
-			         '</tr>';
+	   		tbodyObj+='<tr id="job_feedback" class="job-feedback-tr" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories(this);return false;">'+
+	    				'<td class="order-p-icon  feedback-td">'+
+		                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
+		                         '<img class="icon-img" src="img/feedback-icon.png" >'+
+		                         '<span class="feedback-label">Feedback</span>'+
+		                     '</span>'+
+		                 '</td>'+
+		                 '<td class="timecat-total-time-td">'+
+		                 '</td>'+
+		             '</tr>';
 			
 			tbodyObj+='<tr>'+
 						/* // Remove this
@@ -3730,12 +3730,12 @@ function getJobFeedbackCategoryList() {
 			var len = results.rows.length;
 			if(len>0){
 				for (var i = 0; i < len; i++) {
-					if(results.rows.item(i)['localStatus']=='complete'){
+					//if(results.rows.item(i)['localStatus']=='complete'){
 						var dataObj={};
-						dataObj.id= results.rows.item(i)['id'];
-						dataObj.title=grnUserObj;
+						dataObj.id= results.rows.item(i)['pid'];
+						dataObj.title=results.rows.item(i)['title'];
 						jobFeedbackCatArr.push(dataObj);
-					}
+					//}
 				}
 			}
 		}, errorCB);
