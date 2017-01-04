@@ -1263,7 +1263,7 @@ function getSalesOrders(){
 					   		
 					   		var tbodyObj='<tbody>';
 					   		// Feedback row
-					   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories();return false;">'+
+					   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories(this);return false;">'+
 					    				'<td class="order-p-icon  feedback-td">'+
 						                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
 						                         '<img class="icon-img" src="img/feedback-icon.png" >'+
@@ -1477,7 +1477,7 @@ function successCBTimeCatTbodyObj() {
 			var titleEleObj=timeCatTitleFormat(title);
 			
 			// Feedback row
-			tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories();return false;">'+
+			tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories(this);return false;">'+
 						'<td class="order-p-icon feedback-td">'+
 			                 '<span class="process-icon cm-10" style="vertical-align: top;">'+
 			                     '<img class="icon-img" src="img/feedback-icon.png" >'+
@@ -2853,20 +2853,29 @@ function openPrivacyPolicyExternalApp(){
 }
 
 // Get Job Feedback Categories
-function getFeedbackCategories(){
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"5"}; // Testing Data
+function getFeedbackCategories(thiss){
+	var salesOrderId=$(thiss).data('orderid');
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
 		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
+			showModal();
 			if(window.localStorage["jobFeedbackCatLocal"] == 1){
-				
+				if(jobFeedbackCatArr.length > 0){
+					jobFeedbackSelectRefresh();
+				}else{
+					// Get Job Feedback Categories From Local
+					getJobFeedbackCategoryList();
+				}
 			}
 			else if(window.localStorage["jobFeedbackCatLocal"] == 0){
-				
+				navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 			}
+			hideModal();
+			selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
+			$.mobile.changePage('#job-feedback-page','slide');
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
@@ -2876,10 +2885,10 @@ function getFeedbackCategories(){
 				if(jobFeedbackCatArr.length > 0){
 					jobFeedbackSelectRefresh();
 				}else{
-					var jobFeedbackCatLocalLength= 1;
 					// Get Job Feedback Categories From Local
 					getJobFeedbackCategoryList();
 				}
+				selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
 		   		hideModal();
 				$.mobile.changePage('#job-feedback-page','slide');
 			}
@@ -2902,45 +2911,8 @@ function getFeedbackCategories(){
 			   					tx.executeSql("DELETE FROM JOBFEEDBACKCATEGORY ");
 			   				});
 			   				db.transaction(insertJobFeedbackCategory, errorCB, successCB);// Insert Job Feedback Time Category
-				   			
-					   		var tbodyObj='';
-					   		/*
-					   		salse_orders_arr=responseJson.sales_orders;
-					   		jQuery.each(salse_orders_arr, function(index,value) {
-					        	var jsonObj=value;
-					        	var id=jsonObj["id"];
-					        	var grn_companies_id=jsonObj["grn_companies_id"];
-					        	var sp_manager=jsonObj["sp_manager"];
-					        	var sp_salesorderNumber=jsonObj["sp_salesorderNumber"];
-					        	var sp_jobName=jsonObj["sp_jobName"];
-					        	var HexColor=jsonObj["HexColor"];
-					        	
-					        	var divObj='<div id="sales-table-div_'+id+'" class="sales-table-div">'+
-						                		'<table id="sp_order_'+id+'"  class="order-box ui-table" style="border: 1px solid #EEE8E8;" data-role="table" data-mode="" class="ui-responsive table-stroke sales-table">'+
-											     '<thead onclick="showHideTable(this);">'+
-											         '<tr>'+
-											             '<th class="sp-order " colspan="3" id="sp_order_name_'+id+'">'+
-											             		
-											             	'<div id="so_details_box" class="so-details-box" style="border-color: #'+HexColor+';">'+
-										                    	'<div class="so-color-box" style="background-color: #'+HexColor+';">'+
-										                    		'<span style="">&nbsp;</span>'+
-										                        '</div>'+
-										                        '<div class="so-name-box" >'+
-										                        	'<div class="so-name-block" id="so_name"> #'+sp_salesorderNumber+' '+sp_jobName+'</div>'+
-										                        	'<a href="#" onclick="getLogTimeListOfOrder(this); return false;" class="process-report pull-right" data-order="'
-										                        		+id+'" data-oname="'+sp_jobName+' #'+sp_salesorderNumber+'" data-hexcolor="#'+HexColor+'" >Report'+
-													                 '</a>'+
-										                        '</div>'+
-										                    '</div>'+	
-											             '</th>'+
-											         '</tr>'+
-											     '</thead>'+
-											 '</table>'+
-										 '</div>';
-					        	$('#salesOrderMainDiv').append(divObj);
-					   		});
-					   		*/
-					   		
+			   				
+			   				selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
 					   		hideModal();
 					   	}
 					   	else if(responseJson.status== "fail"){
@@ -2956,12 +2928,22 @@ function getFeedbackCategories(){
 				});
 			}
 		}
-		
 	}
 	else{
 		logout();
 		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
 	}
+}
+
+function selectedSalesOrderData(salesOrderId, divId){
+	var order_name = $('#sp_order_name_' + salesOrderId).text();
+    var currDataHexcolorVal = $('#sp_order_name_' + salesOrderId).find('.so-color-box').css('background-color');
+    
+	var $so_name_box = $('#'+divId).find('.so-details-box');
+	$so_name_box.css('border-color',currDataHexcolorVal);
+	$so_name_box.find('.so-color-box').css('background-color',currDataHexcolorVal);
+	var order_name_temp=order_name.replace("Report","");
+	$so_name_box.find(".so-name-box").html(order_name_temp);
 }
 
 function jobFeedbackSelectRefresh(){
