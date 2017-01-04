@@ -423,14 +423,13 @@
 					</div>
 	
 					<div id="addJobfeedbackMainDiv" class="add-log-time-main-div">
-						<form id="addJobfeedbackForm">
+						<form id="addJobFeedbackForm">
 							<div class="display-none">
-								<input type="hidden" id="staffTimeId" value=""> <input
-									type="hidden" id="soTimeId" value="">
+								<input type="hidden" id="salesOrderId" value="">
 							</div>
 	
 							<div class="ui-field-contain">
-								<label for="Crew Size">Category </label> 
+								<label for="jobFeedbackSelect">Category </label> 
 								<select
 									name="jobFeedbackSelect"
 									id="jobFeedbackSelect" data-mini="true">
@@ -439,7 +438,7 @@
 							</div>
 	
 							<div class="st-full-width">
-								<div class="rev-checkbox-div">
+								<div class="">
 									<fieldset data-role="controlgroup" data-iconpos="left">
 										<input id="hideIdentity" name="hideIdentity" type="checkbox">
 										<label for="hideIdentity">Hide Identity</label>
@@ -453,12 +452,10 @@
 									id="feedbackComment" style="width: 65% !important;"></textarea>
 							</div>
 	
-							<div class="ui-grid-a">
-								<div class="ui-block-a log-data-show"></div>
-	
-								<div class="ui-block-b">
+							<div class="">
+								<div class="">
 									<input type="button" id="jobFeedbackSubmitBtn" value="Submit"
-										data-flag="add" onclick="callAddUpadteJobFeedback(this);" />
+										data-flag="add" onclick="callSaveJobFeedback();" />
 								</div>
 							</div>
 	

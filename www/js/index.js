@@ -389,8 +389,6 @@ function callReconnectNow() {
 
 function callSaveLogTime(obj){
 	connectionType=checkConnection();
-	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -1263,7 +1261,7 @@ function getSalesOrders(){
 					   		
 					   		var tbodyObj='<tbody>';
 					   		// Feedback row
-					   		tbodyObj+='<tr id="job_feedback" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories(this);return false;">'+
+					   		tbodyObj+='<tr id="job_feedback" class="job-feedback-tr" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories(this);return false;">'+
 					    				'<td class="order-p-icon  feedback-td">'+
 						                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
 						                         '<img class="icon-img" src="img/feedback-icon.png" >'+
@@ -1271,7 +1269,6 @@ function getSalesOrders(){
 						                     '</span>'+
 						                 '</td>'+
 						                 '<td class="timecat-total-time-td">'+
-						                 	'<img class="icon-img" src="img/feedback-icon.png" >'+
 						                 '</td>'+
 						             '</tr>';
 					   		
@@ -2109,26 +2106,15 @@ function callAddUpadteLogTime(obj,logTimeType){
 		dataObj.action='addLogTime';
 		dataObj.grn_user=grnUserObj;
 		dataObj.nickname= window.localStorage["nickname"];
-		
 		dataObj.grn_timeCat= grnTimeCat;
 		dataObj.grn_timeCat= grnTimeCat;//+"_revision";
 		
-		//console.log("isRevisionCheckbox--   " + $("#isRevisionCheckbox").is(':checked'));
 		var revision=0;
 		if($("#isRevisionCheckbox").is(':checked')){
 			revision=1;
 		}
 		dataObj.revision= revision;
 		dataObj.title= grnTimeCatTitle;
-		
-		/*
-		if(logTimeType=='logTime'){
-			dataObj.revision= 0;
-		}
-		else if(logTimeType=='logTimeRevision'){
-			dataObj.revision= 1;
-		}
-		*/
 		dataObj.grn_salesorderTime_id= $addUpdateLogTimeForm.find('#soTimeId').val();
 		dataObj.date= $addUpdateLogTimeForm.find('#logDate').val();
 		
@@ -2944,6 +2930,10 @@ function selectedSalesOrderData(salesOrderId, divId){
 	$so_name_box.find('.so-color-box').css('background-color',currDataHexcolorVal);
 	var order_name_temp=order_name.replace("Report","");
 	$so_name_box.find(".so-name-box").html(order_name_temp);
+	
+	if(divId=='jobFeedBackContentDiv'){
+		$("#addJobFeedbackForm").find('salesOrderId').val(salesOrderId);
+	}
 }
 
 function jobFeedbackSelectRefresh(){
@@ -2962,6 +2952,79 @@ function jobFeedbackSelectRefresh(){
 	});
 	el.selectmenu();
 	el.selectmenu("refresh", true);
+}
+
+function callSaveJobFeedback(){
+	connectionType=checkConnection();
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
+	if(grnUserObj != '') {
+		var $addJobFeedbackForm = $('form#addJobFeedbackForm');
+		
+		var jobFeedbackCatId=$addJobFeedbackForm.find('#jobFeedbackSelect option:selected').val();
+		var jobFeedbackCatTitle=$addJobFeedbackForm.find('#jobFeedbackSelect option:selected').text();
+		if(typeof jobFeedbackCatId === 'undefined'){
+			alert('Please select the category.');
+			return false;
+		}
+		if(jobFeedbackCatId == ''){
+			alert('Please select the category.');
+			return false;
+		}
+		
+		var hideIdentity=0;
+		if($("#hideIdentity").is(':checked')){
+			hideIdentity=1;
+		}
+		//TODO
+		var salesOrderId= $addJobFeedbackForm.find('#salesOrderId').val();
+		var feedbackComment= $addJobFeedbackForm.find('#feedbackComment').val();
+		
+		if(feedbackComment == ''){
+			alert('Please input feedback.');
+			return false;
+		}
+		
+		if(salesOrderId == ''){
+			alert('Please again select the Sales Order.');
+			return false;
+		}
+		
+		var dataObj={};
+		dataObj.action='soAddFeedbackPost';
+		dataObj.grn_user=grnUserObj;
+		dataObj.id=salesOrderId;
+		dataObj.grn_feedback_cat= jobFeedbackCatId;
+		dataObj.feedback= feedbackComment;
+		dataObj.identity= hideIdentity;
+		
+		saveJobFeedbackFn(dataObj);
+	}
+	else{
+		logout();
+		navigator.notification.alert('Please login again.',alertConfirm,appName,notiAlertOkBtnText);
+	}
+}
+
+function saveJobFeedbackFn(dataObj){
+	var jobFeedbackCreateSql ='CREATE TABLE IF NOT EXISTS JOBFEEDBACK (id integer primary key autoincrement,soid integer,grn_feedback_cat integer,feedback text,identity integer)';
+	tx.executeSql(jobFeedbackCreateSql,[], function (tx, results) {
+		
+		var jsonObj=jobFeedbackJsonTemp;
+		var soid=jsonObj["id"];
+		var grn_feedback_cat=jsonObj["grn_feedback_cat"];
+		var feedback=jsonObj["feedback"];
+		var identity=jsonObj["identity"];
+
+		tx.executeSql('INSERT INTO JOBFEEDBACK(soid,grn_feedback_cat,feedback,identity) VALUES (?,?,?,?)',
+				[soid,grn_feedback_cat,feedback,identity], function(tx, res) {
+			navigator.notification.alert('Feedback added successfully.',alertConfirm,appName,notiAlertOkBtnText);
+			$.mobile.changePage('#view-all-sales-order','slide');
+		});
+		window.localStorage["jobFeedbackSync"] = 1;
+		$.mobile.changePage('#view-all-sales-order','slide');
+	});
 }
 
 /* ----------------  Time Tracker Code Starts -------------------------  */
@@ -3673,26 +3736,11 @@ function successCBGetJobFeedbackCategoryList() {
 	jobFeedbackSelectRefresh();
 }
 
-
-function insertJobFeedback(tx) {
-	var jobFeedbackCreateSql ='CREATE TABLE IF NOT EXISTS JOBFEEDBACK (id integer primary key autoincrement,soid integer,grn_feedback_cat integer,feedback text,identity integer)';
-	tx.executeSql(jobFeedbackCreateSql,[], function (tx, results) {
-		
-		var jsonObj=jobFeedbackJsonTemp;
-		var soid=jsonObj["soid"];
-		var grn_feedback_cat=jsonObj["grn_feedback_cat"];
-		var feedback=jsonObj["feedback"];
-		var identity=jsonObj["identity"];
-
-		tx.executeSql('INSERT INTO JOBFEEDBACK(soid,grn_feedback_cat,feedback,identity) VALUES (?,?,?,?)',
-				[soid,grn_feedback_cat,feedback,identity], function(tx, res) {
-		});
-		window.localStorage["jobFeedbackSync"] = 1;
-	});
-}
-
 function syncJobFeedbackCall(dataObj){
 	connectionType=checkConnection();
+	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
+	var grnUserObj=JSON.stringify(grnUserData);
+	
 	if(connectionType=="Unknown connection" || connectionType=="No network connection"){
 	   return false;
 	}

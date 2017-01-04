@@ -146,6 +146,8 @@ a.app-link.active{
     width: 40px;
 }    
 
+
+
 td.td-danger {
     background-color: #f2dede;
     border-color: #eed3d7;
@@ -156,6 +158,20 @@ td.td-danger {
    /*  padding: 10px 0; */
    text-align: center;
 }
+
+/* Sales Order Job Feedback CSS Starts  */
+.order-box .job-feedback-tr td {
+   text-align: left;
+}
+.order-box .job-feedback-tr .process-icon {
+   vertical-align: top;
+	line-height: 30px;
+}
+.order-box .job-feedback-tr .process-icon img{
+	width: 30px;
+}
+/* Sales Order Job Feedback CSS Ends  */
+
 .order-box .timer {
     text-align: center;
     display: inline-block;
@@ -430,6 +446,10 @@ ul#userRolesUl li.active a{
 .version-number-text, .privacy-policy-div{
 	text-align: right;
 	margin-right: 20px;
+}
+
+#home-page .version-number-text{
+	margin-right: 10px;
 }
 
 .timecat-total-time-td .timecat-title-format, .log-time-entry-div .process-details .process-name{
