@@ -3016,9 +3016,7 @@ function callSaveJobFeedback(){
 		dataObj.grn_feedback_cat= jobFeedbackCatId;
 		dataObj.feedback= feedbackComment;
 		dataObj.identity= hideIdentity;
-		
-		console.log("feedback  -- " + JSON.stringify(dataObj) + "--");
-		
+		//console.log("feedback  -- " + JSON.stringify(dataObj) + "--");
 		saveJobFeedbackFn(dataObj);
 	}
 	else{
