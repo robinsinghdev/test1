@@ -2862,6 +2862,8 @@ function gotoFeedbackPage(thiss){
 	getFeedbackCategories();
 	
 	resetForm('addJobFeedbackForm');
+	$("#hideIdentity").removeAttr("checked");
+	$("#hideIdentity").checkboxradio().checkboxradio("refresh");
 	selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
 	hideModal();
 	$.mobile.changePage('#job-feedback-page','slide');
@@ -2906,8 +2908,6 @@ function getFeedbackCategories(){
 					data:{action:'getFeedbacCats',grn_user:grnUserObj},
 					success:function(data){
 						var responseJson = $.parseJSON(data);
-				   		console.log(JSON.stringify(responseJson)); // For Testing
-				   		
 				   		if(responseJson.status== "success"){
 				   			jobFeedbackCatArr=responseJson["sales_orders"];
 				   			jobFeedbackSelectRefresh();
