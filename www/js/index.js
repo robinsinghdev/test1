@@ -222,8 +222,6 @@ function syncJobFeedbackFn() {
 			if(len>0){
 				window.localStorage["sync_flag"] = 1;
 				for (var i = 0; i < len; i++) {
-					//if(results.rows.item(i)['localStatus']=='complete'){
-						//alert("id"+results.rows.item(i)['id']);
 						var currid=results.rows.item(i)['id'];
 						var dataObj={};
 						dataObj.action='soAddFeedbackPost';
@@ -233,9 +231,8 @@ function syncJobFeedbackFn() {
 						dataObj.grn_feedback_cat= results.rows.item(i)['grn_feedback_cat'];
 						dataObj.feedback= results.rows.item(i)['feedback'];
 						dataObj.identity= results.rows.item(i)['identity'];
-
-						var response = syncJobFeedbackCall(dataObj);// saveLogTime(dataObj);
-					//}
+						//console.log(JSON.stringify(dataObj));
+						var response = syncJobFeedbackCall(dataObj);
 				}
 			}
 		}, errorCB);
