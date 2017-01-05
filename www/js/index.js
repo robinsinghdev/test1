@@ -2957,7 +2957,7 @@ function jobFeedbackSelectRefresh(){
 	var el = $('#jobFeedbackSelect');
 	el.find('option').remove().end();
 	var currentValue;
-	el.append('<option value="">Select Category</option>').val(id);
+	el.append('<option value="">Select Category</option>').val('');
 	jQuery.each(jobFeedbackCatArr, function(index,value) {
 		var jsonObj=value;
 		var id=jsonObj["id"];
