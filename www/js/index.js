@@ -1250,27 +1250,29 @@ function getSalesOrders(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
 			if(window.localStorage["solocal"] == 1){
-				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
-				showModal();
-				// TIME CAT BLANK ISSUE TASK
+				// window.localStorage["tclocal"] == 0
+				window.localStorage["solocal"] = 0;
+				getCategoriesForTimeTracking();
 				
+				/*
+				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
+				// TIME CAT BLANK ISSUE TASK
 				if(salesTableDivLength == 0){
 					window.localStorage["solocal"] = 0;
 				}
-				
-				/*
+				showModal();
 				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
 					$('#salesOrderMainDiv').html('');
 					window.localStorage["timecatfetchflag"] = 0;
 					timeCatTbodyObj();
 				}
-				*/
 		   		showRunningTimeTracker();
 		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
+				*/
 			}
-			
-			if(window.localStorage["solocal"] == 0){
+			else{
+			// if(window.localStorage["solocal"] == 0){
 				showModal();
 				$.ajax({
 					type : 'POST',
