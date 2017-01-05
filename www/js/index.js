@@ -713,8 +713,8 @@ function handleLogin() {
 					//window.localStorage["permissions"] = grnUser["permissions"];
 					window.localStorage["email"] = grnUser["email"];
 					window.localStorage["trackerValueSave"]=0;
-					window.localStorage["solocal"] = 0;
-					window.localStorage["tclocal"] = 0;
+					//window.localStorage["solocal"] = 0;
+					//window.localStorage["tclocal"] = 0;
 					window.localStorage["jobFeedbackCatLocal"] = 0;
 					if (window.localStorage.getItem("sync_flag") === null ) {
 						window.localStorage["sync_flag"] = 0;
@@ -1062,13 +1062,8 @@ function scrollToSalesOrder(){
 }
 
 function getCategoriesForTimeTracking(){
-	// var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"5"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
-	//alert("grn_companies_id--" + window.localStorage.getItem("grn_companies_id") + "permissions--" + window.localStorage.getItem("permissions"));
-	
 	var grnUserObj=JSON.stringify(grnUserData);
-	
-	// console.log ("getCategoriesForTimeTracking-- " + grnUserObj); // For Testing
 	
 	if(grnUserObj != '') {
 		connectionType=checkConnection();
@@ -1077,7 +1072,8 @@ function getCategoriesForTimeTracking(){
 				getSalesOrders();
 			}
 			else if(window.localStorage["tclocal"] == 0){
-				navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+				getSalesOrders();
+				//navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 			}
 			
 		}
@@ -1229,7 +1225,17 @@ function getSalesOrders(){
 				$.mobile.changePage('#view-all-sales-order','slide');
 			}
 			else if(window.localStorage["solocal"] == 0){
-				navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+				//navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+				
+				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
+				showModal();
+				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
+					$('#salesOrderMainDiv').html('');
+					window.localStorage["timecatfetchflag"] = 0;
+					timeCatTbodyObj();
+				}
+		   		hideModal();
+				$.mobile.changePage('#view-all-sales-order','slide');
 			}
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -1432,6 +1438,11 @@ function timeCatTbodyObj(){// get time categories
 		       function (tx){
 		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,grnrole,revision,status,grn_companies_id FROM TIMECATEGORY',[],function(tx,results){
 		                    var len = results.rows.length;
+		                    if(len==0){
+		    					window.localStorage["tclocal"] = 0;
+		    					//window.localStorage["solocal"] = 0;
+		                    }
+		                    
 		                    if(len>0){
 		                        for (var i = 0; i < len; i++) {
 		                        	var jsonObj={};
@@ -1456,6 +1467,7 @@ function timeCatTbodyObj(){// get time categories
 		                   	    		time_cats_arr_curr_role.push(jsonObj);
 		                   	    	}
 		                        }
+		                        window.localStorage["tclocal"] = 1;
 		                    }
 		                }, errorCB
 		            );
@@ -1474,56 +1486,60 @@ function successCBTimeCatTbodyObj() {
 	}
 	else{
 	// if(window.localStorage["timecatfetchflag"]==0){
-		var tbodyObj='<tbody>';
-		
-		// Feedback row
-   		tbodyObj+='<tr id="job_feedback" class="job-feedback-tr" data-orderid="spOrderIdReplace" onclick="gotoFeedbackPage(this);return false;">'+
-    				'<td class="order-p-icon  feedback-td">'+
-	                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
-	                         '<img class="icon-img" src="img/feedback-icon.png" >'+
-	                         '<span class="feedback-label">Feedback</span>'+
-	                     '</span>'+
-	                 '</td>'+
-	                 '<td class="timecat-total-time-td">'+
-	                 '</td>'+
-	             '</tr>';
-		
-		jQuery.each(time_cats_arr_curr_role, function(index,value) {
-			var jsonObj=value;
-			var id=jsonObj["id"];
-			var timeCats=jsonObj["id"];//jsonObj["timeCats"];
-			var title=jsonObj["title"];
-			var grn_roles_id=jsonObj["grn_roles_id"];
-			var revision=jsonObj["revision"];
-			var status=jsonObj["status"];
-			var titleEleObj=timeCatTitleFormat(title);
+		if(window.localStorage["tclocal"]==1){
+			var tbodyObj='<tbody>';
 			
-			tbodyObj+='<tr>'+
-						/* // Remove this
-		                 '<td class="order-p-icon">'+
-		                     '<span class="process-icon cm-10">'+
-		                         '<img class="icon-img" src="#" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+			// Feedback row
+	   		tbodyObj+='<tr id="job_feedback" class="job-feedback-tr" data-orderid="spOrderIdReplace" onclick="gotoFeedbackPage(this);return false;">'+
+	    				'<td class="order-p-icon  feedback-td">'+
+		                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
+		                         '<img class="icon-img" src="img/feedback-icon.png" >'+
+		                         '<span class="feedback-label">Feedback</span>'+
 		                     '</span>'+
 		                 '</td>'+
-		                 */
 		                 '<td class="timecat-total-time-td">'+
-		                     //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
-			                 '<span id="orderId_spOrderIdReplace" class="timer timecat-title-format" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
-				                 //+'<span class="time-cat-title">'+title+'</span>'
-				                 + titleEleObj
-			                 +'</span>'+
-		                 '</td>'+
-		                 '<td class="order-t-icon">'+
-		                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
-							 '</a>'+
 		                 '</td>'+
 		             '</tr>';
-		});
-		
-		tbodyObj+='</tbody>';
-		tbodyObjGlobal=tbodyObj;
-		populateSalesOrders(tbodyObjGlobal);
-	}	
+			
+			jQuery.each(time_cats_arr_curr_role, function(index,value) {
+				var jsonObj=value;
+				var id=jsonObj["id"];
+				var timeCats=jsonObj["id"];//jsonObj["timeCats"];
+				var title=jsonObj["title"];
+				var grn_roles_id=jsonObj["grn_roles_id"];
+				var revision=jsonObj["revision"];
+				var status=jsonObj["status"];
+				var titleEleObj=timeCatTitleFormat(title);
+				
+				tbodyObj+='<tr>'+
+							/* // Remove this
+			                 '<td class="order-p-icon">'+
+			                     '<span class="process-icon cm-10">'+
+			                         '<img class="icon-img" src="#" id="timer_img_spOrderIdReplace_'+timeCats+'" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+			                     '</span>'+
+			                 '</td>'+
+			                 */
+			                 '<td class="timecat-total-time-td">'+
+			                     //'<span id="orderId_spOrderIdReplace" class="timer">--:-- hrs</span>'+
+				                 '<span id="orderId_spOrderIdReplace" class="timer timecat-title-format" data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace" >'
+					                 //+'<span class="time-cat-title">'+title+'</span>'
+					                 + titleEleObj
+				                 +'</span>'+
+			                 '</td>'+
+			                 '<td class="order-t-icon">'+
+			                     '<a class="timer timer-icon clock" id="timer_spOrderIdReplace_'+timeCats+'" data-icon="flat-time" data-order="spOrderIdReplace" data-timecat="'+timeCats+'" data-action="clock" onclick="logTimer(this);return false;">'+
+								 '</a>'+
+			                 '</td>'+
+			             '</tr>';
+			});
+			
+			tbodyObj+='</tbody>';
+			tbodyObjGlobal=tbodyObj;
+			populateSalesOrders(tbodyObjGlobal);
+		}else{
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+		}	
+	}
 }
 
 //Transaction error callback
