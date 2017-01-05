@@ -1253,17 +1253,18 @@ function getSalesOrders(){
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				showModal();
 				// TIME CAT BLANK ISSUE TASK
-				/*
+				
 				if(salesTableDivLength == 0){
 					window.localStorage["solocal"] = 0;
 				}
-				*/
+				
+				/*
 				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
 					$('#salesOrderMainDiv').html('');
 					window.localStorage["timecatfetchflag"] = 0;
 					timeCatTbodyObj();
 				}
-				
+				*/
 		   		showRunningTimeTracker();
 		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
