@@ -713,6 +713,15 @@ function handleLogin() {
 					//window.localStorage["permissions"] = grnUser["permissions"];
 					window.localStorage["email"] = grnUser["email"];
 					window.localStorage["trackerValueSave"]=0;
+					
+					if(window.localStorage["solocal"] != undefined) {
+						window.localStorage["solocal"] = 0;
+					}
+					
+					if(window.localStorage["tclocal"] != undefined) {
+						window.localStorage["tclocal"] = 0;
+					}
+							
 					//window.localStorage["solocal"] = 0;
 					//window.localStorage["tclocal"] = 0;
 					window.localStorage["jobFeedbackCatLocal"] = 0;
