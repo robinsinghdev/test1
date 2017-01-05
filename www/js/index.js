@@ -1240,10 +1240,17 @@ function getSalesOrders(){
 			if(window.localStorage["solocal"] == 1){
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				showModal();
-				
+				/*
 				if(salesTableDivLength == 0){
 					window.localStorage["solocal"] = 0;
 				}
+				*/
+				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
+					$('#salesOrderMainDiv').html('');
+					window.localStorage["timecatfetchflag"] = 0;
+					timeCatTbodyObj();
+				}
+				
 		   		showRunningTimeTracker();
 		   		hideModal();
 				$.mobile.changePage('#view-all-sales-order','slide');
@@ -1264,7 +1271,7 @@ function getSalesOrders(){
 					   		
 					   		var tbodyObj='<tbody>';
 					   		// Feedback row
-					   		tbodyObj+='<tr id="job_feedback" class="job-feedback-tr" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories(this);return false;">'+
+					   		tbodyObj+='<tr id="job_feedback" class="job-feedback-tr" data-orderid="spOrderIdReplace" onclick="gotoFeedbackPage(this);return false;">'+
 					    				'<td class="order-p-icon  feedback-td">'+
 						                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
 						                         '<img class="icon-img" src="img/feedback-icon.png" >'+
@@ -1404,6 +1411,9 @@ function getSalesOrders(){
 				});
 				//}
 			}
+			
+			// Get Feedback Categories
+	   		getFeedbackCategories();
 		}
 		
 	}
@@ -1463,8 +1473,22 @@ function successCBTimeCatTbodyObj() {
 	if(window.localStorage["timecatfetchflag"]==1){
 		window.localStorage["timecatfetchflag"]=0;
 		changeRoleOffline();
-	}else{
+	}
+	else{
+	// if(window.localStorage["timecatfetchflag"]==0){
 		var tbodyObj='<tbody>';
+		
+		// Feedback row
+   		tbodyObj+='<tr id="job_feedback" class="job-feedback-tr" data-orderid="spOrderIdReplace" onclick="gotoFeedbackPage(this);return false;">'+
+    				'<td class="order-p-icon  feedback-td">'+
+	                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
+	                         '<img class="icon-img" src="img/feedback-icon.png" >'+
+	                         '<span class="feedback-label">Feedback</span>'+
+	                     '</span>'+
+	                 '</td>'+
+	                 '<td class="timecat-total-time-td">'+
+	                 '</td>'+
+	             '</tr>';
 		
 		jQuery.each(time_cats_arr_curr_role, function(index,value) {
 			var jsonObj=value;
@@ -1475,18 +1499,6 @@ function successCBTimeCatTbodyObj() {
 			var revision=jsonObj["revision"];
 			var status=jsonObj["status"];
 			var titleEleObj=timeCatTitleFormat(title);
-			
-			// Feedback row
-	   		tbodyObj+='<tr id="job_feedback" class="job-feedback-tr" data-orderid="spOrderIdReplace" onclick="getFeedbackCategories(this);return false;">'+
-	    				'<td class="order-p-icon  feedback-td">'+
-		                     '<span class="process-icon cm-10" style="vertical-align: top;">'+
-		                         '<img class="icon-img" src="img/feedback-icon.png" >'+
-		                         '<span class="feedback-label">Feedback</span>'+
-		                     '</span>'+
-		                 '</td>'+
-		                 '<td class="timecat-total-time-td">'+
-		                 '</td>'+
-		             '</tr>';
 			
 			tbodyObj+='<tr>'+
 						/* // Remove this
@@ -1523,9 +1535,7 @@ function errorCBTimeCatTbodyObj(err) {
 
 function populateSalesOrders(tbodyObj){
 	if(salse_orders_arr.length==0){
-		db.transaction
-		  (
-		       function (tx){
+		db.transaction(function (tx){
 		            tx.executeSql('SELECT jsonArr,createTime FROM SALESORDER_JSON',[],function(tx,results){
 		                    var len = results.rows.length;
 		                    if(len>0){
@@ -1538,7 +1548,6 @@ function populateSalesOrders(tbodyObj){
 		            );
 		       },errorCBPopulateSalesOrders,successCBPopulateSalesOrders
 		   );
-		
 	}
 	else{
 		successCBPopulateSalesOrders();
@@ -1667,8 +1676,10 @@ function changeLoginRole(thiss){
 			*/
 			showModal();
 			
-			window.localStorage["solocal"] = 0;
-			window.localStorage["tclocal"] = 0;
+			// NOTES
+			//window.localStorage["solocal"] = 0;
+			//window.localStorage["tclocal"] = 0;
+			//time_cats_arr=[];
 			
 			$('ul#userRolesUl li').removeClass('active');
 			$('ul#userRolesUl li#'+roleId+'').addClass('active');
@@ -1677,9 +1688,10 @@ function changeLoginRole(thiss){
 			$('.current-role-info').html(currentUserRoleText);
 			
 			$('#salesOrderMainDiv').html('');
-			time_cats_arr=[];
 			time_cats_arr_curr_role=[];
 			getCategoriesForTimeTracking();
+			
+			
 			hideModal();
 			navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
 		}
@@ -2841,16 +2853,27 @@ function openPrivacyPolicyExternalApp(){
 	navigator.app.loadUrl(url, { openExternal:true });
 }
 
-// Get Job Feedback Categories
-function getFeedbackCategories(thiss){
+// Goto FeedBack Page
+function gotoFeedbackPage(thiss){
+	showModal();
 	var salesOrderId=$(thiss).data('orderid');
+	// Get Feedback Categories
+	getFeedbackCategories();
+	
+	resetForm('addJobFeedbackForm');
+	selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
+	hideModal();
+	$.mobile.changePage('#job-feedback-page','slide');
+}
+
+// Get Job Feedback Categories
+function getFeedbackCategories(){
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
 	if(grnUserObj != '') {
 		connectionType=checkConnection();
 		if(connectionType=="Unknown connection" || connectionType=="No network connection"){
-			showModal();
 			if(window.localStorage["jobFeedbackCatLocal"] == 1){
 				if(jobFeedbackCatArr.length > 0){
 					jobFeedbackSelectRefresh();
@@ -2862,30 +2885,20 @@ function getFeedbackCategories(thiss){
 			else if(window.localStorage["jobFeedbackCatLocal"] == 0){
 				navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
 			}
-			hideModal();
-			resetForm('addJobFeedbackForm');
-			selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
-			$.mobile.changePage('#job-feedback-page','slide');
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
 			if(window.localStorage["jobFeedbackCatLocal"] == 1 || jobFeedbackCatArr.length > 0){
 				window.localStorage["jobFeedbackCatLocal"] = 1;
-				showModal();
 				if(jobFeedbackCatArr.length > 0){
 					jobFeedbackSelectRefresh();
 				}else{
 					// Get Job Feedback Categories From Local
 					getJobFeedbackCategoryList();
 				}
-				resetForm('addJobFeedbackForm');
-				selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
-		   		hideModal();
-				$.mobile.changePage('#job-feedback-page','slide');
 			}
 			
 			if(window.localStorage["jobFeedbackCatLocal"] == 0){
-				showModal();
 				$.ajax({
 					type : 'POST',
 					url:appUrl,
@@ -2902,18 +2915,12 @@ function getFeedbackCategories(thiss){
 			   					tx.executeSql("DELETE FROM JOBFEEDBACKCATEGORY ");
 			   				});
 			   				db.transaction(insertJobFeedbackCategory, errorCB, successCB);// Insert Job Feedback Time Category
-			   				
-			   				resetForm('addJobFeedbackForm');
-			   				selectedSalesOrderData(salesOrderId,'jobFeedBackContentDiv');
-					   		hideModal();
 					   	}
 					   	else if(responseJson.status== "fail"){
 						   navigator.notification.alert('No Categories Found.',alertConfirm,appName,notiAlertOkBtnText);
 					   	}
-					   	$.mobile.changePage('#job-feedback-page','slide');
 					},
 					error:function(data,t,f){
-						hideModal();
 						navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);	
 					}
 				});
