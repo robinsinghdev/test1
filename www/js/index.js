@@ -1089,12 +1089,7 @@ function getCategoriesForTimeTracking(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			if(window.localStorage["tclocal"] == 1){
-				if(fetchSalesOrderLiveFlag==1){
-					timeCatTbodyObj();
-				}else{
-					getSalesOrders();
-				}
-				
+				getSalesOrders();
 		   		hideModal();
 			}
 			else if(window.localStorage["tclocal"] == 0){
@@ -1217,7 +1212,6 @@ function getAllColorsForSO(){
 	}
 }
 
-var fetchSalesOrderLiveFlag=0;
 var tbodyObjGlobal='';
 function getSalesOrders(){
 	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"5"}; // Testing Data
@@ -1256,18 +1250,16 @@ function getSalesOrders(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
 			if(window.localStorage["solocal"] == 1){
-				// window.localStorage["tclocal"] == 0
-				//window.localStorage["solocal"] = 0;
-				
-				fetchSalesOrderLiveFlag=1;
-				getCategoriesForTimeTracking();
-				
+				window.localStorage["solocal"] = 0;
+				timeCatTbodyObj();
+				return false;
 				/*
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				// TIME CAT BLANK ISSUE TASK
 				if(salesTableDivLength == 0){
 					window.localStorage["solocal"] = 0;
 				}
+				
 				showModal();
 				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
 					$('#salesOrderMainDiv').html('');
@@ -1279,8 +1271,8 @@ function getSalesOrders(){
 				$.mobile.changePage('#view-all-sales-order','slide');
 				*/
 			}
-			else{
-			// if(window.localStorage["solocal"] == 0){
+			
+			if(window.localStorage["solocal"] == 0){
 				showModal();
 				$.ajax({
 					type : 'POST',
@@ -1345,8 +1337,6 @@ function getSalesOrders(){
 					   		
 					   		if(time_cats_arr_curr_role.length==0){
 					   			navigator.notification.alert('Failed to retrieve Role Specifics. Please report Error #10.',alertConfirm,appName,notiAlertOkBtnText);
-					   			timeCatTbodyObj();
-					   			return false;
 					   		}
 					   		
 					   		salse_orders_arr=responseJson.sales_orders;
@@ -1562,12 +1552,11 @@ function successCBTimeCatTbodyObj() {
 			tbodyObj+='</tbody>';
 			tbodyObjGlobal=tbodyObj;
 			
-			if(fetchSalesOrderLiveFlag==1){
+			if(window.localStorage["solocal"] == 0){
 				getSalesOrders();
 			}else{
 				populateSalesOrders(tbodyObjGlobal);
 			}
-			
 			
 		}else{
 			getCategoriesForTimeTracking();
@@ -1726,8 +1715,8 @@ function changeLoginRole(thiss){
 			showModal();
 			
 			// NOTES
-			window.localStorage["solocal"] = 0;
-			window.localStorage["tclocal"] = 0;
+			//window.localStorage["solocal"] = 0;
+			//window.localStorage["tclocal"] = 0;
 			//time_cats_arr=[];
 			
 			$('#salesOrderMainDiv').html('');
