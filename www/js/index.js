@@ -1547,7 +1547,9 @@ function successCBTimeCatTbodyObj() {
 			tbodyObjGlobal=tbodyObj;
 			populateSalesOrders(tbodyObjGlobal);
 		}else{
-			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+			getCategoriesForTimeTracking();
+			// navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+			
 		}	
 	}
 }
