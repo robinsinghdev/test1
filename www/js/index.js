@@ -1682,16 +1682,16 @@ function changeLoginRole(thiss){
 			//window.localStorage["tclocal"] = 0;
 			//time_cats_arr=[];
 			
+			$('#salesOrderMainDiv').html('');
+			
+			time_cats_arr_curr_role=[];
+			getCategoriesForTimeTracking();
+			
 			$('ul#userRolesUl li').removeClass('active');
 			$('ul#userRolesUl li#'+roleId+'').addClass('active');
 			var currentUserRoleText = $('ul#userRolesUl li#'+window.localStorage.getItem("permissions")+'').text();
 			$('#userRoleShow').html(currentUserRoleText);
 			$('.current-role-info').html(currentUserRoleText);
-			
-			$('#salesOrderMainDiv').html('');
-			time_cats_arr_curr_role=[];
-			getCategoriesForTimeTracking();
-			
 			
 			hideModal();
 			navigator.notification.alert('Role = '+roleName+'.',alertConfirm,appName,notiAlertOkBtnText);
