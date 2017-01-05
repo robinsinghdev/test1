@@ -2957,6 +2957,7 @@ function jobFeedbackSelectRefresh(){
 	var el = $('#jobFeedbackSelect');
 	el.find('option').remove().end();
 	var currentValue;
+	el.append('<option value="">Select Category</option>').val(id);
 	jQuery.each(jobFeedbackCatArr, function(index,value) {
 		var jsonObj=value;
 		var id=jsonObj["id"];
@@ -2986,7 +2987,7 @@ function callSaveJobFeedback(){
 			return false;
 		}
 		if(jobFeedbackCatId == ''){
-			alert('Please select the category.');
+			alert('Please select a feedback category.');
 			return false;
 		}
 		
@@ -2999,7 +3000,7 @@ function callSaveJobFeedback(){
 		var feedbackComment= $addJobFeedbackForm.find('#feedbackComment').val();
 		
 		if(feedbackComment == ''){
-			alert('Please input feedback.');
+			alert('Please provide some feedback.');
 			return false;
 		}
 		
