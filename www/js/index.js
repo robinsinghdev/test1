@@ -1240,6 +1240,7 @@ function getSalesOrders(){
 			if(window.localStorage["solocal"] == 1){
 				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
 				showModal();
+				// TIME CAT BLANK ISSUE TASK
 				/*
 				if(salesTableDivLength == 0){
 					window.localStorage["solocal"] = 0;
