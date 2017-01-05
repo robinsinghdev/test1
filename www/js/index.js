@@ -714,11 +714,11 @@ function handleLogin() {
 					window.localStorage["email"] = grnUser["email"];
 					window.localStorage["trackerValueSave"]=0;
 					
-					if(window.localStorage["solocal"] != undefined) {
+					if(window.localStorage["solocal"] == undefined) {
 						window.localStorage["solocal"] = 0;
 					}
 					
-					if(window.localStorage["tclocal"] != undefined) {
+					if(window.localStorage["tclocal"] == undefined) {
 						window.localStorage["tclocal"] = 0;
 					}
 							
