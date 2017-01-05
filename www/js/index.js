@@ -229,7 +229,7 @@ function syncJobFeedbackFn() {
 						dataObj.action='soAddFeedbackPost';
 						dataObj.grn_user=grnUserObj;
 						dataObj.lid= currid;
-						dataObj.id= results.rows.item(i)['id'];
+						dataObj.id= results.rows.item(i)['soid'];
 						dataObj.grn_feedback_cat= results.rows.item(i)['grn_feedback_cat'];
 						dataObj.feedback= results.rows.item(i)['feedback'];
 						dataObj.identity= results.rows.item(i)['identity'];
@@ -755,8 +755,8 @@ function handleLogin() {
 					window.localStorage["email"] = '';
 					
 					window.localStorage["trackerValueSave"]=0;
-					window.localStorage["solocal"] = 0;
-					window.localStorage["tclocal"] = 0;
+					//window.localStorage["solocal"] = 0;
+					//window.localStorage["tclocal"] = 0;
 					window.localStorage["jobFeedbackCatLocal"] = 0;
 					if (window.localStorage.getItem("sync_flag") === null ) {
 						window.localStorage["sync_flag"] = 0;
@@ -3016,6 +3016,8 @@ function callSaveJobFeedback(){
 		dataObj.grn_feedback_cat= jobFeedbackCatId;
 		dataObj.feedback= feedbackComment;
 		dataObj.identity= hideIdentity;
+		
+		console.log("feedback  -- " + JSON.stringify(dataObj) + "--");
 		
 		saveJobFeedbackFn(dataObj);
 	}
