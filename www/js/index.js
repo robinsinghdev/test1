@@ -25,7 +25,7 @@ $(document).delegate('.history-tabs a', 'tap', function () {
 
 // Variables Declaration
 var appName='BP Metrics';
-var appUrl='https://www.bpmetrics.net/grn/m_app/';
+var appUrl='https://dev.bpmetrics.net/grn/m_app/';
 var connectionType;
 var currDataHexcolor,currDataOname,currDataOrder;
 var salse_orders_arr=[];
