@@ -429,7 +429,6 @@ function updateTrackerVariable(){
 }
 
 function saveLogTime(dataObj){
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -714,6 +713,8 @@ function handleLogin() {
 					window.localStorage["email"] = grnUser["email"];
 					window.localStorage["trackerValueSave"]=0;
 					
+					//window.localStorage["solocal"] = 0;
+					//window.localStorage["tclocal"] = 0;
 					if(window.localStorage["solocal"] == undefined) {
 						window.localStorage["solocal"] = 0;
 					}
@@ -721,9 +722,7 @@ function handleLogin() {
 					if(window.localStorage["tclocal"] == undefined) {
 						window.localStorage["tclocal"] = 0;
 					}
-							
-					//window.localStorage["solocal"] = 0;
-					//window.localStorage["tclocal"] = 0;
+					
 					window.localStorage["jobFeedbackCatLocal"] = 0;
 					if (window.localStorage.getItem("sync_flag") === null ) {
 						window.localStorage["sync_flag"] = 0;
@@ -900,9 +899,6 @@ function selectGrnComRoleFn(){
 
 var sp_salesOrderNumber_for_scroll;
 function getSOBySONumber(){
-	//var grnUserObj=window.localStorage.getItem("grnUser");
-	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -1022,7 +1018,6 @@ function getRandomColor(){
 }
 
 function createNewSO(){
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"};// Testing data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData)
 	
@@ -1081,10 +1076,11 @@ function getCategoriesForTimeTracking(){
 				getSalesOrders();
 			}
 			else if(window.localStorage["tclocal"] == 0){
-				getSalesOrders();
-				//navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+				$.mobile.changePage('#view-all-sales-order','slide');
+				var alertText='Please connect to internet once to get Sales Order.';
+				navigator.notification.alert(alertText,alertConfirm,appName,notiAlertOkBtnText);
+				
 			}
-			
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
@@ -1103,12 +1099,8 @@ function getCategoriesForTimeTracking(){
 				   		});
 				   		var responseJson = $.parseJSON(data);
 				   		time_cats_arr=responseJson.time_cats;
-				   		time_cats_arr_curr_role=[];
-				   		window.localStorage["tclocal"] = 1;
-				   		
+				   		// Insert Into DB
 				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
-				   		
-				   		//getSalesOrders();
 				   		hideModal();
 					},
 					error:function(data,t,f){
@@ -1130,9 +1122,7 @@ function getCategoriesForTimeTracking(){
 function getTotalTimeForCategory(dataObj){
 	var salesOrderTimeId=$(dataObj).attr('data-sotid');
 	var timCatvalue=$(dataObj).attr('data-timecat');
-	//	data-timecat="'+timeCats+'" data-sotid="spOrderIdReplace"
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -1180,7 +1170,6 @@ function getTotalTimeForCategory(dataObj){
 }
 
 function getAllColorsForSO(){
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -1214,7 +1203,6 @@ function getAllColorsForSO(){
 
 var tbodyObjGlobal='';
 function getSalesOrders(){
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"5"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -1250,26 +1238,15 @@ function getSalesOrders(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			
 			if(window.localStorage["solocal"] == 1){
-				window.localStorage["solocal"] = 0;
-				timeCatTbodyObj();
-				return false;
-				/*
-				var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
-				// TIME CAT BLANK ISSUE TASK
-				if(salesTableDivLength == 0){
-					window.localStorage["solocal"] = 0;
-				}
+				//var salesTableDivLength= $("#salesOrderMainDiv > div.sales-table-div").length;
+				//showModal();
 				
-				showModal();
-				if(salesTableDivLength==0 || time_cats_arr_curr_role.length==0){
-					$('#salesOrderMainDiv').html('');
-					window.localStorage["timecatfetchflag"] = 0;
-					timeCatTbodyObj();
-				}
-		   		showRunningTimeTracker();
-		   		hideModal();
-				$.mobile.changePage('#view-all-sales-order','slide');
-				*/
+				//if(salesTableDivLength == 0){
+					window.localStorage["solocal"] = 0;
+				//}
+		   		//showRunningTimeTracker();
+		   		//hideModal();
+				//$.mobile.changePage('#view-all-sales-order','slide');
 			}
 			
 			if(window.localStorage["solocal"] == 0){
@@ -1407,7 +1384,7 @@ function getSalesOrders(){
 					   		
 					   		db.transaction(insertSalesOrderJson, errorCB, successCB);// Insert Time Category
 					   		
-					   		window.localStorage["solocal"] = 1;
+					   		// window.localStorage["solocal"] = 1; // Set SO Local DB Flag 1
 					   		//getSalesOrderList();
 					   		
 					   		showRunningTimeTracker();
@@ -1443,6 +1420,7 @@ function getSalesOrders(){
 	}
 }
 
+// Call this function when user is offline only
 function timeCatTbodyObj(){// get time categories
 	var populateFlag=false;
 	time_cats_arr=[];
@@ -1455,8 +1433,8 @@ function timeCatTbodyObj(){// get time categories
 		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,grnrole,revision,status,grn_companies_id FROM TIMECATEGORY',[],function(tx,results){
 		                    var len = results.rows.length;
 		                    if(len==0){
-		    					window.localStorage["tclocal"] = 0;
-		    					//window.localStorage["solocal"] = 0;
+		    					// window.localStorage["tclocal"] = 0;
+		    					// window.localStorage["solocal"] = 0;
 		                    }
 		                    
 		                    if(len>0){
@@ -1502,7 +1480,8 @@ function successCBTimeCatTbodyObj() {
 	}
 	else{
 	// if(window.localStorage["timecatfetchflag"]==0){
-		if(window.localStorage["tclocal"]==1){
+		//if(window.localStorage["tclocal"]==1){
+		if(time_cats_arr_curr_role.length>0){
 			var tbodyObj='<tbody>';
 			
 			// Feedback row
@@ -1559,10 +1538,9 @@ function successCBTimeCatTbodyObj() {
 			}
 			
 		}else{
-			getCategoriesForTimeTracking();
-			// navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
-			
-		}	
+			//timeCatTbodyObj();
+			navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+		}
 	}
 }
 
@@ -1787,7 +1765,6 @@ function changeRoleBlockedDialogAction(button){
 
 function getLogTimeListOfOrder(data){
 	showModal();
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -2252,7 +2229,6 @@ function callAddUpadteLogTime(obj,logTimeType){
 function addUpadteLogTimeTT(dataObj,updateQuery){
 	//showModal();
 	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -2286,8 +2262,6 @@ function addUpadteLogTimeTT(dataObj,updateQuery){
 
 function addLogTimeToServer(dataObj){
 	showModal();
-	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -2325,8 +2299,6 @@ function addLogTimeToServer(dataObj){
 
 function updateLogTimeToServer(dataObj){
 	showModal();
-	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -2414,8 +2386,6 @@ function closeSalesOrderAction(button){
 
 function closeSalesOrder(dataObj){
 	showModal();
-	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -2465,8 +2435,6 @@ function closeSalesOrder(dataObj){
 
 function showOrderSOBySONumber(){
 	showModal();
-	
-	//var grnUserData={"ID":"1","grn_companies_id":"1","permissions":"7"}; // Testing Data
 	var grnUserData={"ID":window.localStorage.getItem("ID"),"grn_companies_id":window.localStorage.getItem("grn_companies_id"),"permissions":window.localStorage.getItem("permissions")};
 	var grnUserObj=JSON.stringify(grnUserData);
 	
@@ -3584,10 +3552,10 @@ function insertTimeCategory(tx) {
   	    	});
    		});
    	     
+   	     window.localStorage["tclocal"] = 1;
    	     timeCatSelectRefresh();
-   	     window.localStorage["tclocal"]=1;
    	     
-   	     // Time Cat Issue
+   	     // Get Sales Orders
    	     getSalesOrders();
     });
 }
@@ -3623,6 +3591,7 @@ function insertSalesOrderJson(tx) {
    			//alert("insertSalesOrderJson Id: " + res.insertId + " -- res.rowsAffected 1"+res.rowsAffected);
     	});
     });
+	window.localStorage["solocal"] = 1;
 }
 
 //Multiple records
