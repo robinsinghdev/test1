@@ -1100,6 +1100,9 @@ function getCategoriesForTimeTracking(){
 				   		time_cats_arr=responseJson.time_cats;
 				   		// Insert Into DB
 				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+				   		
+				   		// Get Sales Orders
+				   		getSalesOrders();
 				   		hideModal();
 					},
 					error:function(data,t,f){
@@ -3568,9 +3571,6 @@ function insertTimeCategory(tx) {
    	     
    	     window.localStorage["tclocal"] = 1;
    	     timeCatSelectRefresh();
-   	     
-   	     // Get Sales Orders
-   	     getSalesOrders();
     });
 }
 
