@@ -1079,7 +1079,6 @@ function getCategoriesForTimeTracking(){
 				$.mobile.changePage('#view-all-sales-order','slide');
 				var alertText='Please connect to internet once to get Sales Order.';
 				navigator.notification.alert(alertText,alertConfirm,appName,notiAlertOkBtnText);
-				
 			}
 		}
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
@@ -1244,7 +1243,7 @@ function getSalesOrders(){
 				//if(salesTableDivLength == 0){
 					window.localStorage["solocal"] = 0;
 				//}
-		   		//showRunningTimeTracker();
+		   		showRunningTimeTracker();
 		   		//hideModal();
 				//$.mobile.changePage('#view-all-sales-order','slide');
 			}
@@ -1314,6 +1313,13 @@ function getSalesOrders(){
 					   		
 					   		if(time_cats_arr_curr_role.length==0){
 					   			navigator.notification.alert('Failed to retrieve Role Specifics. Please report Error #10.',alertConfirm,appName,notiAlertOkBtnText);
+					   			
+					   			navigator.notification.confirm(
+					   			        ("Failed to retrieve Role Specifics.Retry or Please report Error #2."), // message
+					   			        reloadTimaCatSalesOrderCB, // callback
+					   			        appName, // title
+					   			        ['Cancel','Retry'] // buttonName
+					   			    );
 					   		}
 					   		
 					   		salse_orders_arr=responseJson.sales_orders;
@@ -1393,6 +1399,8 @@ function getSalesOrders(){
 					   		if(salse_orders_arr.length <= 0){
 					   			navigator.notification.alert('Use the green Add Sales Order button to add new Job/SO #',alertConfirm,appName,notiAlertOkBtnText);
 					   		}
+					   		
+					   		timeCatSelectRefresh();
 					   		
 					   }
 					   else if(responseJson.status== "fail"){
@@ -1530,12 +1538,7 @@ function successCBTimeCatTbodyObj() {
 			
 			tbodyObj+='</tbody>';
 			tbodyObjGlobal=tbodyObj;
-			
-			if(window.localStorage["solocal"] == 0){
-				getSalesOrders();
-			}else{
-				populateSalesOrders(tbodyObjGlobal);
-			}
+			populateSalesOrders(tbodyObjGlobal);
 			
 		}else{
 			//timeCatTbodyObj();
@@ -2072,11 +2075,22 @@ function showDeleteLogTimeDialog(dataObj) {
     );
 }
 
-//Call exit function
 function deleteLogTimeAction(button){
 	if(button=="2" || button==2){
 		deleteLogTimeLocal(deleteLogTimeLocalObj);
 	}
+}
+
+function reloadTimaCatSalesOrderCB(){
+	if(button=="2" || button==2){
+		reloadTimaCatSalesOrderDataFn();
+    }
+    else if(button=="3" || button==3){
+    }
+}
+
+function reloadTimaCatSalesOrderDataFn(){
+	getCategoriesForTimeTracking();
 }
 
 function deleteLogTimeLocal(dataObj){
