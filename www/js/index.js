@@ -1084,7 +1084,8 @@ function getCategoriesForTimeTracking(){
 		else if(connectionType=="WiFi connection" || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 			showModal();
 			if(window.localStorage["tclocal"] == 1){
-				getSalesOrders();
+				getTimeCatFromLocalDB();
+				//getSalesOrders();
 		   		hideModal();
 			}
 			else if(window.localStorage["tclocal"] == 0){
@@ -1316,7 +1317,6 @@ function getSalesOrders(){
 					   		
 					   		if(time_cats_arr_curr_role.length==0){
 					   			//navigator.notification.alert('Failed to retrieve Role Specifics. Please report Error #10.',alertConfirm,appName,notiAlertOkBtnText);
-					   			
 					   			navigator.notification.confirm(
 					   			        ("Failed to retrieve Role Specifics.Retry or Please report Error #2."), // message
 					   			        reloadTimaCatSalesOrderCB, // callback
@@ -1431,6 +1431,60 @@ function getSalesOrders(){
 	}
 }
 
+//Call this function when user is online only
+function getTimeCatFromLocalDB(){// get time categories
+	var populateFlag=false;
+	time_cats_arr=[];
+	time_cats_arr_curr_role=[];
+
+	if(time_cats_arr.length==0){
+		db.transaction(function (tx){
+		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,grnrole,revision,status,grn_companies_id FROM TIMECATEGORY',[],function(tx,results){
+		                    var len = results.rows.length;
+		                    
+		                    if(len>0){
+		                        for (var i = 0; i < len; i++) {
+		                        	var jsonObj={};
+		                        	jsonObj["id"]=results.rows.item(i)['pid'];
+		                        	jsonObj["timeCats"]=results.rows.item(i)['timeCats'];
+		                        	jsonObj["title"]=results.rows.item(i)['title'];
+		                        	jsonObj["grn_roles_id"]=results.rows.item(i)['grnrolesid'];
+		                        	jsonObj["role"]=results.rows.item(i)['grnrole'];
+		                        	jsonObj["revision"]=results.rows.item(i)['revision'];
+		                        	jsonObj["status"]=results.rows.item(i)['status'];
+		                        	
+		                        	jsonObj["grn_companies_id"]=results.rows.item(i)['grn_companies_id'];
+		                        	jsonObj["type"]='';//results.rows.item(i)['type'];
+		                        	jsonObj["cost"]='';//results.rows.item(i)['cost'];
+		                        	jsonObj["comment"]='';//results.rows.item(i)['comment'];
+		                        	
+		                        	time_cats_arr.push(jsonObj);
+		                        	
+		                        	//console.log(window.localStorage["permissions"] + '----' + jsonObj["grn_roles_id"]);
+		                   	    	if(window.localStorage["permissions"]==jsonObj["grn_roles_id"]){
+		                   	    		//console.log("true condition--" + window.localStorage["permissions"] + '----' + jsonObj["grn_roles_id"]);
+		                   	    		time_cats_arr_curr_role.push(jsonObj);
+		                   	    	}
+		                        }
+		                        window.localStorage["tclocal"] = 1;
+		                    }
+		                }, errorCB
+		            );
+		       },errorCBTimeCatTbodyObj,successCBGetTimeCatFromLocalDB
+		   );
+	}
+}
+
+//Transaction success callback
+function successCBGetTimeCatFromLocalDB() {
+	if(time_cats_arr_curr_role.length>0){
+		getSalesOrders();
+	}else{
+		//timeCatTbodyObj();
+		navigator.notification.alert(appRequiresWiFi,alertConfirm,appName,notiAlertOkBtnText);
+	}
+}
+
 // Call this function when user is offline only
 function timeCatTbodyObj(){// get time categories
 	var populateFlag=false;
@@ -1438,9 +1492,7 @@ function timeCatTbodyObj(){// get time categories
 	time_cats_arr_curr_role=[];
 
 	if(time_cats_arr.length==0){
-		db.transaction
-		  (
-		       function (tx){
+		db.transaction(function (tx){
 		            tx.executeSql('SELECT pid,timeCats,title,grnrolesid,grnrole,revision,status,grn_companies_id FROM TIMECATEGORY',[],function(tx,results){
 		                    var len = results.rows.length;
 		                    if(len==0){
