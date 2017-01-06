@@ -1700,8 +1700,8 @@ function changeLoginRole(thiss){
 			
 			// NOTES
 			//window.localStorage["solocal"] = 0;
-			//window.localStorage["tclocal"] = 0;
-			//time_cats_arr=[];
+			window.localStorage["tclocal"] = 0;
+			time_cats_arr=[];
 			
 			$('#salesOrderMainDiv').html('');
 			
