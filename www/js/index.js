@@ -1315,7 +1315,7 @@ function getSalesOrders(){
 					   		tbodyObj+='</tbody>';
 					   		
 					   		if(time_cats_arr_curr_role.length==0){
-					   			navigator.notification.alert('Failed to retrieve Role Specifics. Please report Error #10.',alertConfirm,appName,notiAlertOkBtnText);
+					   			//navigator.notification.alert('Failed to retrieve Role Specifics. Please report Error #10.',alertConfirm,appName,notiAlertOkBtnText);
 					   			
 					   			navigator.notification.confirm(
 					   			        ("Failed to retrieve Role Specifics.Retry or Please report Error #2."), // message
