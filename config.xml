@@ -42,8 +42,10 @@ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     
     <platform name="android">
         <allow-intent href="market:*" />
-        <preference name="android-minSdkVersion" value="14"/> 
- 		<preference name="android-targetSdkVersion" value="22"/> 
+        <preference name="android-minSdkVersion" value="15"/>
+        <preference name="android-maxSdkVersion" value="25" /> 
+ 		<preference name="android-targetSdkVersion" value="23"/> 
+ 		<!-- <preference name="phonegap-version" value="cli-6.3.0" /> -->
  		
  		<!-- Icons By Resolutions -->
  		<icon src="res/android/app_icon_ldpi.png" platform="android" qualifier="ldpi" />
