@@ -25,7 +25,7 @@ $(document).delegate('.history-tabs a', 'tap', function () {
 
 // Variables Declaration
 var appName='BP Metrics';
-var appUrl='https://dev.bpmetrics.net/grn/m_app/';
+var appUrl='https://www.bpmetrics.net/grn/m_app/';
 var connectionType;
 var currDataHexcolor,currDataOname,currDataOrder;
 var salse_orders_arr=[];
@@ -1102,17 +1102,14 @@ function getCategoriesForTimeTracking(){
 				   			tx.executeSql("DELETE FROM TIMECATEGORY");
 				   		});
 					   	*/
-					   
 					   	db.transaction(function(transaction) {
 			   				// Define delete query
 			   				var executeQuery = "DELETE FROM TIMECATEGORY";
 			   				transaction.executeSql(executeQuery, []
 			   				, function(tx, result) {   // On success
 			   					console.log('All TIMECATEGORY data deleted successfully.');
-			   					
 			   					// 	Insert Into DB
 						   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
-						   		
 						   		// Get Sales Orders
 						   		// getSalesOrders();
 			   				},
@@ -3704,12 +3701,6 @@ function getSalesOrderJsonList(){
 function deleteSalesOrderJson() {
 	db.transaction(function(tx) {
 		tx.executeSql("DELETE FROM SALESORDER_JSON");
-	});
-}
-
-function deleteTimecategoryTable() {
-	db.transaction(function(tx) {
-		tx.executeSql("DELETE FROM TIMECATEGORY");
 	});
 }
 
