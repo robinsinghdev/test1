@@ -1094,16 +1094,33 @@ function getCategoriesForTimeTracking(){
 				   url:appUrl,
 				   data:{action:'getCompanyAvailableCategories',grn_user:grnUserObj},
 				   success:function(data){
-					   	db.transaction(function(tx) {
-				   			tx.executeSql("DELETE FROM TIMECATEGORY ");
-				   		});
-				   		var responseJson = $.parseJSON(data);
+					   	var responseJson = $.parseJSON(data);
 				   		time_cats_arr=responseJson.time_cats;
-				   		// Insert Into DB
-				   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
 				   		
-				   		// Get Sales Orders
-				   		getSalesOrders();
+				   		/*
+					   	db.transaction(function(tx) {
+				   			tx.executeSql("DELETE FROM TIMECATEGORY");
+				   		});
+					   	*/
+					   
+					   	db.transaction(function(transaction) {
+			   				// Define delete query
+			   				var executeQuery = "DELETE FROM TIMECATEGORY";
+			   				transaction.executeSql(executeQuery, []
+			   				, function(tx, result) {   // On success
+			   					console.log('All TIMECATEGORY data deleted successfully.');
+			   					
+			   					// 	Insert Into DB
+						   		db.transaction(insertTimeCategory, errorCB, successCB);// Insert Time Category
+						   		
+						   		// Get Sales Orders
+						   		// getSalesOrders();
+			   				},
+			   				function(error){     // On error                               
+			   					console.log('Error occurred while deleting the data.'); 
+			   				});
+			   			});
+					   	
 				   		hideModal();
 					},
 					error:function(data,t,f){
@@ -1388,7 +1405,7 @@ function getSalesOrders(){
 					   		hideAllTablesData();
 					   		
 					   		db.transaction(function(tx) {
-					   			tx.executeSql("DELETE FROM SALESORDER_JSON ");
+					   			tx.executeSql("DELETE FROM SALESORDER_JSON");
 					   		});
 					   		
 					   		db.transaction(insertSalesOrderJson, errorCB, successCB);// Insert Time Category
@@ -2797,7 +2814,7 @@ function getGrnCompanyRoles(){
 	}
 	else if(connectionType=="WiFi connection"  || connectionType=="Cell 4G connection" || connectionType=="Cell 3G connection" || connectionType=="Cell 2G connection"){
 		db.transaction(function(tx) {
-			tx.executeSql("DELETE FROM GRNCOMPANYROLES ");
+			tx.executeSql("DELETE FROM GRNCOMPANYROLES");
 		});
 		
 		$.ajax({
@@ -2840,7 +2857,7 @@ function insertGrnCompRolesJson(tx) {
 
 function deleteGrnCompRolesJson() {
 	db.transaction(function(tx) {
-		tx.executeSql("DELETE FROM GRNCOMPANYROLES ");
+		tx.executeSql("DELETE FROM GRNCOMPANYROLES");
 	});
 }
 
@@ -2987,7 +3004,7 @@ function getFeedbackCategories(){
 				   			jobFeedbackSelectRefresh();
 				   			
 			   				db.transaction(function(tx) {
-			   					tx.executeSql("DELETE FROM JOBFEEDBACKCATEGORY ");
+			   					tx.executeSql("DELETE FROM JOBFEEDBACKCATEGORY");
 			   				});
 			   				db.transaction(insertJobFeedbackCategory, errorCB, successCB);// Insert Job Feedback Time Category
 					   	}
@@ -3623,6 +3640,9 @@ function insertTimeCategory(tx) {
    	     
    	     window.localStorage["tclocal"] = 1;
    	     timeCatSelectRefresh();
+   	     
+   	     // For Debugging
+   	     getSalesOrders();
     });
 }
 
@@ -3683,13 +3703,13 @@ function getSalesOrderJsonList(){
 
 function deleteSalesOrderJson() {
 	db.transaction(function(tx) {
-		tx.executeSql("DELETE FROM SALESORDER_JSON ");
+		tx.executeSql("DELETE FROM SALESORDER_JSON");
 	});
 }
 
 function deleteTimecategoryTable() {
 	db.transaction(function(tx) {
-		tx.executeSql("DELETE FROM TIMECATEGORY ");
+		tx.executeSql("DELETE FROM TIMECATEGORY");
 	});
 }
 
